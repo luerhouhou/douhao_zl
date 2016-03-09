@@ -1,0 +1,67 @@
+uexWidget   管理当前应用
+
+方法:
+
+startWidget
+  加载一个widget
+uexWidget.startWidget(appId, animiId, funName, info, animDuration )
+ 说明:
+  在当前widget加载一个子widget。
+参数:
+  appId: (String类型) 必选   子widget的appId
+  animiId: (Number类型) 必选   子widget载入时的动画id,详见CONSTANT中Window Animi ID
+  funName: (String类型) 必选   方法名，子widget结束时将String型的任意字符回调给该方法，可为空。注意：只在主窗口 中有效，浮动窗口中无效
+  info: (String类型) 必选   传给子widget的信息
+  animDuration: (Number类型) 必选   动画持续时长，单位为毫秒，默认200毫秒
+
+
+finishWidget
+  退出一个widget
+
+
+removeWidget
+  删除一个widget
+checkUpdate
+  检查更新
+loadApp
+  启动第三方应用（iOS）
+startApp
+  启动第三方应用（Android）
+getOpenerInfo
+  获取widget的相关信息。
+installApp
+  安装apk
+getPushInfo
+  获取推送消息
+setPushNotifyCallback
+  设置推送消息到达时的回调函数
+setPushInfo
+  设置推送用户信息
+setPushState
+  设置推送服务的状态
+getPushState
+  获取推送服务的状态
+
+ 回调方法:
+cbStartWidget
+  加载widget完成时的回调方法
+cbRemoveWidget
+  删除widget完成时的回调方法
+cbCheckUpdate
+  检查更新完成时的回调方法
+cbGetOpenerInfo
+  获取widget相关信息的回调方法
+cbGetPushInfo
+  获取推送消息的回调方法
+cbGetPushState
+  获取推送状态的回调方法
+监听方法:
+onLoadByOtherApp
+  被第三方应用调起的监听方法
+onSuspend
+  程序挂起的监听方法
+onResume
+  程序恢复的监听方法
+onTerminate
+  程序终止的监听方法
+

@@ -1,0 +1,132 @@
+注：<c-y>, 指先按ctrl+y，再按,，后面不再说明
+<c-y>,  emmet触发键，tips:输完命令后最好在后面多写一个空格，如：html:5_
+v <c-y>,    先进入可视模式，选择目标文本，按快捷键，状态栏弹出Tags:，输入命令即可
+<c-y>n  跳转到下一个编辑点
+<c-y>N  跳转到上一个编辑点
+<c-y>i  移动到img标签，按快捷键，自动为图片添加大小
+<c-y>m  合并多行为一行
+<c-y>k  删除当前tag
+<c-y>/  切换添加、去除注释
+<c-y>a  自动将网址转换为链接标签
+--------------------------
+简写                        编译
+.wrap>.content              div.wrap>div.content
+em>.info                    em>span.info
+ul>.item*3                  ul>li.item*3
+table>#row$*4>[colspan=2]   table>tr#row$*4>td[colspan=2]
+--------------------------
+[基本html用法]
+
+    ! (生成基本html结构，效果同html:5)
+    html:5 (效果同!，另外还有html:xt, html:4s)
+    # (生成id)
+示例： div#main 或者直接写 #main
+    . (生成class)
+示例： div.list
+    > (生成后代元素)
+示例： div.list>ul>li
+    + (生成兄弟元素)
+示例： h1+h2+p
+    {} (文本)
+示例： a{Click me}+ul>li{item$}*3
+效果：
+  <a href="">Click me</a>
+  <ul>
+      <li>item1</li>
+      <li>item2</li>
+      <li>item3</li>
+  </ul>
+示例2：p>{Click }+a{here}+{ to continue}
+效果：
+
+  <p>Click <a href="">here</a>to continue</p>
+    
+    ^ (生成上级元素)
+示例： div.list>ul>li^span
+效果：
+  <div class="list">
+      <ul>
+          <li></li>
+      </ul>
+      <span></span>
+  </div>
+
+    * (重复生成元素)
+示例： ul>li*5
+
+    () (生成分组)
+div.main>(div.header>ul>li*2)+div.footer
+示例2：(div>dl>(dt+dd)*3)+footer>p
+效果：
+
+ <div>
+     <dl>
+         <dt></dt>
+         <dd></dd>
+         <dt></dt>
+         <dd></dd>
+         <dt></dt>
+         <dd></dd>
+     </dl>
+ </div>
+ <footer>
+     <p></p>
+ </footer>
+
+    
+
+$[N] (生成编号，单个编号默认从1开始，也支持多位编号，需要几位就写几个，默认从0开始,N为起始编号)
+示例： div>(ul>li.item$*2)+(ul>li.item$$$@5*2)
+效果：
+
+  <div>
+      <ul>
+          <li class="item1"></li>
+          <li class="item2"></li>
+      </ul>
+      <ul>
+          <li class="item005"></li>
+          <li class="item006"></li>
+      </ul>
+  </div>
+
+    $@[-][N] (编号排序-为倒序，N为起始编号)不写起始编号，则从1开始
+示例： ul>li.item$$@-5*2
+<ul>
+    <li class="item06"></li>
+    <li class="item05"></li>
+</ul>
+
+    lorem[N] (生成随机内容，N为单词数量)
+示例： lorem
+示例： h2*3>lorem5 或者 (h2>lorem5)*3
+效果：
+
+  <h2>
+      Consectetur esse recusandae sapiente magnam.
+  </h2>
+  <h2>
+      Lorem odio unde magni molestias!
+  </h2>
+  <h2>
+      Amet perferendis praesentium facilis maxime.
+  </h2>
+
+ul.nav>li.page$*2>img[alt=$#]+a[href='#']
+效果：
+<ul class="nav">
+            <li class="page1">
+                <img src="" alt="1">
+                <a href="#"></a>
+            </li>
+            <li class="page2">
+                <img src="" alt="2">
+                <a href="#"></a>
+            </li>
+        </ul>
+
+自动添加图片尺寸
+<img src="test.jpg" alt="首页">
+光标移动到img标签内，按<c-y>i再按Enter即可
+效果：
+<img src="test.jpg" alt="首页" width="500" height="375">

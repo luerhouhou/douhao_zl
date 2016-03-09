@@ -1,0 +1,36 @@
+TCP/IP 是因特网的通信协议。
+通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。
+
+因特网浏览器和因特网服务器均使用 TCP/IP 来连接因特网。浏览器使用 TCP/IP 来访问因特网服务器，服务器使用 TCP/IP 向浏览器传回 HTML。
+
+电子邮件程序使用 TCP/IP 来连接因特网，这样才能收发邮件。
+
+王凤伟	：	正在参与百度浏览器Android
+
+DOM 
+
+线程没有同步异步之分，只有同步异步操作之分
+
+NDK: 底层API
+SDK：development API
+
+bionic核心库 效率很高
+
+html
+css
+css3
+tcp/ip
+html dom
+
+ajax 局部刷新
+
+xml
+xml schema         XML Schema 是基于 XML 的 DTD 替代者。
+xml dom
+xpath 提出的一个概念，存在不同的实现
+
+
+
+
+js
+

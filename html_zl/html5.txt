@@ -1,0 +1,1673 @@
+[HTML] Hyper Text Markup Language
+HTML 使用标记标签来描述网页
+
+
+HTML 块元素
+
+大多数 HTML 元素被定义为块级元素或内联元素。
+
+编者注：“块级元素”译为 block level element，“内联元素”译为 inline element。
+
+块级元素在浏览器显示时，通常会以新行来开始（和结束）。
+
+例子：<h1>, <p>, <ul>, <table>
+
+
+HTML 内联元素
+
+内联元素在显示时通常不会以新行开始。
+
+例子：<b>, <td>, <a>, <img>
+
+
+HTML <div> 元素
+
+HTML <div> 元素是块级元素，它是可用于组合其他 HTML 元素的容器。
+
+<div> 元素没有特定的含义。除此之外，由于它属于块级元素，浏览器会在其前后显示折行。
+
+如果与 CSS 一同使用，<div> 元素可用于对大的内容块设置样式属性。
+
+<div> 元素的另一个常见的用途是文档布局。它取代了使用表格定义布局的老式方法。使用 <table> 元素进行文档布局不是表格的正确用法。<table> 元素的作用是显示表格化的数据。
+
+
+HTML <span> 元素
+
+HTML <span> 元素是内联元素，可用作文本的容器。
+
+<span> 元素也没有特定的含义。
+
+当与 CSS 一同使用时，<span> 元素可用于为部分文本设置样式属性。
+
+
+[HTML5标签]
+
+&lt; is the same as <
+&gt; is the same as >
+&#169; is the same as ©
+&nbsp; 空格
+
+<script type="text/javascript">
+<!-- //html注释
+function displayMsg()
+{
+alert("Hello World!")
+}
+//-->
+</script>注释：注释行结尾处的两条斜杠 (//) 是 JavaScript 注释符号。这可以避免 JavaScript 执行 --> 标签。
+
+<!DOCTYPE html>
+注释：<!DOCTYPE> 声明没有结束标签。
+提示：<!DOCTYPE> 声明对大小写不敏感。
+
+<a href="http://www.w3school.com.cn">W3School</a>
+<a> 标签定义超链接，用于从一张页面链接到另一张页面。
+<a> 元素最重要的属性是 href 属性，它指示链接的目标。
+在所有浏览器中，链接的默认外观是：
+    未被访问的链接带有下划线而且是蓝色的
+    已被访问的链接带有下划线而且是紫色的
+    活动链接带有下划线而且是红色的
+提示：您可能已经注意到了，W3School 站点内的链接外观与默认的链接外观非常不同。您可以使用 CSS 伪类 向文本超链接添加复杂而多样的样式。
+提示：如果不使用 href 属性，则不可以使用如下属性：download, hreflang, media, rel, target 以及 type 属性。
+提示：被链接页面通常显示在当前浏览器窗口中，除非您规定了另一个目标（target 属性）。
+提示：请使用 CSS 来设置链接的样式。
+
+<a href="mple/html/lastpage.html" style="text-decoration:none">没有下划线的超链接
+
+
+<p>//创建指向C4锚点得链接
+<a href="#C4">查看 Chapter 4。</a>
+	//也可以在其他页面中创建指向该锚点的链接
+<a href="http://www.w3school.com.cn/html/html_links.asp#tips">有用的提示</a>
+</p>
+<h2><a name="C4">Chapter 4</a></h2>创建一个书签，可使用id来替代name属性
+<p>This chapter explains ba bla bla</p>
+链接到同一页的不同位置
+当使用命名锚（named anchors）时，我们可以创建直接跳至该命名锚（比如页面中某个小节）的链接，这样使用者就无需不停地滚动页面来寻找他们需要的信息了。
+提示：假如浏览器找不到已定义的命名锚，那么就会定位到文档的顶端。不会有错误发生。
+
+<p>
+这是邮件链接：//收件人
+<a href="mailto:zl_shell@163.com?subject=Hello%20again">发送邮件</a>
+</p>
+<p>
+<b>注意：</b>应该使用 %20 来替换单词之间的空格，这样浏览器就可以正确地显示文本了。
+</p>
+链接到一个邮件。（本例在安装邮件客户端程序后才能工作。）
+
+<p>
+这是另一个 mailto 链接：//mailto:收件人 cc:抄送 bcc:密送 subject:主题 body:内容
+<a href="mailto:someone@microsoft.com?cc=someoneelse@microsoft.com&bcc=andsomeoneelse2@microsoft.com&subject=Summer%20Party&body=You%20are%20invited%20to%20a%20big%20summer%20party!">发送邮件！</a>
+</p>
+
+The <abbr title="People's Republic of China">PRC</abbr> was founded in 1949.
+<abbr> 标签指示出简称或缩写的全称，比如 "WWW" 或 "NATO"。
+通过对缩写进行标记，您能够为浏览器、拼写检查和搜索引擎提供有用的信息。
+提示：可以在 <abbr> 标签中使用全局的 title 属性，这样就能够在鼠标指针移动到 <abbr> 元素上时显示出简称/缩写的完整版本。
+
+-----------
+<form action="MAILTO:someone@w3school.com.cn" method="post" enctype="text/plain">
+<h3>这个表单会把电子邮件发送到 W3School。</h3>
+姓名：<br />
+<input type="text" name="name" value="yourname" size="20">
+<br />
+电邮：<br />
+<input type="text" name="mail" value="yourmail" size="20">
+<br />
+内容：<br />
+<input type="text" name="comment" value="yourcomment" size="40">
+<br /><br />
+<input type="submit" value="发送">
+<input type="reset" value="重置">
+</form>
+-----------
+
+<address>
+Written by <a href="mailto:webmaster@example.com">Donald Duck</a>.<br> 
+Visit us at:<br>
+Example.com<br>
+Box 564, Disneyland<br>
+USA
+</address>
+<address> 标签定义文档或文章的作者/拥有者的联系信息。
+如果 <address> 元素位于 <body> 元素内，则它表示文档联系信息。
+如果 <address> 元素位于 <article> 元素内，则它表示文章的联系信息。
+<address> 元素中的文本通常呈现为斜体。大多数浏览器会在 address 元素前后添加折行。
+提示：<address> 标签不应该用于描述通讯地址，除非它是联系信息的一部分。
+提示：<address> 元素通常连同其他信息被包含在 <footer> 元素中。
+
+也可以把图像作为链接来使用：
+<a href="/example/html/lastpage.html">
+<img border="0" src="/i/eg_buttonnext.gif" />
+</a>
+
+带有可点击区域的图像映射：
+<img src="planets.jpg" border="0" usemap="#planetmap" alt="Planets" />
+<map name="planetmap" id="planetmap">
+<area shape="circle" coords="180,139,14" href ="venus.html" alt="Venus" />
+<area shape="circle" coords="129,161,10" href ="mercur.html" alt="Mercury" />
+<area shape="rect" coords="0,0,110,260" href ="sun.html" alt="Sun" />
+</map>
+<area> 标签定义图像映射中的区域（注：图像映射指得是带有可点击区域的图像）。
+area 元素总是嵌套在 <map> 标签中。
+注释：<img> 标签中的 usemap 属性与 map 元素 name 属性相关联，创建图像与映射之间的联系。
+注释：<img> 中的 usemap 属性可引用 <map> 中的 id 或 name 属性（由浏览器决定），所以我们需要同时向 <map> 添加 id 和 name 两个属性。
+必需的属性：alt(text)定义此区域的替换文本。
+alt 属性是一个必需的属性，它规定在图像无法显示时的替代文本。
+假设由于下列原因用户无法查看图像，alt 属性可以为图像提供替代的信息：
+1. 网速太慢
+2. src 属性中的错误
+3. 浏览器禁用图像
+4. 用户使用的是屏幕阅读器
+<area> 标签的 alt 属性指定了替代文本，用于在图像无法显示或者用户禁用图像显示时，代替图像显示在浏览器中的内容。
+我们强烈推荐您在文档的每个图像中都使用这个属性。这样即使图像无法显示，用户还是可以看到关于丢失了什么东西的一些信息。而且对于残疾人来说，alt 属性通常是他们了解图像内容的唯一方式。
+可选的属性： 
+coords(坐标值)定义可点击区域（对鼠标敏感的区域）的坐标。
+href(URL)定义此区域的目标 URL。
+nohref(nohref)从图像映射排除某个区域。
+shape(default,rect,circ,poly)定义区域的形状。
+target(_blank,_parent,_self,_top)规定在何处打开 href 属性指定的目标 URL。
+	_blank	在新窗口中打开被链接文档。
+	_self	默认。在相同的框架中打开被链接文档。
+	_parent	在父框架集中打开被链接文档。
+	_top	在整个窗口中打开被链接文档。跳出框架，假如你的页面被固定在框架之内。
+	framename	在指定的框架中打开被链接文档。
+coords 属性规定区域的 x 和 y 坐标。
+coords 属性与 shape 属性配合使用，来规定区域的尺寸、形状和位置。
+图像左上角的坐标是 "0,0"。
+详细解释：
+<area> 标签的 coords 属性定义了客户端图像映射中对鼠标敏感的区域的坐标。坐标的数字及其含义取决于 shape 属性中决定的区域形状。可以将客户端图像映射中的超链接区域定义为矩形、圆形或多边形等。
+下面列出了每种形状的适当值：
+圆形：shape="circle"，coords="x,y,z"
+这里的 x 和 y 定义了圆心的位置（"0,0" 是图像左上角的坐标），r 是以像素为单位的圆形半径。
+多边形：shape="polygon"，coords="x1,y1,x2,y2,x3,y3,..."
+每一对 "x,y" 坐标都定义了多边形的一个顶点（"0,0" 是图像左上角的坐标）。定义三角形至少需要三组坐标；高纬多边形则需要更多数量的顶点。
+多边形会自动封闭，因此在列表的结尾不需要重复第一个坐标来闭合整个区域。
+矩形：shape="rectangle"，coords="x1,y1,x2,y2"
+第一个坐标是矩形的一个角的顶点坐标，另一对坐标是对角的顶点坐标，"0,0" 是图像左上角的坐标。请注意，定义矩形实际上是定义带有四个顶点的多边形的一种简化方法。
+注意:插入动画图像的语法与插入普通图像的语法没有区别。gif 和 jpg 文件均可用作 HTML 背景。如果图像小于页面，图像会进行重复。
+shape 属性与 coords 属性配合，可以规定区域的尺寸、形状和位置。
+详细解释：
+shape 属性用于定义图像映射中对鼠标敏感的区域的形状：
+圆形（circ 或 circle）
+多边形（poly 或 polygon）
+矩形（rect 或 rectangle）
+shape 属性的值会影响浏览器对 coords 属性的解释。如果未使用 shape 属性，那么会假设使用值 default。依照标准，default 意味着该区域覆盖整个图像。在实际中，浏览器默认使用矩形区域，并期望能找到 4 个 coords 值。如果没有指定形状，而且在标签中也没有包括 4 个坐标，那么浏览器会忽略整个区域。
+可以识别 shape 属性的 default 值的浏览器，可以提供一个包括全部热点的区域，以用于在超过其他热点定义的范围之外单击的情况。由于区域在 <map> 标签中是采用“先来先得”的顺序，所有必须将默认区域放置在后面。否则，默认区域会覆盖其他的图像映射中出现的所有区域。
+浏览器在形状名称的实现方面没有严格要求。例如，对于矩形，Netscape 4 不能识别 "rectangle"，却能识别 "rect"。出于这个原因，我们建议使用缩写的名称。
+
+<a href="/example/html/html_ismap.html">
+<img src="/i/eg_planets.jpg" ismap />
+</a>
+ismap 属性将图像定义为服务器端图像映射。
+图像映射指的是带有可点击区域的图像。
+当点击一个服务器端图像映射时，点击坐标会以 URL 查询字符串的形式发送到服务器。
+注释：只有当 <img> 元素属于带有有效 href 属性的 <a> 元素的后代时，才允许 ismap 属性。
+
+
+
+<article>
+<h1>Internet Explorer 9</h1>
+<p>Windows Internet Explorer 9（简称 IE9）于 2011 年 3 月 14 日发布.....</p>
+</article>
+
+<p>Me and my family visited The Epcot center this summer.</p>
+<aside>
+<h4>Epcot Center</h4>
+The Epcot Center is a theme park in Disney World, Florida.
+</aside>
+定义和用法
+<aside> 标签定义其所处内容之外的内容。
+aside 的内容应该与附近的内容相关。
+
+<audio src="someaudio.wav">
+您的浏览器不支持 audio 标签。
+</audio>
+<audio> 标签定义声音，比如音乐或其他音频流。
+提示：可以在开始标签和结束标签之间放置文本内容，这样老的浏览器就可以显示出不支持该标签的信息。
+autoplay(autoplay)如果出现该属性，则音频在就绪后马上播放。
+controls(controls)如果出现该属性，则向用户显示控件，比如播放按钮。
+loop(loop)如果出现该属性，则每当音频结束时重新开始播放。
+muted(muted)规定视频输出应该被静音。
+preload(preload)如果出现该属性，则音频在页面加载时进行加载，并预备播放。如果使用 "autoplay"，则忽略该属性。
+src(url)要播放的音频的 URL。
+
+<audio controls="controls" autoplay="autoplay">
+<source src="song.ogg" type="audio/ogg" />
+<source src="song.mp3" type="audio/mpeg" />
+Your browser does not support the audio element.
+</audio>
+autoplay 属性规定一旦音频就绪马上开始播放。
+如果设置了该属性，音频将自动播放。
+
+<audio controls="controls">
+<source src="song.ogg" type="audio/ogg" />
+<source src="song.mp3" type="audio/mpeg" />
+Your browser does not support the audio element.
+</audio>
+controls 属性规定浏览器应该为音频提供播放控件。
+如果设置了该属性，则规定不存在作者设置的脚本控件。
+浏览器控件应该包括：
+播放
+暂停
+定位
+音量
+全屏切换
+字幕（如果可用）
+音轨（如果可用）
+
+拥有两份源文件的音频播放器。浏览器应该选择它所支持的文件（如果有的话）：
+<audio controls="controls" loop="loop">
+<source src="song.ogg" type="audio/ogg" />
+<source src="song.mp3" type="audio/mpeg" />
+Your browser does not support the audio element.
+</audio>
+loop 属性规定当音频结束后将重新开始播放。
+如果设置该属性，则音频将循环播放。
+
+<source> 标签为媒介元素（比如 <video> 和 <audio>）定义媒介资源。
+<source> 标签允许您规定可替换的视频/音频文件供浏览器根据它对媒体类型或者编解码器的支持进行选择。
+media(media query)规定媒体资源的类型。
+src(url)规定媒体文件的 URL。
+type(numeric value)规定媒体资源的 MIME 类型。
+
+<audio src="song.ogg" controls="controls">
+Your browser does not support the audio element.
+</audio>
+src 属性规定要播放的音频的 URL。
+也可以使用 <source> 标签 来设置音频。
+
+
+<p>这是普通文本 - <b>这是粗体文本</b>。</p>
+<b> 标签规定粗体文本。
+注释：根据 HTML5 规范，在没有其他合适标签更合适时，才应该把 <b> 标签作为最后的选项。HTML5 规范声明：应该使用 <h1> - <h6> 来表示标题，使用 <em> 标签来表示强调的文本，应该使用 <strong> (效果等同于<b>)标签来表示重要文本，应该使用 <mark> 标签来表示标注的/突出显示的文本。
+提示：您也能够使用 CSS "font-weight" 属性来设置粗体文本。
+
+<head>
+<base href="http://www.w3school.com.cn/i/" />
+<base target="_blank" />
+</head>
+<body>
+<img src="eg_smile.gif" />
+<p>请注意，我们已经为图像规定了一个相对地址。由于我们已经在 head 部分规定了一个基准 URL，浏览器将在如下地址寻找图片：</p>
+<a href="http://www.w3school.com.cn">W3School</a>
+<p>请注意，链接会在新窗口中打开，即使链接中没有 target="_blank" 属性。这是因为 base 元素的 target 属性已经被设置为 "_blank" 了。</p>
+</body>
+
+<base> 标签为页面上的所有链接规定默认的基准地址或默认基准目标。
+通常情况下，浏览器会从当前文档的 URL 中提取相应的元素来填写相对 URL 中的空白。
+使用 <base> 标签可以改变这一点。浏览器随后将不再使用当前文档的 URL，而使用指定的基本 URL 来解析所有的相对 URL。这其中包括 <a>、<img>、<link>、<form> 标签中的 URL。
+
+<bdo dir="rtl">Here is some text</bdo>
+bdo 元素可覆盖默认的文本方向。
+dir(ltr,rtl)定义文字的方向
+
+<big> 标签呈现大号字体效果。相反的，<small>标签呈现小号字体效果
+使用 <big> 标签可以很容易地放大字体。这简直不能再简单了：浏览器显示包含在 <big> 标签和其相应的 </big> 标签之间的文字时，其字体比周围的文字要大一号。但是，如果文字已经是最大号字体，这个 <big> 标签将不起任何作用。
+更妙的是，可以嵌套 <big> 标签来放大文本。每一个 <big> 标签都可以使字体大一号，直到上限 7 号文本，正如字体模型所定义的那样。
+
+
+
+<blockquote>
+Here is a long quotation here is a long quotation here is a long quotation 
+here is a long quotation here is a long quotation here is a long quotation 
+here is a long quotation here is a long quotation here is a long quotation.
+</blockquote>
+所有主流的浏览器均支持 <blockquote> 标签。
+注释：没有浏览器能够正确地显示 cite 属性。
+<blockquote> 标签定义块引用。
+<blockquote> 与 </blockquote> 之间的所有文本都会从常规文本中分离出来，经常会在左、右两边进行缩进（增加外边距），而且有时会使用斜体。也就是说，块引用拥有它们自己的空间。
+提示：请使用 q 元素来标记短的引用。
+注释：如需把页面作为 strict XHTML 进行验证，那么 <blockquote> 元素必须包含块级元素，比如这样：
+<blockquote>
+<p>here is a long quotation here is a long quotation</p>
+</blockquote>
+cite(URL)规定引用的来源
+
+<br> 没有结束符，表示换行符
+<hr> 定义水平线
+
+<button type="button">Click Me!</button>
+所有主流浏览器都支持 <button> 标签。
+重要事项：如果在 HTML 表单中使用 button 元素，不同的浏览器会提交不同的值。IE 将提交 <button> 与 <button/> 之间的文本，而其他浏览器将提交 value 属性的内容。请在 HTML 表单中使用 input 元素来创建按钮。
+
+在 button 元素内部，您可以放置内容，比如文本或图像。这是该元素与使用 input 元素创建的按钮之间的不同之处。
+<button> 控件 与 <input type="button"> 相比，提供了更为强大的功能和更丰富的内容。<button> 与 </button> 标签之间的所有内容都是按钮的内容，其中包括任何可接受的正文内容，比如文本或多媒体内容。例如，我们可以在按钮中包括一个图像和相关的文本，用它们在按钮中创建一个吸引人的标记图像。
+唯一禁止使用的元素是图像映射，因为它对鼠标和键盘敏感的动作会干扰表单按钮的行为。
+请始终为按钮规定 type 属性。Internet Explorer 的默认类型是 "button"，而其他浏览器中（包括 W3C 规范）的默认值是 "submit"。
+autofocus(autofocus)规定当页面加载时按钮应当自动地获得焦点。
+<button type="button" disabled="disabled">Click Me!</button>
+disabled(disabled)规定应该禁用该按钮。
+<button type="submit" form="nameform" value="Submit">提交</button>
+form(form_name)规定按钮属于一个或多个表单。form 属性的值必须是按钮所属表单的 id。如需引用一个以上的表单，请使用空格分隔的列表。
+<form action="demo_form.asp" method="get">
+First name: <input type="text" name="fname" />
+Last name: <input type="text" name="lname" />
+<button type="submit">提交</button><br />
+<button type="submit" formaction="demo_admin.asp">以管理员身份提交</button>
+</form>
+formaction(url)覆盖 form 元素的 action 属性。注释：该属性与 type="submit" 配合使用。
+formenctype(
+1. application/x-www-form-urlencoded,在发送前对所有字符进行编码（默认）。
+2. multipart/form-data,不对字符编码。当使用有文件上传控件的表单时，该值是必需的。
+3. text/plain)将空格转换为 "+" 符号，但不编码特殊字符。
+覆盖 form 元素的 enctype 属性。注释：该属性与 type="submit" 配合使用。
+formmethod(get,post)覆盖 form 元素的 method 属性。注释：该属性与 type="submit" 配合使用。
+formnovalidate(formnovalidate)覆盖 form 元素的 novalidate 属性。如果使用该属性，则提交表单时按钮不会执行验证过程。注释：该属性与 type="submit" 配合使用。
+formtarget(_blank,_self,_parent,_top,
+framename在指定的框架中将表单提交到文档。)覆盖 form 元素的 target 属性。
+注释：该属性与 type="submit" 配合使用。
+name(button_name)规定按钮的名称。
+type(button,该按钮是可点击的按钮（IE 的默认值）。
+reset,该按钮是重置按钮（清除表单数据）。
+submit该按钮是提交按钮（除了IE，该值是其他浏览器的默认值）。
+)规定按钮的类型。
+value(text)规定按钮的初始值。可由脚本进行修改。规定要发送的值。
+
+
+<canvas id="myCanvas"></canvas>
+<script type="text/javascript">
+var canvas=document.getElementById('myCanvas');
+var ctx=canvas.getContext('2d');
+ctx.fillStyle='#FF0000';
+ctx.fillRect(0,0,80,100);
+</script>
+<canvas> 标签定义图形，比如图表和其他图像。
+<canvas> 标签只是图形容器，您必须使用脚本来绘制图形。
+height(pixels,规定以像素计的 canvas 高度（比如 "100px" 或仅仅是 "100"）。默认是 "150"。)设置 canvas 的高度。
+width(pixels)设置 canvas 的宽度。
+<canvas id="myCanvas" width="200" height="200" style="border:1px solid">
+提示：每当画布的高度或宽度被重设时，画布内容就会被清空
+
+
+<cite> 标签通常表示它所包含的文本对某个参考文献的引用，比如书籍或者杂志的标题。
+按照惯例，引用的文本将以斜体显示。
+用 <cite> 标签把指向其他文档的引用分离出来，尤其是分离那些传统媒体中的文档，如书籍、杂志、期刊，等等。如果引用的这些文档有联机版本，还应该把引用包括在一个 <a> 标签中，从而把一个超链接指向该联机版本。
+<cite> 标签还有一个隐藏的功能：它可以使你或者其他人从文档中自动摘录参考书目。我们可以很容易地想象一个浏览器，它能够自动整理引用表格，并把它们作为脚注或者独立的文档来显示。<cite> 标签的语义已经远远超过了改变它所包含的文本外观的作用；它使浏览器能够以各种实用的方式来向用户表达文档的内容。
+
+两个 colgroup 元素为表格中的三列规定了不同的对齐方式和样式（注意第一个 colgroup 元素横跨两列）：
+<table width="100%" border="1">
+<colgroup span="2" align="left"></colgroup>
+<colgroup align="right" style="color:#0000FF;"></colgroup>
+<tr>
+<th>ISBN</th>
+<th>Title</th>
+<th>Price</th>
+</tr>
+<tr>
+<td>3476896</td>
+<td>My first HTML</td>
+<td>$53</td>
+</tr>
+</table>
+Firefox、Chrome 以及 Safari 仅支持 colgroup 元素的 span 和 width 属性。
+span	number	规定列组应该横跨的列数。
+width   (pixels,%,relative_length)规定列组合的宽度。
+
+<body>
+<p>一打有 <del>二十</del> <ins>十二</ins> 件。</p>
+<p>大多数浏览器会改写为删除文本和下划线文本。</p>
+<p>一些老式的浏览器会把删除文本和下划线文本显示为普通文本。</p>
+</body>
+<del>定义文档中已被删除的文本。
+注释：请与 <ins> 标签配合使用，来描述文档中的更新和修正。
+cite	URL	指向另外一个文档的 URL，此文档可解释文本被删除的原因。
+datetime	YYYYMMDD	定义文本被删除的日期和时间。
+
+<dir>
+<li>HTML</li>
+<li>XHTML</li>
+<li>CSS</li>
+</dir>
+<dir>标签定义目录列表。提示：请使用 CSS 来为列表添加样式！
+
+<body>
+<embed src="/i/helloworld.swf" />
+</body>
+<embed> 标签定义嵌入的内容，比如插件。
+height	pixels	设置嵌入内容的高度。
+src		url		嵌入内容的 URL。
+type	type	定义嵌入内容的类型。
+width	pixels	设置嵌入内容的宽度。
+
+<form>
+<fieldset>
+<legend>health information</legend>
+height: <input type="text" />
+weight: <input type="text" />
+</fieldset>
+</form>
+fieldset 元素可将表单内的相关元素分组。
+<fieldset> 标签将表单内容的一部分打包，生成一组相关表单的字段。
+当一组表单元素放到 <fieldset> 标签内时，浏览器会以特殊方式来显示它们，它们可能有特殊的边界、3D 效果，或者甚至可创建一个子表单来处理这些元素。
+<fieldset> 标签没有必需的或唯一的属性。
+<legend> 标签为 fieldset 元素定义标题。
+
+用做文档中插图的图像，带有一个标题：：
+<figure>
+<figcaption>黄浦江上的的卢浦大桥</figcaption>
+<img src="shanghai_lupu_bridge.jpg" width="350" height="234" />
+</figure>
+<figcaption> 标签定义 figure 元素的标题（caption）。
+"figcaption" 元素应该被置于 "figure" 元素的第一个或最后一个子元素的位置。
+
+用作文档中插图的图像：
+<figure>
+<p>黄浦江上的的卢浦大桥</p>
+<img src="shanghai_lupu_bridge.jpg" width="350" height="234" />
+</figure>
+<figure> 标签规定独立的流内容（图像、图表、照片、代码等等）。
+figure 元素的内容应该与主内容相关，但如果被删除，则不应对文档流产生影响。
+
+文档中的页脚部分：
+<footer>
+<p>Posted by: W3School</p>
+<p>Contact information: <a href="mailto:someone@example.com">someone@example.com</a>.</p>
+</footer>
+<footer> 标签定义文档或节的页脚。
+<footer> 元素应当含有其包含元素的信息。
+页脚通常包含文档的作者、版权信息、使用条款链接、联系信息等等。
+您可以在一个文档中使用多个 <footer> 元素。
+
+<frameset cols="25%,75%">
+<frame src="page1.htm">
+<frame src="page2.htm">
+</frameset>
+cols定义垂直框架
+<frameset rows="25%,50%,25%">
+<frame src="/example/html/frame_a.html">
+<frame src="/example/html/frame_b.html">
+<frame src="/example/html/frame_c.html">
+</frameset>
+rows定义水平框架
+<noframes>//不支持框架时的显示内容
+<body>您的浏览器无法处理框架！</body>
+</noframes>
+重要提示：不能将 <body></body> 标签与 <frameset></frameset> 标签同时使用！不过，假如你添加包含一段文本的 <noframes> 标签，就必须将这段文字嵌套于 <body></body> 标签内。如上例所示。
+
+<frameset rows="50%,50%">
+<frame src="/example/html/frame_a.html">
+<frameset cols="25%,75%">
+<frame src="/example/html/frame_b.html">
+<frame src="/example/html/frame_c.html">
+</frameset>
+</frameset>
+混合框架
+
+<frameset cols="50%,*,25%">
+<frame src="/example/html/frame_a.html" noresize="noresize" />
+<frame src="/example/html/frame_b.html" />
+<frame src="/example/html/frame_c.html" />
+</frameset>
+第一个框架的，noresize 属性。设置框架不可调整尺寸。在框架间的边框上拖动鼠标，你会发现边框是无法移动的。
+
+<body>
+<iframe src="/i/eg_landscape.jpg"></iframe>
+<p>一些老的浏览器不支持 iframe。</p>
+<p>如果得不到支持，iframe 是不可见的。</p>
+</body>
+<iframe>内联框架
+
+
+
+<form action="form_action.asp" method="get">
+<p>First name: <input type="text" name="fname" /></p>
+<p>Last name: <input type="text" name="lname" /></p>
+<input type="submit" value="Submit" />
+</form>
+<form> 标签用于为用户输入创建 HTML 表单。
+表单能够包含 input 元素，比如文本字段、复选框、单选框、提交按钮等等。
+表单还可以包含 menus、textarea、fieldset、legend 和 label 元素。
+表单用于向服务器传输数据。
+注释：form 元素是块级元素，其前后会产生折行。
+
+<form>
+我喜欢自行车：
+<input type="checkbox" name="Bike">
+<br />
+我喜欢汽车：
+<input type="checkbox" name="Car">
+</form>
+复选框；可以选中或取消选取复选框。
+<input>标签
+-1. accept 	mime_type 	规定通过文件上传来提交的文件的类型。
+在文件上传中使用 accept 属性，本例中的输入字段可以接受 GIF 和 JPEG 两种图像：
+<form>
+  <input type="file" name="pic" id="pic" accept="image/gif, image/jpeg" />
+</form>
+如果不限制图像的格式，可以写为：accept="image/*"。
+accept 属性只能与 <input type="file"> 配合使用。它规定能够通过文件上传进行提交的文件类型。
+提示：请避免使用该属性。应该在服务器端验证文件上传。
+
+-2. align(left,right,top,middle,bottom)不赞成使用。规定图像输入的对齐方式。
+<p>图像 <img src="/i/eg_cute.gif" align="bottom"> 在文本中</p> 默认
+<p>图像 <img src ="/i/eg_cute.gif" align="middle"> 在文本中</p>
+<p>图像 <img src ="/i/eg_cute.gif" align="top"> 在文本中</p>
+
+-3. alt(text)定义图像输入的替代文本。
+alt 属性只能与 <input type="image"> 配合使用。它为图像输入规定替代文本。
+alt 属性为用户由于某些原因无法查看图像时提供了备选的信息。
+注释：即使 alt 属性不是必需的属性，但是当输入类型为 image 时，仍然应该设置该属性。如果不使用该属性，就有可能对文本浏览器或非可视的浏览器造成使用障碍。
+-4. autocomplete(on,默认启动自动完成功能
+off	禁用自动完成功能
+)规定是否使用输入字段的自动完成功能。
+-5. autofocus(autofocus)规定输入字段在页面加载时是否获得焦点。（不适用于 type="hidden"）
+-6. checked(checked)规定此 input 元素首次加载时应当被选中。
+checked 属性 与 <input type="checkbox"> 或 <input type="radio"> 配合使用。
+checked 属性也可以在页面加载后，通过 JavaScript 代码进行设置。
+-7. disabled(disabled)当 input 元素加载时禁用此元素。
+-8. form 	formname 	规定输入字段所属的一个或多个表单。
+form 属性规定 input 元素所属的一个或多个表单。
+form 属性的值必须是其所属表单的 id。
+如需引用一个以上的表单，请使用空格分隔的列表。
+------
+<form action="/example/html5/demo_form.asp" method="get" id="form1">
+First name: <input type="text" name="fname" /><br />
+<input type="submit" value="提交" />
+</form>
+<p>下面的 "Last name" 字段位于 form 元素之外，但仍然是表单的一部分。</p>
+Last name: <input type="text" name="lname" form="form1" />
+------
+-9. formaction 	URL 覆盖表单的 action 属性。（适用于 type="submit" 和 type="image"）
+formaction 属性覆盖 form 元素的 action 属性。
+该属性适用于 type="submit" 以及 type="image"。
+-------
+带有两个提交按钮的表单（不同的 action 值）：
+<form action="demo_form.asp" method="get">
+  First name: <input type="text" name="fname" /><br />
+  Last name: <input type="text" name="lname" /><br />
+  <input type="submit" value="Submit" /><br />
+  <input type="submit" formaction="demo_admin.asp" value="Submit as admin" />
+</form>
+-------
+-10. formenctype
+覆盖form元素的 enctype 属性。（适用于 type="submit" 和 type="image"）
+application/x-www-form-urlencoded 	在发送前对所有字符进行编码（默认）。
+multipart/form-data 	不对字符编码。当使用有文件上传控件的表单时，该值是必需的。
+text/plain 	将空格转换为 "+" 符号，但不编码特殊字符。
+-11. formmethod(get,post)覆盖表单的 method 属性。（适用于 type="submit" 和 type="image"）
+-12. formnovalidate 	formnovalidate 	覆盖表单的 novalidate 属性。如果使用该属性，则提交表单时不进行验证。
+-13. formtarget(_blank,_self,_parent,_top,framename)覆盖表单的 target 属性。（适用于 type="submit" 和 type="image"）
+-14. height(pixels,%)定义 input 字段的高度。（适用于 type="image"）
+-15. list 	datalist-id 	引用数据列表包含输入字段的预定义选项的 datalist 。
+<form action="/example/html5/demo_form.asp">
+网页：<input type="url" list="url_list" name="link" />
+<datalist id="url_list">
+	<option label="W3School" value="http://www.w3school.com.cn" />
+	<option label="Google" value="http://www.google.com" />
+	<option label="Microsoft" value="http://www.microsoft.com" />
+</datalist>
+<input type="submit" />
+</form>
+
+-16. max(number,date)规定输入字段的最大值。
+请与 "min" 属性配合使用，来创建合法值的范围。
+-17. maxlength 	number 	规定输入字段中的字符的最大长度。
+-18. min(number,date)规定输入字段的最小值。
+请与 "max" 属性配合使用，来创建合法值的范围。
+<form action="/example/html5/demo_form.asp" method="get">
+Points: <input type="number" name="points" min="0" max="10" />
+<input type="submit" />
+</form>
+-19. multiple(multiple)如果使用该属性，则允许一个以上的值。
+<form action="/example/html5/demo_form.asp" method="get">
+选择图片：<input type="file" name="img" multiple="multiple" />
+<input type="submit" />
+</form>
+//可选择一个以上的文件
+-20. name(field_name)定义 input 元素的名称。
+注释：只有设置了 name 属性的表单元素才能在提交表单时传递它们的值。
+-21. pattern(regexp_pattern)规定输入字段的值的模式或格式。例如 pattern="[0-9]" 表示输入值必须是 0 与 9 之间的数字。
+注释：pattern 属性适用于以下 <input> 类型：text, search, url, telephone, email 以及 password 。
+<form action="/example/html5/demo_form.asp" method="get">
+国家代码：<input type="text" name="country_code" pattern="[A-z]{3}"
+title="三个字母的国家代码" />//title属性用于描述模式。
+<input type="submit" />
+</form>
+-22. placeholder(text)属性提供可描述输入字段预期值的提示信息（hint）。
+该提示会在输入字段为空时显示，并会在字段获得焦点时消失。
+注释：placeholder 属性适用于以下的 <input> 类型：text, search, url, telephone, email 以及 password。
+-23. readonly(readonly)规定输入字段为只读。
+只读字段是不能修改的。不过，用户仍然可以使用 tab 键切换到该字段，还可以选中或拷贝其文本。
+readonly 属性可以防止用户对值进行修改，直到满足某些条件为止（比如选中了一个复选框）。然后，需要使用 JavaScript 消除 readonly 值，将输入字段切换到可编辑状态。
+readonly 属性可与 <input type="text"> 或 <input type="password"> 配合使用。
+-24. required(required)属性规定必需在提交之前填写输入字段。
+如果使用该属性，则字段是必填（或必选）的。
+注释：required 属性适用于以下 <input> 类型：text, search, url, telephone, email, password, date pickers, number, checkbox, radio 以及 file。
+-25. size(number_of_char)定义输入字段的宽度。
+对于 <input type="text"> 和 <input type="password">，size 属性定义的是可见的字符数。而对于其他类型，size 属性定义的是以像素为单位的输入字段宽度。
+由于 size 属性是一个可视化的设计属性，我们推荐您使用 CSS 来代替它。
+CSS 语法：<input style="width:100px" />
+-26. src(URL)定义以提交按钮形式显示的图像的 URL。
+src 属性只能与 <input type="image"> 配合使用。它规定作为提交按钮显示的图像的 URL。
+src 属性必须与 <input type="image"> 同时使用。
+注释：如果 type 属性设置为 image，当用户单击图像时，浏览器将以像素为单位，将鼠标相对于图像边界的偏移量发送到服务器，其中包括从图像左边界开始的水平偏移量，以及从图像上边界开始的垂直偏移量。
+-27. step(number)规定输入字的的合法数字间隔。
+step 属性规定输入字段的合法数字间隔（假如 step="3"，则合法数字应该是 -3、0、3、6，以此类推）。
+提示：step 属性可以与 max 以及 min 属性配合使用，以创建合法值的范围。
+注释：step、max 以及 min 属性适用于以下 <input> 类型：number, range, date, datetime, datetime-local, month, time 以及 week。
+-28. type(button,定义可点击按钮（多数情况下，用于通过 JavaScript 启动脚本）。
+	checkbox,定义复选框。
+	file,定义输入字段和 "浏览"按钮，供文件上传。
+	hidden,定义隐藏的输入字段。
+	image,定义图像形式的提交按钮。
+	password,定义密码字段。该字段中的字符被掩码。
+    radio,定义单选按钮。
+    reset,定义重置按钮。重置按钮会清除表单中的所有数据。
+    submit,定义提交按钮。提交按钮会把表单数据发送到服务器。
+    text 定义单行的输入字段，用户可在其中输入文本。默认宽度为 20 个字符。
+)规定 input 元素的类型。
+----
+<script type="text/javascript">
+  function msg()
+  {
+  alert("Hello world!");
+  }
+</script>
+<form>
+<input type="button" value="Click me" onclick="msg()" />
+</form>
+----
+<input type="image" src="/i/eg_submit.jpg" alt="Submit" />
+<input type="image" /> 定义图像形式的提交按钮。
+必须把 src 属性 和 alt 属性 与 <input type="image"> 结合使用。
+----
+<input type="submit" /> 定义提交按钮。提交按钮用于向服务器发送表单数据。数据会发送到表单的 action 属性中指定的页面。
+-29. value   value 	规定 input 元素的值。
+对于不同的输入类型，value 属性的用法也不同：
+    type="button", "reset", "submit" - 定义按钮上的显示的文本
+    type="text", "password", "hidden" - 定义输入字段的初始值
+    type="checkbox", "radio", "image" - 定义与输入相关联的值，value为点击后提交的值。
+注释：<input type="checkbox"> 和 <input type="radio"> 中必须设置 value 属性。
+注释：value 属性无法与 <input type="file"> 一同使用。
+-30. width  pixels/%  定义 input 字段的宽度。（适用于 type="image"）
+width 属性只适用于 <input type="image">，它规定 image input 的宽度。
+提示：为图片指定高度和宽度是一个好习惯。如果设置了这些属性，当页面加载时会为图片预留需要的空间。而如果没有这些属性，则浏览器就无法了解图像的尺寸，也就无法为其预留合适的空间。情况是当页面和图片加载时，页面布局会发生变化。
+<input type="image" src="img_submit.gif" alt="Submit" width="128" height="128"/>
+通过改变 img 标签的 "height" 和 "width" 属性的值，您可以放大或缩小图像。
+
+<i> 标签显示斜体文本效果。
+<i> 标签和基于内容的样式标签 <em> 类似。它告诉浏览器将包含其中的文本以斜体字（italic）或者倾斜（oblique）字体显示。如果这种斜体字对该浏览器不可用的话，可以使用高亮、反白或加下划线等样式。
+提示：<i> 标签一定要和结束标签 </i> 结合起来使用。
+
+<p>请点击文本标记之一，就可以触发相关控件：</p>
+<form>
+<label for="male">Male</label>
+<input type="radio" name="sex" id="male" />
+<br />
+<label for="female">Female</label>
+<input type="radio" name="sex" id="female" />
+</form>
+<label> 标签为 input 元素定义标注（标记）。
+label 元素不会向用户呈现任何特殊效果。不过，它为鼠标用户改进了可用性。如果您在 label 元素内点击文本，就会触发此控件。就是说，当用户选择该标签时，浏览器就会自动将焦点转到和标签相关的表单控件上。
+<label> 标签的 for 属性应当与相关元素的 id 属性相同。
+注释："for" 属性可把 label 绑定到另外一个元素。请把 "for" 属性的值设置为相关元素的 id 属性的值。
+for	id	规定 label 绑定到哪个表单元素。
+form	formid	规定 label 字段所属的一个或多个表单。
+
+
+<h2>一个定义列表：</h2>
+<dl>
+   <dt>计算机</dt>
+   <dd>用来计算的仪器 ... ...</dd>
+   <dt>显示器</dt>
+   <dd>以视觉方式显示信息的装置 ... ...</dd>
+</dl>
+
+<ol>
+   <li>Coffee</li>
+   <li>Tea</li>
+   <li>Milk</li>
+</ol>
+<ol start="50">
+  <li>咖啡</li>
+  <li>牛奶</li>
+  <li>茶</li>
+</ol>
+<ul>
+   <li>Coffee</li>
+   <li>Tea</li>
+   <li>Milk</li>
+</ul>
+<li> 标签定义列表项目。
+<li> 标签可用在有序列表 (<ol>) 和无序列表 (<ul>) 中。
+
+<ul type = "disc">type 属性规定列表的项目符号的类型。
+disc 默认值。实心圆
+circle 空心圆
+square 实心方块
+
+<ol type="value">
+1 	默认值。数字有序列表。（1、2、3、4）
+a 	按字母顺序排列的有序列表，小写。（a、b、c、d）
+A 	按字母顺序排列的有序列表，大写。（A、B、C、D）
+i 	罗马字母，小写。（i, ii, iii, iv）
+I 	罗马字母，大写。（I, II, III, IV）
+
+<h4>一个嵌套列表：</h4>
+<ul>
+  <li>咖啡</li>
+  <li>茶
+    <ul>
+    <li>红茶</li>
+    <li>绿茶</li>
+    </ul>
+  </li>
+  <li>牛奶</li>
+</ul>
+
+
+
+<main>
+  <h1>Web Browsers</h1>
+  <p>Google Chrome、Firefox 以及 Internet Explorer 是目前最流行的浏览器。</p>
+
+<article>
+   <h1>Google Chrome</h1>
+   <p>Google Chrome 是由 Google 开发的一款免费的开源 web 浏览器，于 2008 年发布。</p>
+</article>
+
+<article>
+   <h1>Internet Explorer</h1>
+   <p>Internet Explorer 由微软开发的一款免费的 web 浏览器，发布于 1995 年。</p>
+ </article>
+</main> 
+
+<main> 标签规定文档的主要内容。
+<main> 元素中的内容对于文档来说应当是唯一的。它不应包含在文档中重复出现的内容，比如侧栏、导航栏、版权信息、站点标志或搜索表单。
+注释：在一个文档中，不能出现一个以上的 <main> 元素。<main> 元素不能是以下元素的后代：<article>、<aside>、<footer>、<header> 或 <nav>。
+
+突出显示部分文本：
+<p>Do not forget to buy <mark>milk</mark> today.</p>
+<mark> 标签定义带有记号的文本。请在需要突出显示文本时使用 <m> 标签。
+
+<p>显示度量值：</p>
+<meter value="3" min="0" max="10">3/10</meter><br>
+<meter value="0.6">60%</meter>
+<meter> 标签定义已知范围或分数值内的标量测量。也被称为 gauge（尺度）。
+例子：磁盘用量、查询结果的相关性，等等。
+注释：<meter> 标签不应用于指示进度（在进度条中）。如果标记进度条，请使用 <progress> 标签。
+form	form_id	规定 <meter> 元素所属的一个或多个表单。
+high	number	规定被视作高的值的范围。
+low	number	规定被视作低的值的范围。
+max	number	规定范围的最大值。
+min	number	规定范围的最小值。
+optimum	number	规定度量的优化值。
+value	number	必需。规定度量的当前值
+
+<nav>
+<a href="index.asp">Home</a>
+<a href="html5_meter.asp">Previous</a>
+<a href="html5_noscript.asp">Next</a>
+</nav>
+<nav> 标签定义导航链接的部分。
+
+<select>//下拉列表
+  <optgroup label="Swedish Cars">
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+  </optgroup>
+  <optgroup label="German Cars">
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </optgroup>
+</select>
+<optgroup> 标签定义选项组。
+optgroup 元素用于组合选项。当您使用一个长的选项列表时，对相关的选项进行组合会使处理更加容易。
+
+<select>
+  <option value ="volvo">Volvo</option>
+  <option value ="saab">Saab</option>
+  <option value="opel">Opel</option>
+  <option value="audi">Audi</option>
+</select>
+option 元素定义下拉列表中的一个选项（一个条目）。
+浏览器将 <option> 标签中的内容作为 <select> 标签的菜单或是滚动列表中的一个元素显示。
+option 元素位于 select 元素内部。
+注释：<option> 标签可以在不带有任何属性的情况下使用，但是您通常需要使用 value 属性，此属性会指示出被送往服务器的内容。
+注释：请与 select 元素配合使用此标签，否则这个标签是没有意义的。
+提示：如果列表选项很多，可以使用 <optgroup> 标签对相关选项进行组合。
+
+<form>
+<select name="cars">
+<option value="volvo">Volvo</option>
+<option value="saab">Saab</option>
+<option value="fiat" selected="selected">Fiat</option>//selected属性定义与选值
+<option value="audi">Audi</option>
+</select>
+</form>
+<select> 元素可创建单选或多选菜单。
+提示：select 元素是一种表单控件，可用于在表单中接受用户输入。
+autofocus	autofocus	规定在页面加载后文本区域自动获得焦点。
+disabled	disabled	规定禁用该下拉列表。
+form	form_id	规定文本区域所属的一个或多个表单。
+multiple	multiple	规定可选择多个选项。
+name	name	规定下拉列表的名称。
+required	required	规定文本区域是必填的。
+size	number	规定下拉列表中可见选项的数目。
+
+<form oninput="x.value=parseInt(a.value)+parseInt(b.value)">0
+<input type="range" id="a" value="50">100
++<input type="number" id="b" value="50">
+=<output name="x" for="a b"></output>
+</form>
+<p><b>注释：</b>Internet Explorer 不支持 <output> 标签。</p>
+<output> 标签定义不同类型的输出，比如脚本的输出。
+
+pre 元素可定义预格式化的文本。被包围在 pre 元素中的文本通常会保留空格和换行符。而文本也会呈现为等宽字体。
+<pre> 标签的一个常见应用就是用来表示计算机的源代码。
+可以导致段落断开的标签（例如标题、<p> 和 <address> 标签）绝不能包含在 <pre> 所定义的块里。尽管有些浏览器会把段落结束标签解释为简单地换行，但是这种行为在所有浏览器上并不都是一样的。
+pre 元素中允许的文本可以包括物理样式和基于内容的样式变化，还有链接、图像和水平分隔线。当把其他标签（比如 <a> 标签）放到 <pre> 块中时，就像放在 HTML/XHTML 文档的其他部分中一样即可。请看下面的例子：
+提示：制表符（tab）在 <pre> 标签定义的块当中可以起到应有的作用，每个制表符占据 8 个字符的位置。但是我们不推荐使用它，因为在不同的浏览器中，Tab 的实现各不相同。在用 <pre> 标签格式化的文档段中使用空格，可以确保文本正确的水平位置。
+提示：如果您希望使用 <pre> 标签来定义计算机源代码，比如 HTML 源代码，请使用符号实体来表示特殊字符，比如 "&lt;" 代表 "<"，"&gt;" 代表 ">"，"&amp;" 代表 "&"。
+提示：在 W3School 中，非常多页面中的源代码实例都是通过 <pre> 标签定义的，您可以参考这些页面，学习如何使用该标签。我们甚至把 <pre> 标签与 <code> 标签结合起来使用，以获得更加精确的语义。
+
+下载进度：
+<progress value="22" max="100">	</progress>
+<progress> 标签标示任务的进度（进程）。
+提示：请结合 <progress> 标签与 JavaScript 一同使用，来显示任务的进度。
+注释：<progress> 标签不适合用来表示度量衡（例如，磁盘空间使用情况或查询结果）。如需表示度量衡，请使用 <meter> 标签代替。
+
+标记短的引用：
+<q>Here is a short quotation here is a short quotation</q>
+<q> 标签定义短的引用。
+浏览器经常在引用的内容周围添加引号。
+<body>
+
+这是长的引用：
+<blockquote>
+这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。这是长的引用。
+</blockquote>
+这是短的引用：
+<q>
+这是短的引用。
+</q>
+<p>
+使用 blockquote 元素的话，浏览器会插入换行和外边距，而 q 元素不会有任何特殊的呈现。
+</p>
+</body>
+
+<ruby>
+漢 <rt><rp>(</rp>ㄏㄢˋ<rp>)</rp></rt>
+</ruby>
+<rp> 标签在 ruby 注释中使用，以定义不支持 ruby 元素的浏览器所显示的内容。
+ruby 注释是中文注音或字符。
+在东亚使用，显示的是东亚字符的发音。
+与 <ruby> 以及 <rt> 标签一同使用：
+ruby 元素由一个或多个字符（需要一个解释/发音）和一个提供该信息的 rt 元素组成，还包括可选的 rp 元素，定义当浏览器不支持 "ruby" 元素时显示的内容。
+提示：支持 "ruby" 元素的浏览器不会显示 "rp" 元素的内容。
+
+<ruby>
+漢 <rt> ㄏㄢˋ </rt>
+</ruby>
+<rt> 标签定义字符（中文注音或字符）的解释或发音。
+ruby 注释是中文注音或字符。
+在东亚使用，显示的是东亚字符的发音。
+与 <ruby> 以及 <rt> 标签一同使用：
+ruby 元素由一个或多个字符（需要一个解释/发音）和一个提供该信息的 rt 元素组成，还包括可选的 rp 元素，定义当浏览器不支持 "ruby" 元素时显示的内容。
+
+<script type="text/javascript">
+document.write("Hello World!")
+</script>
+<script> 标签用于定义客户端脚本，比如 JavaScript。
+script 元素既可以包含脚本语句，也可以通过 src 属性指向外部脚本文件。
+必需的 type 属性规定脚本的 MIME 类型。
+JavaScript 的常见应用时图像操作、表单验证以及动态内容更新。
+注释：假如此元素内部的代码没有位于某个函数中，那么这些代码会在页面被加载时被立即执行。<frameset> 标签之后的脚本会被忽略。
+提示：请参阅 noscript 元素；对于那些在浏览器中禁用脚本或者其浏览器不支持客户端脚本的用户来说，该元素非常有用。
+
+<body>
+  ...
+  ...
+  <script type="text/javascript">
+    <!--
+    document.write("Hello World!")
+    //-->
+  </script>
+  <noscript>Your browser does not support JavaScript!</noscript>
+  ...
+  ...
+</body>
+noscript 元素用来定义在脚本未被执行时的替代内容（文本）。
+此标签可被用于可识别 <script> 标签但无法支持其中的脚本的浏览器。
+注释：如果浏览器支持脚本，那么它不会显示出 noscript 元素中的文本。
+注释：无法识别 <script> 标签的浏览器会把标签的内容显示到页面上。为了避免浏览器这样做，您应当在注释标签中隐藏脚本。老式的（无法识别 <script> 标签的）浏览器会忽略注释，这样就不会把标签的内容写到页面上，而新式的浏览器则懂得执行这些脚本，即使它们被包围在注释标签中！
+
+<section>
+  <h1>PRC</h1>
+  <p>The People's Republic of China was born in 1949...</p>
+</section>
+<section> 标签定义文档中的节（section、区段）。比如章节、页眉、页脚或文档中的其他部分。
+
+<p><span>some text.</span>some other text.</p>
+提示：请使用 <span> 来组合行内元素，以便通过样式来格式化它们。
+注释：span 没有固定的格式表现。当对它应用样式时，它才会产生视觉上的变化。
+如果不对 span 应用样式，那么 span 元素中的文本与其他文本不会任何视觉上的差异。尽管如此，上例中的 span 元素仍然为 p 元素增加了额外的结构。
+可以为 span 应用 id 或 class 属性，这样既可以增加适当的语义，又便于对 span 应用样式。
+可以对同一个 <span> 元素应用 class 或 id 属性，但是更常见的情况是只应用其中一种。这两者的主要差异是，class 用于元素组（类似的元素，或者可以理解为某一类元素），而 id 用于标识单独的唯一的元素。
+提示：事实上，您也许已经注意到了，W3School 站点上有一些文本的样式与其他文本是不同的。比如“提示”使用了粗体的橘红色。尽管实现这种效果的方法非常多，但是我们的做法是：使用“提示”使用 span 元素，然后对这个 span 元素的父元素，即 p 元素应用 class，这样就可以对这个类的子元素 span 应用相应的样式了。
+
+<head>
+<style type="text/css">
+h1 {color:red}
+p {color:blue}
+</style>
+</head>
+<style> 标签用于为 HTML 文档定义样式信息。
+在 style 中，您可以规定在浏览器中如何呈现 HTML 文档。
+type 属性是必需的，定义 style 元素的内容。唯一可能的值是 "text/css"。
+style 元素位于 head 部分中。
+提示：如需链接外部样式表，请使用 <link> 标签。
+
+<p>
+This text contains <sub>subscript</sub>
+</p>
+<sub> 标签可定义下标文本。
+包含在 <sub> 标签和其结束标签 </sub> 中的内容将会以当前文本流中字符高度的一半来显示，但是与当前文本流中文字的字体和字号都是一样的。
+提示：无论是 <sub> 标签还是和它对应的 <sup> 标签，在数学等式、科学符号和化学公式中都非常有用。
+<p>
+This text contains <sup>superscript</sup>
+</p>
+<sup> 标签可定义上标文本。
+提示：这个标签在向文档添加脚注以及表示方程式中的指数值时非常有用。如果和 <a> 标签结合起来使用，就可以创建出很好的超链接脚注。
+
+<details>
+<summary>HTML 5</summary>
+This document teaches you everything you have to learn about HTML 5.
+</details>
+只有 Chrome 以及 Safari 6 支持 <summary> 标签。
+<summary> 标签包含 details 元素的标题，"details" 元素用于描述有关文档或文档片段的详细信息。
+提示：请与 <details> 标签一起使用。标题是可见的，当用户点击标题时会显示出详细信息。
+注释："summary" 元素应该是 "details" 元素的第一个子元素。
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>
+<table> 标签定义 HTML 表格。
+简单的 HTML 表格由 table 元素以及一个或多个 tr、th 或 td 元素组成。
+tr 元素定义表格行，th 元素定义表头，td 元素定义表格单元。
+更复杂的 HTML 表格也可能包括 caption、col、colgroup、thead、tfoot 以及 tbody 元素。
+border(pixels)规定表格边框的宽度。
+cellpadding(pixels,%)规定单元边沿与其内容之间的空白。
+cellspacing(pixels,%)规定单元格之间的空白。
+frame(void,不显示外侧边框。
+	above,显示上部的外侧边框。
+	below,显示下部的外侧边框。
+	hsides,显示上部和下部的外侧边框。
+	lhs,显示左边的外侧边框。
+	rhs,显示右边的外侧边框。
+	vsides,显示左边和右边的外侧边框。
+	box,在所有四个边上显示外侧边框。
+	border 在所有四个边上显示外侧边框。
+)规定外侧边框的哪个部分是可见的。从实用角度出发，最好不要规定 frame，而是使用 CSS 来添加边框样式。
+rules(none,groups,rows,cols,all)规定内侧边框的哪个部分是可见的。
+summary(text)规定表格的摘要。
+width(%,pixels)规定表格的宽度。
+bgcolor="red" 背景颜色
+background="/i/eg_bg_07.gif"背景图片
+
+<table border="1">
+<caption>Monthly savings</caption>
+<tr>
+<th>Month</th>
+<th>Savings</th>
+</tr>
+<tr>
+<td>January</td>
+<td>$100</td>
+</tr>
+</table>
+caption 元素定义表格标题。
+caption 标签必须紧随 table 标签之后。您只能对每个表格定义一个标题。通常这个标题会被居中于表格之上。
+
+<h4>横跨两列的单元格：</h4>
+<table border="1">
+<tr>
+  <th>姓名</th>
+  <th colspan="2">电话</th>
+</tr>
+<tr>
+  <td>Bill Gates</td>
+  <td>555 77 854</td>
+  <td>555 77 855</td>
+</tr>
+</table>
+
+<h4>横跨两行的单元格：</h4>
+<table border="1">
+<tr>
+  <th>姓名</th>
+  <td>Bill Gates</td>
+</tr>
+<tr>
+  <th rowspan="2">电话</th>
+  <td>555 77 854</td>
+</tr>
+<tr>
+  <td>555 77 855</td>
+</tr>
+</table>
+colspan = "2"横跨两列
+rowspan = "3"横跨仨行
+
+<textarea rows="3" cols="20">
+在w3school，你可以找到你所需要的所有的网站建设教程。
+</textarea>
+<textarea> 标签定义多行的文本输入控件。
+文本区中可容纳无限数量的文本，其中的文本的默认字体是等宽字体（通常是 Courier）。
+可以通过 cols 和 rows 属性来规定 textarea 的尺寸，不过更好的办法是使用 CSS 的 height 和 width 属性。
+注释：在文本输入区内的文本行间，用 "%OD%OA" （回车/换行）进行分隔。
+提示：可以通过 <textarea> 标签的 wrap 属性设置文本输入区内的换行模式。有关 wrap 属性的详细信息。
+autofocus(autofocus)规定在页面加载后文本区域自动获得焦点。
+cols(number)规定文本区内的可见宽度。
+disabled(disabled)规定禁用该文本区。
+form(form_id)规定文本区域所属的一个或多个表单。
+maxlength(number)规定文本区域的最大字符数。
+name(name_of_textarea)规定文本区的名称。
+placeholder(text)规定描述文本区域预期值的简短提示。
+readonly(readonly)规定文本区为只读。
+required(required)规定文本区域是必填的。
+rows(number)规定文本区内的可见行数。
+wrap(hard,soft)规定当在表单中提交时，文本区域中的文本如何换行。。
+注意：浏览器不允许 textarea 中存在另一个 textarea。
+
+当提交表单时，wrap="hard" 的文本区域中的文本会包含换行符（如果有换行符）：
+<textarea rows="2" cols="20" wrap="hard">
+ At W3School you will find free Web-building tutorials.
+</textarea> 
+soft 当在表单中提交时，textarea 中的文本不换行。默认值。
+hard 当在表单中提交时，textarea 中的文本换行（包含换行符）;当使用 "hard" 时，必须规定 cols 属性。
+
+<tfoot> 标签定义表格的页脚（脚注或表注）。该标签用于组合 HTML 表格中的表注内容。
+tfoot 元素应该与 thead 和 tbody 元素结合起来使用。
+thead 元素用于对 HTML 表格中的表头内容进行分组，而 tbody 元素用于对 HTML 表格中的主体内容进行分组。
+注释：如果您使用 thead、tfoot 以及 tbody 元素，您就必须使用全部的元素。它们的出现次序是：thead、tfoot、tbody，这样浏览器就可以在收到所有数据前呈现页脚了。您必须在 table 元素内部使用这些标签。
+提示：在默认情况下这些元素不会影响到表格的布局。不过，您可以使用 CSS 使这些元素改变表格的外观。
+详细描述
+thead、tfoot 以及 tbody 元素使您有能力对表格中的行进行分组。当您创建某个表格时，您也许希望拥有一个标题行，一些带有数据的行，以及位于底部的一个总计行。这种划分使浏览器有能力支持独立于表格标题和页脚的表格正文滚动。当长的表格被打印时，表格的表头和页脚可被打印在包含表格数据的每张页面上。
+
+<video width="320" height="240" controls="controls">
+  <source src="forrest_gump.mp4" type="video/mp4" />
+  <source src="forrest_gump.ogg" type="video/ogg" />
+  <track kind="subtitles" src="subs_chi.srt" srclang="zh" label="Chinese">
+  <track kind="subtitles" src="subs_eng.srt" srclang="en" label="English">
+您的浏览器不支持 video 标签。
+</video>
+<track> 标签为诸如 video 元素之类的媒介规定外部文本轨道。
+用于规定字幕文件或其他包含文本的文件，当媒介播放时，这些文件是可见的。
+
+<video> 标签定义视频，比如电影片段或其他视频流。
+提示：可以在开始标签和结束标签之间放置文本内容，这样老的浏览器就可以显示出不支持该标签的信息。
+
+一段带有 Word Break Opportunity 的文本：
+<p>
+如果想学习 AJAX，那么您必须熟悉 XML<wbr>Http<wbr>Request 对象。
+</p>
+Word Break Opportunity (<wbr>) 规定在文本中的何处适合添加换行符。
+提示：如果单词太长，或者您担心浏览器会在错误的位置换行，那么您可以使用 <wbr> 元素来添加 Word Break Opportunity（单词换行时机）。
+
+[HTML 头部元素]
+<head> 元素是所有头部元素的容器。<head> 内的元素可包含脚本，指示浏览器在何处可以找到样式表，提供元信息，等等。
+
+以下标签都可以添加到 head 部分：<title>、<base>、<link>、<meta>、<script> 以及 <style>。
+<head>
+    <title>XHTML Tag Reference</title>
+</head>
+<title> 元素可定义文档的标题。
+浏览器会以特殊的方式来使用标题，并且通常把它放置在浏览器窗口的标题栏或状态栏上。同样，当把文档加入用户的链接列表或者收藏夹或书签列表时，标题将成为该文档链接的默认名称。显示在搜索引擎结果中的页面标题。
+提示：<title> 标签是 <head> 标签中唯一要求包含的东西。
+
+<base> 标签为页面上的所有链接规定默认地址或默认目标（target）：
+<head>
+<base href="http://www.w3school.com.cn/images/" />
+<base target="_blank" />
+</head>
+
+<link> 标签定义文档与外部资源之间的关系。
+<link> 标签最常用于连接样式表：
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css" />
+</head>
+<link> 标签最常见的用途是链接样式表。
+注释：link 元素是空元素，它仅包含属性。
+注释：此元素只能存在于 head 部分，不过它可出现任何次数。
+
+<style> 标签用于为 HTML 文档定义样式信息。
+您可以在 style 元素内规定 HTML 元素在浏览器中呈现的样式：
+<head>
+<style type="text/css">
+body {background-color:yellow}
+p {color:blue}
+</style>
+</head>
+
+元数据（metadata）是关于数据的信息。
+<meta> 标签提供关于 HTML 文档的元数据。元数据不会显示在页面上，但是对于机器是可读的。
+典型的情况是，meta 元素被用于规定页面的描述、关键词、文档的作者、最后修改时间以及其他元数据。
+<meta> 标签始终位于 head 元素中。
+一些搜索引擎会利用 meta 元素的 name 和 content 属性来索引您的页面。
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta name="author" content="w3school.com.cn">//作者和编辑软件
+<meta name="description" content="HTML examples">
+<meta name="keywords" content="HTML, DHTML, CSS, XML, XHTML, JavaScript, VBScript">关键字
+<meta http-equiv="Refresh" content="5;url=http://www.w3school.com.cn" />重定向用户，网址已改变；设定跳转时间为5秒
+<p>
+对不起。我们已经搬家了。您的 URL 是 <a href="http://www.w3school.com.cn">http://www.w3school.com.cn</a>
+</p>
+<p>您将在 5 秒内被重定向到新的地址。</p>
+<p>如果超过 5 秒后您仍然看到本消息，请点击上面的链接。</p>
+
+<script> 标签用于定义客户端脚本，比如 JavaScript。
+
+
+[HTML5 全局属性]
+class 属性规定元素的类名（classname）。
+class 属性大多数时候用于指向样式表中的类（class）。不过，也可以利用它通过 JavaScript 来改变带有指定 class 的 HTML 元素。
+注释：class 属性不能在以下 HTML 元素中使用：base, head, html, meta, param, script, style 以及 title。
+提示：可以给 HTML 元素赋予多个 class，例如：<span class="left_menu important">。这么做可以把若干个 CSS 类合并到一个 HTML 元素。
+提示：类名不能以数字开头！只有 Internet Explorer 支持这种做法。
+
+style 属性的作用：
+提供了一种改变所有 HTML 元素的样式的通用方法。
+样式是 HTML 4 引入的，它是一种新的首选的改变 HTML 元素样式的方式。通过 HTML 样式，能够通过使用 style 属性直接将样式添加到 HTML 元素，或者间接地在独立的样式表中（CSS 文件）进行定义。
+在我们的 HTML 教程中，我们将使用 style 属性向您讲解 HTML 样式。
+<body style="background-color:yellow">style 属性淘汰了“旧的” bgcolor 属性。
+font-family、color 以及 font-size 属性分别定义元素中文本的字体系列、颜色和字体尺寸：
+<h1 style="font-family:verdana">A heading</h1>
+<p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+text-align 属性规定了元素中文本的水平对齐方式：
+<h1 style="text-align:center">This is a heading</h1>淘汰了旧的 "align" 属性。
+
+<p contenteditable="true">这是一个可编辑的段落。</p>
+contenteditable 属性规定元素内容是否可编辑。(true|false)
+注释：如果元素未设置 contenteditable 属性，那么元素会从其父元素继承该属性。
+
+一段方向从右向左的段落：
+<p dir="rtl">Write this text right-to-left!</p>
+dir 属性规定元素内容的文本方向。
+注释：dir 属性在以下标签中无效：<base>, <br>, <frame>, <frameset>, <hr>, <iframe>, <param> 以及 <script>。
+ltr	默认。从左向右的文本方向。
+
+------------------
+<head>
+<style type="text/css">
+#div1 {width:350px;height:70px;padding:10px;border:1px solid #aaaaaa;}
+</style>
+<script type="text/javascript">
+function allowDrop(ev)
+{
+	ev.preventDefault();
+}
+
+function drag(ev)
+{
+	ev.dataTransfer.setData("Text",ev.target.id);
+}
+
+function drop(ev)
+{
+	var data=ev.dataTransfer.getData("Text");
+	ev.target.appendChild(document.getElementById(data));
+	ev.preventDefault();
+}
+</script>
+</head>
+<body>
+
+<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<br />
+<p id="drag1" draggable="true" ondragstart="drag(event)">这是一段可移动的段落。请把该段落拖入上面的矩形。</p>
+
+</body>
+---------------
+draggable 属性规定元素是否可拖动。
+提示：链接和图像默认是可拖动的。
+提示：draggable 属性常用在拖放操作中。请在我们的拖放教程中学习更多内容。
+<element draggable="true|false|auto">
+
+拖动数据会产生被拖动数据的副本：
+<div dropzone="copy"></div>
+
+<p hidden="hidden">这是一段隐藏的段落。</p>
+<p>这是一段可见的段落。</p>
+hidden 属性是布尔属性。
+如果设置该属性，它规定元素仍未或不再相关。
+浏览器不应显示已规定 hidden 属性的元素。
+hidden 属性也可用于防止用户查看元素，直到匹配某些条件（比如选择了某个复选框）。然后，JavaScript 可以删除 hidden 属性，以使此元素可见。
+
+进行拼写检查的可编辑段落：
+<p contenteditable="true" spellcheck="true">这是一个段落。</p>
+spellcheck 属性规定是否对元素进行拼写和语法检查。
+可以对以下内容进行拼写检查：
+input 元素中的文本值（非密码）
+<textarea> 元素中的文本
+可编辑元素中的文本
+
+带有指定 tab 键顺序的链接：
+<a href="http://www.w3school.com.cn/" tabindex="2">W3School</a>
+<a href="http://www.google.com/" tabindex="1">Google</a>
+<a href="http://www.microsoft.com/" tabindex="3">Microsoft</a>
+几乎所有浏览器均 tabindex 属性，除了 Safari。
+tabindex 属性规定元素的 tab 键控制次序（当 tab 键用于导航时）。
+注释：以下元素支持 tabindex 属性：<a>, <area>, <button>, <input>, <object>, <select> 以及 <textarea>。
+
+规定不应翻译某些元素：
+<p translate="no">请勿翻译本段。</p>
+<p>本段可被译为任意语言。</p>
+提示：请使用 class="notranslate" 替代。
+
+[HTML5事件]
+[Window 事件属性
+针对 window 对象触发的事件（应用到 <body> 标签）：]
+
+页面加载之后立即执行一段 JavaScript：
+<body onload="load()">
+onload 属性在对象已加载时触发。
+onload 常用在 <body> 中，一旦完全加载所有内容（包括图像、脚本文件、CSS 文件等），就执行一段脚本。
+
+当浏览器窗口被调整大小时执行一段 JavaScript：
+<body onresize="showMsg()">
+onresize 发生于对象被调整大小时。
+onresize 常用于 浏览器窗口被调整尺寸时。
+
+当用户卸载文档时执行一段 JavaScript：
+<body onunload="goodbye()">
+onunload 属性会在页面下载时触发（或者浏览器窗口已关闭）。
+onunload 在用户从页面导航离开时发生（通过点击链接、提交表单或者关闭浏览器窗口等等）。
+注释：如果您重载页面，也会触发 unload 事件（以及 onload 事件）。
+
+[Form 事件
+由 HTML 表单内的动作触发的事件（应用到几乎所有 HTML 元素，但最常用在 form 元素中）：]
+
+当用户离开输入字段时对其进行验证：
+<input type="text" name="fname" id="fname" onblur="upperCase()">
+onblur 属性在元素失去焦点时触发。
+onblur 常用于表单验证代码（例如用户离开表单字段）。
+提示：onblur 属性与 onfocus 属性相反。
+
+Execute a JavaScript when an input field gets focus:
+<input type="text" id="fname" onfocus="setStyle(this.id)">
+onfocus 属性在元素获得焦点时触发。
+onfocus 常用于 <input>、<select> 以及 <a>.
+提示：onfocus 属性与 onblur 属性相反。
+注释：onfocus 属性不适用于以下元素：<base>、<bdo>、<br>、<head>、<html>、<iframe>、<meta>、<param>、<script>、<style> 或 <title>。
+
+当值改变时检查输入字段：
+<input type="text" name="txt" value="Hello" onchange="checkField(this.value)">
+onchange 在元素值改变时触发。
+onchange 属性适用于：<input>、<textarea> 以及 <select> 元素。
+
+当 <input> 元素内的文本被选中后执行一段 JavaScript：
+<input type="text" onselect="showMsg() value="Hello world!">
+onselect 属性在元素中的文本被选中时触发。
+onselect 属性可用于以下元素内：<input type="file">、<input type="password">、<input type="text">、<keygen> 以及 <textarea>.
+
+当提交表单时执行一段 JavaScript：
+<form action="demo_form.asp" onsubmit="checkForm()">
+onsubmit 属性在提交表单时触发。
+onsubmit 属性只在 <form> 中使用。
+
+[Keyboard 事件]
+
+当用户按键时执行一段 JavaScript：
+<input type="text" onkeydown="displayResult()">
+onkeydown 属性在用户（在键盘上）按键时触发。
+提示：相对于 onkeydown 事件的事件次序：
+onkeydown onkeypress onkeyup
+注释：onkeydown 属性不适用以下元素：<base>、<bdo>、<br>、<head>、<html>、<iframe>、<meta>、<param>、<script>、<style> 或 <title>。
+
+当用户按键时执行一段 JavaScript：
+<input type="text" onkeypress="displayResult()">
+onkeypress 属性在用户（在键盘上）按键时触发。
+注释：在任何浏览器中，onkeypress 事件不会被所有按键触发（例如 ALT、CTRL、SHIFT、ESC）。
+
+当用户放松按键时执行一段 JavaScript：
+<input type="text" onkeyup="displayResult()">
+onkeyup 属性在用户（在键盘上）释放按键时触发。
+
+[Mouse 事件 由鼠标或类似用户动作触发的事件：]
+
+当点击按钮时执行一段 JavaScript：
+<button onclick="copyText()">Copy Text</button>
+onclick 属性由元素上的鼠标点击触发。
+注释：onclick 属性不适用以下元素：<base>、<bdo>、<br>、<head>、<html>、<iframe>、<meta>、<param>、<script>、<style> 或 <title>。
+
+当双击鼠标按钮时执行一段 JavaScript：
+<button ondblclick="copyText()">Copy Text</button>
+
+当在段落上按下鼠标按钮时执行一段 JavaScript：
+<p onmousedown="mouseDown()">请点击此文本！</p>
+onmousedown 属性在鼠标按钮在元素上按下时触发。
+提示：相对于 onmousedown 事件的事件次序（限于鼠标左/中键）：
+onmousedown onmouseup onclick
+相对于 onmousedown 事件的事件次序（限于鼠标右键）：
+onmousedown onmouseup oncontextmenu
+注释：onmousedown 属性不适用以下元素：<base>、<bdo>、<br>、<head>、<html>、<iframe>、<meta>、<param>、<script>、<style> 或 <title>。
+----
+<head>
+<script>
+function mouseDown()
+{
+	document.getElementById("p1").style.color="red";
+}
+
+function mouseUp()
+{
+	document.getElementById("p1").style.color="green";
+}
+</script>
+</head>
+<body>
+
+<p id="p1" onmousedown="mouseDown()" onmouseup="mouseUp()">
+请点击文本！mouseDown() 函数当鼠标按钮在段落上被按下时触发。此函数把文本颜色设置为红色。mouseUp() 函数在鼠标按钮被释放时触发。mouseUp() 函数把文本的颜色设置为绿色。
+</p>
+----
+
+当在段落上松开鼠标按钮时执行 JavaScript：
+<p onmouseup="mouseUp()">Click the text!</p>
+
+当鼠标指针移动到图像上时执行一段 JavaScript：
+<img onmousemove="bigImg(this)" src="smiley.gif" alt="Smiley">
+
+当鼠标指针移动到图像之外时执行一段 JavaScript：
+<img onmouseout="normalImg(this)" src="smiley.gif" alt="Smiley">
+
+当鼠标指针移动到图像上时执行一段 JavaScript：
+<img onmouseover="bigImg(this)" src="smiley.gif" alt="Smiley">
+
+[Media 事件
+由媒介（比如视频、图像和音频）触发的事件（适用于所有 HTML 元素，但常见于媒介元素中，比如 <audio>、<embed>、<img>、<object> 以及 <video>）:]
+
+HTML5 视频和音频的 DOM 参考手册
+HTML5 DOM 为 <audio> 和 <video> 元素提供了方法、属性和事件。
+这些方法、属性和事件允许您使用 JavaScript 来操作 <audio> 和 <video> 元素。
+
+[HTML5 Audio/Video 方法]
+检测您的浏览器是否能播放不同类型的视频：
+myVid=document.createElement('video');
+isSupp=myVid.canPlayType(vidType+';codecs="'+codType+'"');
+canPlayType() 方法浏览器是否能播放指定的音频/视频类型。
+canPlayType() 方法可返回下列值之一：
+"probably" - 浏览器最可能支持该音频/视频类型
+"maybe" - 浏览器也许支持该音频/视频类型
+"" - （空字符串）浏览器不支持该音频/视频类型
+----
+<body> 
+
+<p>我的浏览器能够播放 MP4 视频吗？<span>
+<button onclick="supportType(event,'video/mp4','avc1.42E01E, mp4a.40.2')" type="button">测试</button>
+</span></p>
+
+<p>我的浏览器能够播放 OGG 视频吗？<span>
+<button onclick="supportType(event,'video/ogg','theora, vorbis')" type="button">测试</button>
+</span></p>
+
+<script> 
+function supportType(e,vidType,codType)
+  { 
+  myVid=document.createElement('video');
+  isSupp=myVid.canPlayType(vidType+';codecs="'+codType+'"');
+  if (isSupp=="")
+    {
+    isSupp="No";
+    }
+  e.target.parentNode.innerHTML="Answer: " + isSupp;
+  } 
+</script> 
+</body>
+----
+
+---
+<body>
+
+<button onclick="playVid()" type="button">播放视频</button>
+<button onclick="pauseVid()" type="button">暂停视频</button>
+<br />
+<br />
+<video id="video1">
+  <source src="/example/html5/mov_bbb.mp4" type="video/mp4">
+  <source src="/example/html5/mov_bbb.ogg" type="video/ogg">
+  Your browser does not support HTML5 video.
+</video>
+
+<script>
+var myVideo=document.getElementById("video1");
+
+function playVid()
+  {
+  myVideo.play();	//play() 方法开始播放当前的音频或视频。
+  }
+
+function pauseVid()
+  {
+  myVideo.pause();	//pause() 方法停止（暂停）当前播放的音频或视频。
+  }
+</script>
+
+</body>
+---
+
+[HTML5 Audio/Video 属性]
+
+
+---
+<body> 
+
+<button onclick="enableAutoplay()" type="button">启用自动播放</button>
+<button onclick="disableAutoplay()" type="button">禁用自动播放</button>
+<button onclick="checkAutoplay()" type="button">检查自动播放状态</button>
+<br>
+<video id="video1" controls="controls">
+  <source src="/example/html5/mov_bbb.mp4" type="video/mp4">
+  <source src="/example/html5/mov_bbb.ogg" type="video/ogg">
+  Your browser does not support HTML5 video.
+</video>
+
+<script>
+myVid=document.getElementById("video1");
+function enableAutoplay()
+  { 
+  myVid.autoplay=true;	//autoplay 属性设置或返回音视频是否在加载后即开始播放。
+  myVid.load();
+  } 
+function disableAutoplay()
+  { 
+  myVid.autoplay=false;
+  myVid.load();
+  } 
+function checkAutoplay()
+  { 
+  alert(myVid.autoplay);
+  } 
+</script> 
+
+<p>Video courtesy of <a href="http://www.bigbuckbunny.org/" target="_blank">Big Buck Bunny</a>.</p>
+
+</body> 
+---
+
+[HTML5 Audio/Video 事件]
+
+
+[]
+
+HTML 5 Canvas 参考手册
+
+HTML5 <canvas> 标签用于绘制图像（通过脚本，通常是 JavaScript）。
+
+不过，<canvas> 元素本身并没有绘制能力（它仅仅是图形的容器） - 您必须使用脚本来完成实际的绘图任务。
+
+getContext() 方法可返回一个对象，该对象提供了用于在画布上绘图的方法和属性。
+
+本手册提供完整的 getContext("2d") 对象属性和方法，可用于在画布上绘制文本、线条、矩形、圆形等等。
+
+[颜色、样式和阴影]
+
+<body>
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script type="text/javascript">
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.fillStyle="#0000ff";	//fillStyle 属性设置或返回用于填充绘画的颜色、渐变或模式。默认值：#000000
+ctx.fillRect(20,20,150,100);
+
+</script>
+</body>
+context.fillStyle=color|gradient|pattern;      
+color	指示绘图填充色的 CSS 颜色值。默认值是 #000000。
+gradient	用于填充绘图的渐变对象（线性或放射性）
+pattern	用于填充绘图的 pattern 对象
+
+<body>
+
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script type="text/javascript">
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+var grd=ctx.createLinearGradient(0,0,170,0);
+grd.addColorStop(0,"black");
+grd.addColorStop(0.5,"red");
+grd.addColorStop(1,"white");
+ctx.fillStyle=grd;
+ctx.fillRect(20,20,150,100);
+
+</script>
+
+</body>
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.strokeStyle="#0000ff";
+ctx.strokeRect(20,20,150,100);
+strokeStyle 属性设置或返回用于笔触的颜色、渐变或模式。
+JavaScript 语法：	context.strokeStyle=color|gradient|pattern;
+color	指示绘图笔触颜色的 CSS 颜色值。默认值是 #000000。
+gradient	用于填充绘图的渐变对象（线性或放射性）
+pattern	用于创建 pattern 笔触的 pattern 对象
+
+--------
+<body>
+
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script type="text/javascript">
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+
+var gradient=ctx.createLinearGradient(0,0,170,0);//定义从黑到白的渐变（从左向右），作为矩形的填充样式
+gradient.addColorStop("0","magenta");
+gradient.addColorStop("0.5","blue");
+gradient.addColorStop("1.0","red");
+
+// Fill with gradient
+ctx.strokeStyle=gradient;//设置或返回用于笔触的颜色、渐变或模式
+ctx.lineWidth=5;
+ctx.strokeRect(20,20,150,100);
+
+</script>
+
+</body>
+--------
+<body>
+
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script type="text/javascript">
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+
+ctx.font="30px Verdana";
+// Create gradient
+var gradient=ctx.createLinearGradient(0,0,c.width,0);
+gradient.addColorStop("0","magenta");
+gradient.addColorStop("0.5","blue");
+gradient.addColorStop("1.0","red");
+// Fill with gradient
+ctx.strokeStyle=gradient;
+ctx.strokeText("w3school.com.cn",10,50);
+
+</script>
+
+</body>
+---------
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<script>
+
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+var grd=ctx.createRadialGradient(75,50,5,90,60,100);//绘制一个矩形，并用放射状/圆形渐变进行填充
+grd.addColorStop(0,"black")
+grd.addColorStop(0.5,"white");
+grd.addColorStop(1,"red");
+ctx.fillStyle=grd;
+ctx.fillRect(10,10,150,100);
+
+</script>
+createLinearGradient() 方法创建放射状/圆形渐变对象。
+渐变可用于填充矩形、圆形、线条、文本等等。
+提示：请使用该对象作为 strokeStyle 或 fillStyle 属性的值。
+提示：请使用 addColorStop() 方法规定不同的颜色，以及在 gradient 对象中的何处定位颜色。
+context.createRadialGradient(x0,y0,r0,x1,y1,r1);
+x0	渐变的开始圆的 x 坐标
+y0	渐变的开始圆的 y 坐标
+r0	开始圆的半径
+x1	渐变的结束圆的 x 坐标
+y1	渐变的结束圆的 y 坐标
+r1	结束圆的半径
+--------
+
+
+[HTTP 方法：GET 对比 POST]
+超文本传输协议（HTTP）的设计目的是保证客户机与服务器之间的通信。
+HTTP 的工作方式是客户机与服务器之间的请求-应答协议。
+web 浏览器可能是客户端，而计算机上的网络应用程序也可能作为服务器端。
+举例：客户端（浏览器）向服务器提交 HTTP 请求；服务器向客户端返回响应。响应包含关于请求的状态信息以及可能被请求的内容。
+
+两种 HTTP 请求方法：GET 和 POST
+在客户机和服务器之间进行请求-响应时，两种最常被用到的方法是：GET 和 POST。
+GET - 从指定的资源请求数据。
+POST - 向指定的资源提交要被处理的数据
+
+GET 方法
+请注意，查询字符串（名称/值对）是在 GET 请求的 URL 中发送的：
+/test/demo_form.asp?name1=value1&name2=value2
+有关 GET 请求的其他一些注释：
+GET 请求可被缓存
+GET 请求保留在浏览器历史记录中
+GET 请求可被收藏为书签
+GET 请求不应在处理敏感数据时使用
+GET 请求有长度限制
+GET 请求只应当用于取回数据
+
+POST 方法
+请注意，查询字符串（名称/值对）是在 POST 请求的 HTTP 消息主体中发送的：
+POST /test/demo_form.asp HTTP/1.1
+Host: w3schools.com
+name1=value1&name2=value2
+有关 POST 请求的其他一些注释：
+POST 请求不会被缓存
+POST 请求不会保留在浏览器历史记录中
+POST 不能被收藏为书签
+POST 请求对数据长度没有要求
+
