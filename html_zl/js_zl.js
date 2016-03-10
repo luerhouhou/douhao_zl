@@ -46,6 +46,28 @@ bill.salary=20000;
 document.write(bill.salary);//输出20000
 </script>
 
+let [foo, [[bar], baz]] = [1, [[2], 3]];
+foo // 1
+bar // 2
+baz // 3
+
+let [ , , third] = ["foo", "bar", "baz"];
+third // "baz"
+
+let [x, , y] = [1, 2, 3];
+x // 1
+y // 3
+
+let [head, ...tail] = [1, 2, 3, 4];
+head // 1
+tail // [2, 3, 4]
+
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
+
+
 [Array 对象方法]
 concat()   // 连接两个或更多的数组，并返回结果。该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本。
 
@@ -242,7 +264,7 @@ valueOf()   返回 Math 对象的原始值。
 
 当 Number() 和运算符 new 一起作为构造函数使用时，它返回一个新创建的 Number 对象。如果不用 new 运算符，把 Number() 作为一个函数来调用，它将把自己的参数转换成一个原始的数值，并且返回这个值（如果转换失败，则返回 NaN）。
 
-[JS String 对象]
+[String 对象]
 字符串是 JavaScript 的一种基本的数据类型。
 
 String 对象的 length 属性声明了该字符串中的字符数。
@@ -252,6 +274,636 @@ String 类定义了大量操作字符串的方法，例如从字符串中提取�
 需要注意的是，JavaScript 的字符串是不可变的（immutable），String 类定义的方法都不能改变字符串的内容。像 String.toUpperCase() 这样的方法，返回的是全新的字符串，而不是修改原始字符串。
 
 在较早的 Netscape 代码基的 JavaScript 实现中（例如 Firefox 实现中），字符串的行为就像只读的字符数组。例如，从字符串 s 中提取第三个字符，可以用 s[2] 代替更加标准的 s.charAt(2)。此外，对字符串应用 for/in 循环时，它将枚举字符串中每个字符的数组下标（但要注意，ECMAScript 标准规定，不能枚举 length 属性）。因为字符串的数组行为不标准，所以应该避免使用它。
+
+var s = 'fdsa'
+s.codePointAt(0); // codePointAt方法会正确返回32位的UTF-16字符的码点。对于那些两个字节储存的常规字符，它的返回结果与charCodeAt方法相同。
+s.charCodeAt(2);
+// 连接字符，原字符串不受影响，返回一个新字符串。
+'a'.concat('b','c') // "abc"
+
+// 检测一个字符是由两个字节还是四个字节组成：
+function is32Bit(c) {
+  return c.codePointAt(0) > 0xFFFF;
+}
+is32Bit("𠮷") // true
+is32Bit("a") // false
+
+
+// --[这三个方法都用来返回一个字符串的子串，而不会改变原字符串。它们都可以接受一个或两个参数，区别只是参数含义的不同。]
+
+// substring方法的第一个参数表示子字符串的开始位置，第二个位置表示结束结果。因此，第二个参数应该大于第一个参数。如果出现第一个参数大于第二个参数的情况，substring方法会自动更换两个参数的位置。
+var a = 'The Three Musketeers';
+a.substring(4, 9) // 'Three'
+a.substring(9, 4) // 'Three'
+
+// substr方法的第一个参数是子字符串的开始位置，第二个参数是子字符串的长度。
+var b = 'The Three Musketeers';
+b.substr(4, 9) // 'Three Mus'
+b.substr(9, 4) // ' Mus'
+
+// slice方法的第一个参数是子字符串的开始位置，第二个参数是子字符串的结束位置。与substring方法不同的是，如果第一个参数大于第二个参数，slice方法并不会自动调换参数位置，而是返回一个空字符串。
+var c = 'The Three Musketeers';
+c.slice(4, 9) // 'Three'
+c.slice(9, 4) // ''
+
+总结：第一个参数的含义
+
+对这三个方法来说，第一个参数都是子字符串的开始位置，如果省略第二个参数，则表示子字符串一直持续到原字符串结束。
+
+"Hello World".slice(3)
+// "lo World"
+
+"Hello World".substr(3)
+// "lo World"
+
+"Hello World".substring(3)
+// "lo World"
+
+（5）总结：第二个参数的含义
+
+如果提供第二个参数，对于slice和substring方法，表示子字符串的结束位置；对于substr，表示子字符串的长度。
+
+"Hello World".slice(3,7)
+// "lo W"
+
+"Hello World".substring(3,7)
+// "lo W"
+
+"Hello World".substr(3,7)
+// "lo Worl"
+
+总结：负的参数
+
+如果参数为负，对于slice方法，表示字符位置从尾部开始计算。
+"Hello World".slice(-3)
+// "rld"
+
+"Hello World".slice(4,-3)
+// "o Wo"
+
+对于substring方法，会自动将负数转为0。
+"Hello World".substring(-3)
+// "Hello World"
+
+"Hello World".substring(4,-3)
+// "Hell"
+
+对于substr方法，负数出现在第一个参数，表示从尾部开始计算的字符位置；负数出现在第二个参数，将被转为0。
+"Hello World".substr(-3)
+// "rld"
+
+"Hello World".substr(4,-3)
+// ""
+
+indexOf 和 lastIndexOf 方法
+这两个方法用于确定一个字符串在另一个字符串中的位置，如果返回-1，就表示不匹配。两者的区别在于，indexOf从字符串头部开始匹配，lastIndexOf从尾部开始匹配。
+"hello world".indexOf("o")
+// 4
+"hello world".lastIndexOf("o")
+// 7
+
+它们还可以接受第二个参数，对于indexOf，表示从该位置开始向后匹配；对于lastIndexOf，表示从该位置起向前匹配。
+"hello world".indexOf("o", 6)
+// 7
+"hello world".lastIndexOf("o", 6)
+// 4
+
+trim 方法
+
+该方法用于去除字符串两端的空格。
+"  hello world  ".trim()
+// "hello world"
+该方法返回一个新字符串，不改变原字符串。
+
+toLowerCase用于将一个字符串转为小写，toUpperCase则是转为大写。
+"Hello World".toLowerCase()
+// "hello world"
+"Hello World".toUpperCase()
+// "HELLO WORLD"
+
+localeCompare方法用于比较两个字符串。它返回一个数字，如果小于0，表示第一个字符串小于第二个字符串；如果等于0，表示两者相等；如果大于0，表示第一个字符串大于第二个字符串。
+'apple'.localeCompare('banana')
+// -1
+'apple'.localeCompare('apple')
+// 0
+
+
+String对象
+
+String对象是JavaScript原生提供的三个包装对象之一，用来生成字符串的包装对象实例。
+
+var s = new String("abc");
+
+typeof s // "object"
+s.valueOf() // "abc"
+
+上面代码生成的变量s，就是String对象的实例，类型为对象，值为原来的字符串。实际上，String对象的实例是一个类似数组的对象。
+
+new String("abc")
+// String {0: "a", 1: "b", 2: "c"}
+
+除了用作构造函数，String还可以当作工具方法使用，将任意类型的值转为字符串。
+
+String(true) // "true"
+String(5) // "5"
+
+上面代码将布尔值ture和数值5，分别转换为字符串。
+String.fromCharCode()
+
+String对象直接提供的方法，主要是fromCharCode()。该方法根据Unicode编码，生成一个字符串。
+
+String.fromCharCode(104, 101, 108, 108, 111)
+// "hello"
+
+注意，该方法不支持编号大于0xFFFF的字符。
+
+
+String.fromCharCode(0x20BB7)
+// "ஷ"
+
+上面代码返回字符的编号是0x0BB7，而不是0x20BB7。这种情况下，只能使用四字节的UTF-16编号，得到正确结果。
+
+
+String.fromCharCode(0xD842, 0xDFB7)
+// "𠮷"
+    
+String.fromCodePoint(), 可以识别0xFFFF的字符，弥补了String.fromCharCode方法的不足。在作用上，正好与codePointAt方法相反。
+
+// ES6为字符串添加了遍历器接口（详见《Iterator》一章），使得字符串可以被for...of循环遍历。
+for (let codePoint of 'foo') {
+  console.log(codePoint)
+}
+// "f"
+// "o"
+// "o"
+
+除了遍历字符串，这个遍历器最大的优点是可以识别大于0xFFFF的码点，传统的for循环无法识别这样的码点。
+var text = String.fromCodePoint(0x20BB7);
+for (let i = 0; i < text.length; i++) {
+  console.log(text[i]);
+}
+// " "
+// " "
+for (let i of text) {
+  console.log(i);
+}
+// "𠮷"
+上面代码中，字符串text只有一个字符，但是for循环会认为它包含两个字符（都不可打印），而for...of循环会正确识别出这一个字符。
+
+
+实例对象的属性和方法
+length属性
+
+该属性返回字符串的长度。
+
+"abc".length
+// 3
+
+charAt 和 charCodeAt 方法
+
+charAt方法返回一个字符串的给定位置的字符，位置从0开始编号。
+
+var s = new String("abc");
+
+s.charAt(1) // "b"
+s.charAt(s.length-1) // "c"
+
+这个方法完全可以用数组下标替代。
+
+'abc'[1] // "b"
+
+charCodeAt方法返回给定位置字符的Unicode编码（十进制表示）。
+
+var s = new String("abc");
+
+s.charCodeAt(1)
+// 98
+
+需要注意的是，charCodeAt方法返回的Unicode编码不大于65536（0xFFFF），也就是说，只返回两个字节。因此如果遇到Unicode大于65536的字符（根据UTF-16的编码规则，第一个字节在U+D800到U+DBFF之间），就必需连续使用两次charCodeAt，不仅读入charCodeAt(i)，还要读入charCodeAt(i+1)，将两个16字节放在一起，才能得到准确的字符。
+
+如果给定位置为负数，或大于等于字符串的长度，则这两个方法返回NaN。
+
+ES6 提供 String.at() 方法。可以识别Unicode编号大于0xFFFF的字符，返回正确的字符。
+'abc'.at(0) // "a"
+'𠮷'.at(0) // "𠮷"
+
+ES6提供字符串实例的normalize()方法，用来将字符的不同表示方法统一为同样的形式，这称为Unicode正规化。
+
+'\u01D1'.normalize() === '\u004F\u030C'.normalize()
+// true
+
+
+    includes()：返回布尔值，表示是否找到了参数字符串。
+    startsWith()：返回布尔值，表示参数字符串是否在源字符串的头部。
+    endsWith()：返回布尔值，表示参数字符串是否在源字符串的尾部。
+var s = 'Hello world!';
+
+s.startsWith('Hello') // true
+s.endsWith('!') // true
+s.includes('o') // true
+
+这三个方法都支持第二个参数，表示开始搜索的位置。
+
+var s = 'Hello world!';
+
+s.startsWith('world', 6) // true
+s.endsWith('Hello', 5) // true
+s.includes('Hello', 6) // false
+
+上面代码表示，使用第二个参数n时，endsWith的行为与其他两个方法有所不同。它针对前n个字符，而其他两个方法针对从第n个位置直到字符串结束。
+
+repeat方法返回一个新字符串，表示将原字符串重复n次。
+
+'x'.repeat(3) // "xxx"
+'hello'.repeat(2) // "hellohello"
+'na'.repeat(0) // ""
+
+参数如果是小数，会被取整。
+
+'na'.repeat(2.9) // "nana"
+
+如果repeat的参数是负数或者Infinity，会报错。
+
+'na'.repeat(Infinity)
+// RangeError
+'na'.repeat(-1)
+// RangeError
+
+但是，如果参数是0到-1之间的小数，则等同于0，这是因为会先进行取整运算。0到-1之间的小数，取整以后等于-0，repeat视同为0。
+
+'na'.repeat(-0.9) // ""
+
+参数NaN等同于0。
+
+'na'.repeat(NaN) // ""
+
+如果repeat的参数是字符串，则会先转换成数字。
+
+'na'.repeat('na') // ""
+'na'.repeat('3') // "nanana"
+
+ES7推出了字符串补全长度的功能。如果某个字符串不够指定长度，会在头部或尾部补全。padStart用于头部补全，padEnd用于尾部补全。
+
+'x'.padStart(5, 'ab') // 'ababx'
+'x'.padStart(4, 'ab') // 'abax'
+
+'x'.padEnd(5, 'ab') // 'xabab'
+'x'.padEnd(4, 'ab') // 'xaba'
+
+上面代码中，padStart和padEnd一共接受两个参数，第一个参数用来指定字符串的最小长度，第二个参数是用来补全的字符串。
+
+如果原字符串的长度，等于或大于指定的最小长度，则返回原字符串。
+
+'xxx'.padStart(2, 'ab') // 'xxx'
+'xxx'.padEnd(2, 'ab') // 'xxx'
+
+如果用来补全的字符串与原字符串，两者的长度之和超过了指定的最小长度，则会截去超出位数的补全字符串。
+
+'abc'.padStart(10, '0123456789')
+// '0123456abc'
+
+如果省略第二个参数，则会用空格补全长度。
+
+'x'.padStart(4) // '   x'
+'x'.padEnd(4) // 'x   '
+
+padStart的常见用途是为数值补全指定位数。下面代码生成10位的数值字符串。
+
+'1'.padStart(10, '0') // "0000000001"
+'12'.padStart(10, '0') // "0000000012"
+'123456'.padStart(10, '0') // "0000123456"
+
+另一个用途是提示字符串格式。
+
+'12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
+'09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
+
+模板字符串：
+
+te string）是增强版的字符串，用反引号（`）标识。它可以当作普通字符串使用，也可以用来定义多行字符串，或者在字符串中嵌入变量。
+
+// 普通字符串
+`In JavaScript '\n' is a line-feed.`
+
+// 多行字符串
+`In JavaScript this is
+ not legal.`
+
+console.log(`string text line 1
+string text line 2`);
+
+// 字符串中嵌入变量
+var name = "Bob", time = "today";
+`Hello ${name}, how are you ${time}?`
+
+上面代码中的字符串，都是用反引号表示。如果在模板字符串中需要使用反引号，则前面要用反斜杠转义。
+
+var greeting = `\`Yo\` World!`;
+
+如果使用模板字符串表示多行字符串，所有的空格和缩进都会被保留在输出之中。
+
+$("#warning").html(`
+  <h1>Watch out!</h1>
+  <p>Unauthorized hockeying can result in penalties
+  of up to ${maxPenalty} minutes.</p>
+`);
+
+模板字符串中嵌入变量，需要将变量名写在${}之中。
+
+function authorize(user, action) {
+  if (!user.hasPrivilege(action)) {
+    throw new Error(
+      // 传统写法为
+      // 'User '
+      // + user.name
+      // + ' is not authorized to do '
+      // + action
+      // + '.'
+      `User ${user.name} is not authorized to do ${action}.`);
+  }
+}
+
+大括号内部可以放入任意的JavaScript表达式，可以进行运算，以及引用对象属性。
+
+var x = 1;
+var y = 2;
+
+`${x} + ${y} = ${x + y}`
+// "1 + 2 = 3"
+
+`${x} + ${y * 2} = ${x + y * 2}`
+// "1 + 4 = 5"
+
+var obj = {x: 1, y: 2};
+`${obj.x + obj.y}`
+// 3
+
+模板字符串之中还能调用函数。
+
+function fn() {
+  return "Hello World";
+}
+
+`foo ${fn()} bar`
+// foo Hello World bar
+
+如果大括号中的值不是字符串，将按照一般的规则转为字符串。比如，大括号中是一个对象，将默认调用对象的toString方法。
+
+如果模板字符串中的变量没有声明，将报错。
+
+// 变量place没有声明
+var msg = `Hello, ${place}`;
+// 报错
+
+由于模板字符串的大括号内部，就是执行JavaScript代码，因此如果大括号内部是一个字符串，将会原样输出。
+
+`Hello ${'World'}`
+// "Hello World"
+
+如果需要引用模板字符串本身，可以像下面这样写。
+
+// 写法一
+let str = 'return ' + '`Hello ${name}!`';
+let func = new Function('name', str);
+func('Jack') // "Hello Jack!"
+
+// 写法二
+let str = '(name) => `Hello ${name}!`';
+let func = eval.call(null, str);
+func('Jack') // "Hello Jack!"
+
+ES6还为原生的String对象，提供了一个raw方法。
+
+String.raw方法，往往用来充当模板字符串的处理函数，返回一个斜杠都被转义（即斜杠前面再加一个斜杠）的字符串，对应于替换变量后的模板字符串。
+
+String.raw`Hi\n${2+3}!`;
+// "Hi\\n5!"
+
+String.raw`Hi\u000A!`;
+// 'Hi\\u000A!'
+
+如果原字符串的斜杠已经转义，那么String.raw不会做任何处理。
+
+String.raw`Hi\\n`
+// "Hi\\n"
+
+
+
+concat方法
+
+字符串的concat方法用于连接两个字符串。
+
+var s1 = 'abc';
+var s2 = 'def';
+
+s1.concat(s2) // "abcdef"
+s1 // "abc"
+
+使用该方法后，原字符串不受影响，返回一个新字符串。
+该方法可以接受多个参数。
+
+'a'.concat('b', 'c') // "abc"
+
+如果参数不是字符串，concat方法会将其先转为字符串，然后再连接。
+
+var one = 1;
+var two = 2;
+var three = '3';
+
+''.concat(one, two, three) // "123"
+one + two + three // "33"
+
+上面代码中，concat方法将参数先转成字符串再连接，所以返回的是一个三个字符的字符串。而加号运算符在两个运算数都是数值时，不会转换类型，所以返回的是一个两个字符的字符串。
+
+【特殊字符 】
+var s = "𠮷";
+s.length // 2
+s.charAt(0) // ''
+s.charAt(1) // ''
+s.charCodeAt(0) // 55362
+s.charCodeAt(1) // 57271
+
+substring方法，substr方法和slice方法
+
+这三个方法都用来返回一个字符串的子串，而不会改变原字符串。它们都可以接受一个或两个参数，区别只是参数含义的不同。
+
+（1）substring方法
+
+substring方法的第一个参数表示子字符串的开始位置，第二个位置表示结束结果。因此，第二个参数应该大于第一个参数。如果出现第一个参数大于第二个参数的情况，substring方法会自动更换两个参数的位置。
+
+var a = 'The Three Musketeers';
+a.substring(4, 9) // 'Three'
+a.substring(9, 4) // 'Three'
+
+上面代码中，调换substring方法的两个参数，都得到同样的结果。
+
+（2）substr方法
+
+substr方法的第一个参数是子字符串的开始位置，第二个参数是子字符串的长度。
+
+var b = 'The Three Musketeers';
+b.substr(4, 9) // 'Three Mus'
+b.substr(9, 4) // ' Mus'
+
+（3）slice方法
+
+slice方法的第一个参数是子字符串的开始位置，第二个参数是子字符串的结束位置。与substring方法不同的是，如果第一个参数大于第二个参数，slice方法并不会自动调换参数位置，而是返回一个空字符串。
+
+var c = 'The Three Musketeers';
+c.slice(4, 9) // 'Three'
+c.slice(9, 4) // ''
+
+（4）总结：第一个参数的含义
+
+对这三个方法来说，第一个参数都是子字符串的开始位置，如果省略第二个参数，则表示子字符串一直持续到原字符串结束。
+
+"Hello World".slice(3)
+// "lo World"
+
+"Hello World".substr(3)
+// "lo World"
+
+"Hello World".substring(3)
+// "lo World"
+
+（5）总结：第二个参数的含义
+
+如果提供第二个参数，对于slice和substring方法，表示子字符串的结束位置；对于substr，表示子字符串的长度。
+
+"Hello World".slice(3,7)
+// "lo W"
+
+"Hello World".substring(3,7)
+// "lo W"
+
+"Hello World".substr(3,7)
+// "lo Worl"
+
+（6）总结：负的参数
+
+如果参数为负，对于slice方法，表示字符位置从尾部开始计算。
+
+"Hello World".slice(-3)
+// "rld"
+
+"Hello World".slice(4,-3)
+// "o Wo"
+
+对于substring方法，会自动将负数转为0。
+
+"Hello World".substring(-3)
+// "Hello World"
+
+"Hello World".substring(4,-3)
+// "Hell"
+
+对于substr方法，负数出现在第一个参数，表示从尾部开始计算的字符位置；负数出现在第二个参数，将被转为0。
+
+"Hello World".substr(-3)
+// "rld"
+
+"Hello World".substr(4,-3)
+// ""
+
+indexOf 和 lastIndexOf 方法
+
+这两个方法用于确定一个字符串在另一个字符串中的位置，如果返回-1，就表示不匹配。两者的区别在于，indexOf从字符串头部开始匹配，lastIndexOf从尾部开始匹配。
+
+"hello world".indexOf("o")
+// 4
+
+"hello world".lastIndexOf("o")
+// 7
+
+它们还可以接受第二个参数，对于indexOf，表示从该位置开始向后匹配；对于lastIndexOf，表示从该位置起向前匹配。
+
+"hello world".indexOf("o", 6)
+// 7
+
+"hello world".lastIndexOf("o", 6)
+// 4
+
+trim 方法
+
+该方法用于去除字符串两端的空格。
+
+"  hello world  ".trim()
+// "hello world"
+
+该方法返回一个新字符串，不改变原字符串。
+toLowerCase 和 toUpperCase 方法
+
+toLowerCase用于将一个字符串转为小写，toUpperCase则是转为大写。
+
+"Hello World".toLowerCase()
+// "hello world"
+
+"Hello World".toUpperCase()
+// "HELLO WORLD"
+
+localeCompare方法
+
+该方法用于比较两个字符串。它返回一个数字，如果小于0，表示第一个字符串小于第二个字符串；如果等于0，表示两者相等；如果大于0，表示第一个字符串大于第二个字符串。
+
+'apple'.localeCompare('banana')
+// -1
+
+'apple'.localeCompare('apple')
+// 0
+
+[搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。
+1. match：用于确定原字符串是否匹配某个子字符串，返回匹配的子字符串数组。
+
+match方法返回一个数组，成员为匹配的第一个字符串。如果没有找到匹配，则返回null。返回数组还有index属性和input属性，分别表示匹配字符串开始的位置（从0开始）和原始字符串。
+var matches = "cat, bat, sat, fat".match("at");
+matches // ["at"]
+matches.index // 1
+matches.input // "cat, bat, sat, fat"
+
+2. search：等同于match，但是返回值不一样。
+
+search方法的用法等同于match，但是返回值为匹配的第一个位置。如果没有找到匹配，则返回-1。
+"cat, bat, sat, fat".search("at")
+// 1
+
+3. replace：用于替换匹配的字符串。
+
+replace方法用于替换匹配的子字符串，一般情况下只替换第一个匹配（除非使用带有g修饰符的正则表达式）。
+"aaa".replace("a", "b")
+// "baa"
+
+4. split：将字符串按照给定规则分割，返回一个由分割出来的各部分组成的新数组。
+split方法按照给定规则分割字符串，返回一个由分割出来的各部分组成的新数组。
+"a|b|c".split("|")
+// ["a", "b", "c"]
+
+如果分割规则为空字符串，则返回数组的成员是原字符串的每一个字符。
+"a|b|c".split("")
+// ["a", "|", "b", "|", "c"]
+
+如果省略分割规则，则返回数组的唯一成员就是原字符串。
+"a|b|c".split()
+// ["a|b|c"]
+
+如果满足分割规则的两个部分紧邻着（即中间没有其他字符），则返回数组之中会有一个空字符串。
+"a||c".split("|")
+// ["a", "", "c"]
+
+如果满足分割规则的部分处于字符串的开头或结尾（即它的前面或后面没有其他字符），则返回数组的第一个或最后一个成员是一个空字符串。
+"|b|c".split("|")
+// ["", "b", "c"]
+"a|b|".split("|")
+// ["a", "b", ""]
+
+split方法还可以接受第二个参数，限定返回数组的最大成员数。
+"a|b|c".split("|", 0) // []
+"a|b|c".split("|", 1) // ["a"]
+"a|b|c".split("|", 2) // ["a", "b"]
+"a|b|c".split("|", 3) // ["a", "b", "c"]
+"a|b|c".split("|", 4) // ["a", "b", "c"]
+
+
+
 
 [JS RegExp 对象]
 
@@ -568,3 +1220,376 @@ for (x in person)
 
 [JavaScript Number 对象]
 
+[Array function]
+
+1. forEatch
+
+[1, 2 ,3, 4].forEach(alert);// 参数为function类型
+
+[1, 2 ,3, 4].forEach(console.log);
+
+// 结果：
+
+// 1, 0, [1, 2, 3, 4]
+// 2, 1, [1, 2, 3, 4]
+// 3, 2, [1, 2, 3, 4]
+// 4, 3, [1, 2, 3, 4]
+
+// function回调支持三个参数，对应数组的值，index，及本身。
+[].forEach(function(value, index, array) {
+    // ...
+});
+// forEach 除了接受一个必须的回调函数参数，还可以接受一个可选的上下文参数（改变回调函数里面的this指向）（第2个参数）。
+// forEach 会跳过空元素
+var array = [1, 2, 3];
+
+delete array[1]; // 移除 2
+alert(array); // "1,,3"
+
+alert(array.length); // but the length is still 3
+
+array.forEach(alert); // 弹出的仅仅是1和3
+
+2. map // 基本用法与forEach类似
+array.map.(callback, [ thisObject]);
+
+[].map(function(value, index, array){
+    // ...
+})
+
+var users = [
+  {name: "张含韵", "email": "zhang@email.com"},
+  {name: "江一燕",   "email": "jiang@email.com"},
+  {name: "李小璐",  "email": "li@email.com"}
+];
+var emails = users.map(function (user) { return user.email; });
+console.log(emails.join(", ")); // zhang@email.com, jiang@email.com, li@email.com
+
+3. filter // 返回过滤后的新数组。用法跟map极为相似
+array.filter(callback,[ thisObject]);
+
+var emailsZhang = users
+  // 获得邮件
+  .map(function (user) { return user.email; })
+  // 筛选出zhang开头的邮件
+  .filter(function(email) {  return /^zhang/.test(email); });
+
+console.log(emailsZhang.join(", ")); // zhang@email.com
+
+4. some // some意指“某些”，指是否“某些项”合乎条件。与下面的every算是好基友，every表示是否“每一项”都要靠谱。
+
+array.some(callback,[ thisObject]);
+
+// some要求至少有一个值使得block返回true即可
+var scores = [5, 8, 3, 10];
+var current = 7;
+function higherThanCurrent(score) {
+  return score > current;
+}
+if (scores.some(higherThanCurrent)) {
+  alert("朕准了！");
+}
+5. every
+
+if (scores.every(higherThanCurrent)) {
+  alert("朕准了！");
+} else {
+  console.log("拖出去斩了！");
+}
+
+6. indexOf // indexOf方法在字符串中自古就有，string.indexOf(searchString, position)。数组这里的indexOf方法与之类似。
+
+array.indexOf(searchElement[, fromIndex])
+
+// 返回整数索引值，如果没有匹配（严格匹配），返回-1. fromIndex可选，表示从这个位置开始搜索，若缺省或格式不合要求，使用默认值0，我在FireFox下测试，发现使用字符串数值也是可以的，例如"3"和3都可以。
+var data = [2, 5, 7, 3, 5];
+console.log(data.indexOf(5, "x")); // 1 ("x"被忽略)
+console.log(data.indexOf(5, "3")); // 4 (从3号位开始搜索)
+console.log(data.indexOf(4)); // -1 (未找到)
+console.log(data.indexOf("5")); // -1 (未找到，因为5 !== "5")
+
+7. lastIndexOf // 与indexOf方法类似：
+
+array.lastIndexOf(searchElement[, fromIndex])
+
+var data = [2, 5, 7, 3, 5];
+console.log(data.lastIndexOf(5)); // 4
+console.log(data.lastIndexOf(5, 3)); // 1 (从后往前，索引值小于3的开始搜索)
+console.log(data.lastIndexOf(4)); // -1 (未找到)
+
+8. reduce // 归约
+array.reduce(callback[, initialValue])
+
+// 因为initialValue不存在，因此一开始的previous值等于数组的第一个元素。
+// 从而current值在第一次调用的时候就是2.
+// 最后两个参数为索引值index以及数组本身array.
+var sum = [1, 2, 3, 4].reduce(function (previous, current, index, array) {
+  return previous + current;
+});
+console.log(sum); // 10
+
+// 实现二维数组的扁平化
+var matrix = [
+  [1, 2],
+  [3, 4],
+  [5, 6]
+];
+// 二维数组扁平化
+var flatten = matrix.reduce(function (previous, current) {
+  return previous.concat(current);
+});
+console.log(flatten); // [1, 2, 3, 4, 5, 6]
+
+9. reduceRight // 与reduce区别在于，reduceRight是从数组的末尾开始实现
+
+[this]
+var story = {
+    progress: "unknown",
+    start: function() {
+        this.progress = "start";
+    }
+}
+story.start();
+console.log(story.progress); // start
+
+var story = {
+    progress: "unknown",
+    start: function() {
+        story.progress = "start";
+    }
+};
+
+story.start();
+console.log(story.progress); // start
+
+var story = {
+    progress: "unknown",
+    start: function() {
+        this.progress = "start";
+    }
+};
+
+var start = story.start;
+start(); // 这时候的this是 start变量
+console.log(story.progress); // unknown
+
+console.log(foo); // 输出undefined
+console.log(bar); // 报错ReferenceError
+var foo = 2;
+let bar = 2;
+上面代码中，变量foo用var命令声明，会发生变量提升，即脚本开始运行时，变量foo已经存在了，但是没有值，所以会输出undefined。变量bar用let命令声明，不会发生变量提升。这表示在声明它之前，变量bar是不存在的，这时如果用到它，就会抛出一个错误
+ES6明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
+总之，在代码块内，使用let命令声明变量之前，该变量都是不可用的。这在语法上，称为“暂时性死区”（temporal dead zone，简称TDZ）。
+
+const命令声明的常量也是不提升，同样存在暂时性死区，只能在声明的位置后面使用。
+
+const命令只是保证变量名指向的地址不变，并不保证该地址的数据不变，所以将一个对象声明为常量必须非常小心。
+const a = [];
+a.push("Hello"); // 可执行
+a.length = 0;    // 可执行
+a = ["Dave"];    // 报错
+
+跨模块常量 
+export const A = 1;
+
+ES6 不存在函数提升，ES5 存在函数提升。下面例子中声明了同样名字的方法，在ES5中存在函数提升，因此不管方法是否执行，内层的方法都会覆盖外层方法，所以执行会输出语句二。ES6不存在函数提升，输出语句一。
+function f() { console.log('语句一 ：I am outside!'); }
+(function () {
+  if(false) {
+    // 重复声明一次函数f
+    function f() { console.log('语句二：I am inside!'); }
+  }
+  f();
+}());
+
+// ------
+var message = "Hello!";
+let age = 25;
+// 以下两行都会报错
+const message = "Goodbye!";
+const age = 30;
+
+对于复合类型的变量，变量名不指向数据，而是指向数据所在的地址。const命令只是保证变量名指向的地址不变，并不保证该地址的数据不变，所以将一个对象声明为常量必须非常小心。
+
+const foo = {};// foo存储的地址是不可变的，但依然可以为foo添加新属性。
+foo.prop = 123;
+foo.prop
+// 123
+foo = {} // TypeError: "foo" is read-only 不能改变地址
+const a = [];// 数组a指向的地址是不可变的，但可以对数组进行操作。
+a.push("Hello"); // 可执行
+a.length = 0;    // 可执行
+a = ["Dave"];    // 改变地址,报错 
+
+// 全局对象的属性：
+1. var命令和function命令声明的全局变量，依旧是全局对象的属性。
+2. let命令、const命令、class命令声明的全局变量，不属于全局对象的属性。
+var a = 1; // var声明的变量为全局对象的属性
+// 如果在Node的REPL环境，可以写成global.a
+// 或者采用通用方法，写成this.a
+window.a // 1
+
+let b = 1;// let声明的变量不属于全局对象的属性。
+window.b // undefined
+
+//var let const 变量的解构赋值：类似于模式匹配：
+let [x, y] = [1, 2, 3];
+x // 1
+y // 2
+
+let [a, [b], d] = [1, [2, 3], 4];
+a // 1
+b // 2
+d // 4
+
+let [foo, [[bar], baz]] = [1, [[2], 3]];
+foo // 1
+bar // 2
+baz // 3
+
+let [ , , third] = ["foo", "bar", "baz"];
+third // "baz"
+
+let [x, , y] = [1, 2, 3];
+x // 1
+y // 3
+
+let [head, ...tail] = [1, 2, 3, 4];
+head // 1
+tail // [2, 3, 4]
+
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
+
+只要某种数据结构具有Iterator接口，都可以采用数组形式的解构赋值。
+var [v1, v2, ..., vN ] = array;
+let [v1, v2, ..., vN ] = array;
+const [v1, v2, ..., vN ] = array;
+
+var [first, second, third, fourth, fifth, sixth] = fibs();
+sixth // 5
+上面代码中，fibs是一个Generator函数，原生具有Iterator接口。解构赋值会依次从这个接口>获取值。
+
+
+解构赋值允许指定默认值。
+var [foo = true] = [];
+foo // true
+[x, y = 'b'] = ['a'] // x='a', y='b'
+[x, y = 'b'] = ['a', undefined] // x='a', y='b'
+注意，ES6内部使用严格相等运算符（===），判断一个位置是否有值。所以，如果一个数组成员不严格等于undefined，默认值是不会生效的。
+
+字符串也可以解构赋值。这是因为此时，字符串被转换成了一个类似数组的对象。
+const [a, b, c, d, e] = 'hello';
+a // "h"
+b // "e"
+c // "l"
+d // "l"
+e // "o"
+类似数组的对象都有一个length属性，因此还可以对这个属性解构赋值。
+let {length : len} = 'hello';
+len // 5
+
+函数的参数也可以使用解构赋值。
+function add([x, y]){
+  return x + y;
+}
+add([1, 2]) // 3
+[[1, 2], [3, 4]].map(([a, b]) => a + b)
+// [ 3, 7 ]
+
+undefined就会触发函数参数的默认值。
+[1, undefined, 3].map((x = 'yes') => x)
+// [ 1, 'yes', 3 ]
+
+ES6的规则是，只要有可能导致解构的歧义，就不得使用圆括号。
+但是，这条规则实际上不那么容易辨别，处理起来相当麻烦。因此，建议只要有可能，就不要在模式中放置圆括号。
+
+变量解构 用途：
+1. 交换变量的值
+[x, y] = [y, x];
+2. 从函数返回多个值
+函数只能返回一个值，如果要返回多个值，只能将它们放在数组或对象里返回。有了解构赋值，取出这些值就非常方便。
+
+// 返回一个数组
+function example() {
+  return [1, 2, 3];
+}
+var [a, b, c] = example();
+
+// 返回一个对象
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  };
+}
+var { foo, bar } = example();
+3. 函数参数的定义
+解构赋值可以方便地将一组参数与变量名对应起来。
+// 参数是一组有次序的值
+function f([x, y, z]) { ... }
+f([1, 2, 3])
+
+// 参数是一组无次序的值
+function f({x, y, z}) { ... }
+f({z: 3, y: 2, x: 1})
+
+4. 提取JSON数据
+解构赋值对提取JSON对象中的数据，尤其有用。
+var jsonData = {
+  id: 42,
+  status: "OK",
+  data: [867, 5309]
+}
+let { id, status, data: number } = jsonData;
+console.log(id, status, number)
+// 42, "OK", [867, 5309]
+
+5. 函数参数的默认值
+
+6. 遍历Map结构，使用for...of 循环遍历，来同时获取key/value
+var map = new Map();
+map.set('first', 'hello');
+map.set('second', 'world');
+for (let [key, value] of map) {
+  console.log(key + " is " + value);
+}
+// first is hello
+// second is world
+
+// 获取键名
+for (let [key] of map) {
+  // ...
+}
+// 获取键值
+for (let [,value] of map) {
+  // ...
+}
+
+7. 输入模块的指定方法
+加载模块时，往往需要指定输入那些方法。解构赋值使得输入语句非常清晰。
+const { SourceMapConsumer, SourceNode } = require("source-map");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[举例分析]
+x = { shift: [].shift };
+x.shift();
+x.length;   //返回的是？
+// 0
+
+;
