@@ -1279,7 +1279,6 @@ for (x in person)
   txt=txt + person[x];
   }//for...in 会取得每个属性的值
 
-[JavaScript Number 对象]
 
 [Array function]
 
