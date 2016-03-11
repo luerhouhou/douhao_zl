@@ -851,7 +851,68 @@ localeCompare方法
 'apple'.localeCompare('apple')
 // 0
 
+[RegExp]
+ES6允许RegExp构造函数接受正则表达式作为参数，这时会返回一个原有正则表达式的拷贝。
+var regex = new RegExp(/xyz/i);
+
+如果使用RegExp构造函数的第二个参数指定修饰符，则返回的正则表达式会忽略原有的正则表达式的修饰符，只使用新指定的修饰符。
+new RegExp(/abc/ig, 'i').flags
+// "i"
+
+[u 修饰符]
+ES5 不支持四字节的UTF-16编码，会将其识别为两个字符；加上修饰符u后，ES6就可以正常识别四字节字符。
+/^\uD83D/u.test('\uD83D\uDC2A') 
+// false 加u修饰符后，识别为一个四字节字符
+/^\uD83D/.test('\uD83D\uDC2A')
+// true 
+
+1. 点（.）字符在正则表达式中，含义是除了换行符以外的任意单个字符。对于码点大于0xFFFF的Unicode字符，点字符不能识别，必须加上u修饰符。
+var s = "𠮷";
+/^.$/.test(s) // false
+/^.$/u.test(s) // true
+
+2. Unicode字符表示法
+ES6新增了使用大括号表示Unicode字符，这种表示法在正则表达式中必须加上u修饰符，才能识别。
+/\u{61}/.test('a') // false
+/\u{61}/u.test('a') // true
+/\u{20BB7}/u.test('𠮷') // true
+
+上面代码表示，如果不加u修饰符，正则表达式无法识别\u{61}这种表示法，只会认为这匹配61个连续的u。
+
+3. 量词
+使用u修饰符后，所有量词都会正确识别大于码点大于0xFFFF的Unicode字符。
+/a{2}/.test('aa') // true
+/a{2}/u.test('aa') // true
+/𠮷{2}/.test('𠮷𠮷') // false
+/𠮷{2}/u.test('𠮷𠮷') // true
+
+另外，只有在使用u修饰符的情况下，Unicode表达式当中的大括号才会被正确解读，否则会被解读为量词。
+
+4. 预定义模式
+/^\S$/.test('𠮷') // false
+/^\S$/u.test('𠮷') // true
+上面代码的\S是预定义模式，匹配所有不是空格的字符。只有加了u修饰符，它才能正确匹配码点大于0xFFFF的Unicode字符。
+利用这一点，可以写出一个正确返回字符串长度的函数。
+function codePointLength(text) {
+  var result = text.match(/[\s\S]/gu);
+  return result ? result.length : 0;
+}
+var s = "𠮷𠮷";
+s.length // 4
+codePointLength(s) // 2
+
+5. ....
+
+[字符串的正则方法]
+
 [搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。
+[搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。ES6将这4个方法，在语言内部全部调用RegExp的实例方法，从而做到所有与正则相关的方法，全都定义在RegExp对象上。
+[搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。
+[搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。String.prototype.match 调用 RegExp.prototype[Symbol.match]
+[搜索和替换] 与搜索和替换相关的有4个方法，它们都允许使用正则表达式。String.prototype.replace 调用 RegExp.prototype[Symbol.replace]
+String.prototype.search 调用 RegExp.prototype[Symbol.search]
+String.prototype.split 调用 RegExp.prototype[Symbol.split]
+
 1. match：用于确定原字符串是否匹配某个子字符串，返回匹配的子字符串数组。
 
 match方法返回一个数组，成员为匹配的第一个字符串。如果没有找到匹配，则返回null。返回数组还有index属性和input属性，分别表示匹配字符串开始的位置（从0开始）和原始字符串。
