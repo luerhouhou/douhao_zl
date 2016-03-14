@@ -1,0 +1,5 @@
+在 React-Native 中，JS 调用 OC 流程大致如下：
+
+JS call => JS Bridge => OC Bridge => OC modules & functions
+
+OC 代码通过 EXPORT_* 方法去定义暴露模块和函数，并通过 Runtime 的方法去从新包装 OC 代码到 Block 中，这样 JS 就可以调用 OC 代码了。
