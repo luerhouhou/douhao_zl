@@ -12,16 +12,55 @@ var {
 	Component
 } = React;
 // 每一个React 逐渐都带有一个key-value的状态对象，必须在组建渲染之前设置其初始状态。
-class SearchPage extends React.Component {
-	render() {
+ 
+function urlForQueryAndPage(key, value, pageNumber) {
+	var data = {
+		country: 'uk',
+		pretty: '1',
+		encoding: 'json',
+		listing_type: 'buy',
+		action: 'search_listings',
+		page: pageNumber
+	};
+	data[key] = value;
 
-		constructor(props) {
+	var querystring = Object.keys(data)
+	.map(key => key + '=' + encodeURIComponent(data[key]))
+	.join('&');
+
+	return 'http://api.nestoria.co.uk/api?' + querystring;
+};
+
+class SearchPage extends React.Component {
+
+	constructor(props) {
 			super(props);
 			this.state = {
-				searchString: 'london' // 状态变量，初始值为london
+				searchString: 'london', // 状态变量，初始值为london
+				isLoading: false
 			};
 		}
 
+	onSearchTextChanged(event) {
+		console.log('onSearchTextChanged');
+		this.setState({ searchString: event.nativeEvent.text });
+		console.log(this.state.searchString);
+	}
+
+	_executeQuery(query) { // 下划线说明是私有的
+		console.log(query);
+		this.setState({ isLoading: true });
+	}
+
+	onSearchPressed() {
+		var query = urlForQueryAndPage('place_name', this.state.searchString, 1);
+		this._executeQuery(query);
+	}
+
+	render() {
+		var spinner = this.state.isLoading ?
+					( <ActivityIndicatoeIOS hidden='true' size='large'/> ) : ( <View />);
+		console.log('SearchPage.render');
 
 		return (
 			<View style={styles.container}>
@@ -34,10 +73,14 @@ class SearchPage extends React.Component {
 
 				<View style={styles.flowRight}>
 					<TextInput style={styles.searchInput}
+						value={this.state.searchString}
+						onChange={this.onSearchTextChanged.bind(this)}
 						placeholder='Search via name or postcode'/>
 					<TouchableHighlight style={styles.button}
 						underlayColor='#99d9f4'>
-						<Text style={styles.buttonText}>Go</Text>
+						<Text style={styles.buttonText}
+							onPress={this.onSearchPressed.bind(this)}
+						>Go</Text>
 					</TouchableHighlight>
 				</View>
 				<TouchableHighlight style={styles.button}
@@ -45,6 +88,8 @@ class SearchPage extends React.Component {
 						<Text style={styles.buttonText}>Location</Text>
 				</TouchableHighlight>
 				<Image source={require('image!house')} style={styles.image}/>
+				{spinner}
+
 			</View>
 		);
 	}
