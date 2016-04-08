@@ -1,0 +1,1242 @@
+About Objective-C
+Objective-C is the primary(原生的) programming language you use when writing software for OS X and iOS. It’s a superset(超集) of the C programming language and provides object-oriented capabilities(能力) and a dynamic(动态) runtime. Objective-C inherits(继承) the syntax(语法), primitive(原始的) types, and flow control statements of C and adds syntax for defining classes and methods. It also adds language-level support for object graph management and object literals(字面值) while providing dynamic typing and binding(绑定), deferring(服从) many responsibilities(责任) until runtime.
+At a Glance
+This document introduces the Objective-C language and offers extensive(大量的) examples of its use. You’ll learn how to create your own classes describing custom objects and see how to work with some of the framework classes provided by Cocoa and Cocoa Touch. Although the framework classes are separate from the language, their use is tightly(紧密的) wound into coding with Objective-C and many language-level features rely on behavior offered by these classes.
+An App Is Built from a Network of Objects
+When building apps for OS X or iOS, you’ll spend most of your time working with objects. Those objects are instances of(实例) Objective-C classes, some of which are provided for you by Cocoa or Cocoa Touch and some of which you’ll write yourself.
+
+If you’re writing your own class, start by providing a description of the class that details the intended public interface to instances of the class. This interface includes the public properties(属性) to encapsulate(封装) relevant(重要的) data, along with a list of methods. Method declarations indicate(表明) the messages that an object can receive, and include information about the parameters(参数) required whenever the method is called. You’ll also provide a class implementation(实现), which includes the executable(可执行的) code for each method declared in the interface.
+
+Relevant Chapters: Defining Classes, Working with Objects, Encapsulating Data
+
+
+Defining Classes
+Objects in Objective-C are just like objects in other object-oriented programming languages: they package data with related behavior.
+An app is built as a large ecosystem(生态系统) of interconnected objects that communicate(通信) with each other to solve specific problems, such as displaying(显示) a visual(可视化的) interface, responding to user input, or storing information. For OS X or iOS development, you don’t need to create objects from scratch(抓) to solve every conceivable(可想象的) problem; instead you have a large library of existing objects available for your use, provided by Cocoa (for OS X) and Cocoa Touch (for iOS).
+
+Some of these objects are immediately usable, such as basic data types like strings and numbers, or user interface elements like buttons and table views. Some are designed for you to customize(定制) with your own code to behave in the way you require. The app development process involves(包含) deciding how best to customize and combine(联合) the objects provided by the underlying(基础的) frameworks with your own objects to give your app its unique(独特的) set of features and functionality.
+
+In object-oriented programming terms, an object is an instance of a class. This chapter demonstrates how to define classes in Objective-C by declaring an interface, which describes the way you intend the class and its instances to be used. This interface includes the list of messages that the class can receive, so you also need to provide the class implementation, which contains the code to be executed in response to each message.
+Classes Are Blueprints(模板) for Objects
+
+A class describes the behavior and properties common to any particular type of object. For a string object (in Objective-C, this is an instance of the class NSString), the class offers various(各种各样的) ways to examine(检查) and convert转换 the internal内部的 characters that it represents表现. Similarly, the class used to describe a number object (NSNumber) offers functionality around an internal numeric value, such as converting that value to a different numeric type.
+
+In the same way that multiple buildings constructed from the same blueprint are identical相同的 in structure, every instance of a class shares the same properties and behavior as all other instances of that class. Every NSString instance behaves in the same way, regardless不管 of the internal string of characters it holds保留.
+
+Any particular object is designed to be used in specific ways. You might know that a string object represents some string of characters, but you don’t need to know the exact internal mechanisms内在的机理 used to store those characters. You don’t know anything about the internal behavior used by the object itself to work directly with its characters, but you do need to know how you are expected to interact交互 with the object, perhaps to ask it for specific characters or request a new object in which all the original原始的 characters are converted to uppercase.
+
+In Objective-C, the class interface specifies说明 exactly how a given type of object is intended to be used by other objects. In other words, it defines the public interface between instances of the class and the outside world.
+
+
+
+Mutability易变的 Determines改变 Whether a Represented表现 Value Can Be Changed
+Some classes define objects that are immutable不可变的. This means that the internal contents内部的内容 must be set when an object is created, and cannot subsequently后来 be changed by other objects. In Objective-C, all basic NSString and NSNumber objects are immutable. If you need to represent a different number, you must use a new NSNumber instance.
+
+Some immutable classes also offer a mutable version. If you specifically need to change the contents of a string at runtime, for example by appending附加 characters as they are received over a network connection, you can use an instance of the NSMutableString class. Instances of this class behave just like NSString objects, except that they also offer functionality to change the characters that the object represents.
+
+Although NSString and NSMutableString are different classes, they have many similarities. Rather than writing two completely separate classes from scratch that just happen to have some similar behavior, it makes sense to make use of inheritance.
+
+Classes Inherit from Other Classes
+In the natural world, taxonomy分类学 classifies分类 animals into groups with terms like species物种, genus属, and family. These groups are hierarchical分层的, such that multiple species may belong to one genus, and multiple genera to one family.
+
+Gorillas大猩猩, humans, and orangutans猩猩, for example, have a number of obvious similarities. Although they each belong to different species, and even different genera, tribes部落, and subfamilies子族, they are taxonomically related since they all belong to the same family (called “Hominidae人科”), as shown in Figure 1-1.
+In the world of object-oriented programming, objects are also categorized into hierarchical groups. Rather than using distinct terms for the different hierarchical levels such as genus or species, objects are simply organized into classes. In the same way that humans inherit certain characteristics as members of the Hominidae family, a class can be set to inherit functionality from a parent class.
+
+When one class inherits from another, the child inherits all the behavior and properties defined by the parent. It also has the opportunity either to define its own additional behavior and properties, or override覆盖 the behavior of the parent.
+
+In the case of Objective-C string classes, the class description for NSMutableString specifies that the class inherits from NSString, as shown in Figure 1-2. All of the functionality provided by NSString is available in NSMutableString, such as querying查询 specific characters or requesting new uppercase strings, but NSMutableString adds methods that allow you to append, insert, replace or delete substrings and individual characters.
+The Root Class Provides Base Functionality
+In the same way that all living organisms生物 share some basic “life” characteristics, some functionality is common across all objects in Objective-C.
+
+When an Objective-C object needs to work with an instance of another class, it is expected that the other class offers certain确定的 basic characteristics and behavior. For this reason, Objective-C defines a root class from which the vast大量的 majority大部分 of other classes inherit, called NSObject. When one object encounters遭遇 another object, it expects to be able to interact相互作用 using at least the basic behavior defined by the NSObject class description.
+
+When you’re defining your own classes, you should at a minimum inherit from NSObject. In general通常, you should find a Cocoa or Cocoa Touch object that offers the closest最近的 functionality to what you need and inherit from that.
+
+If you want to define a custom button for use in an iOS app, for example, and the provided UIButton class doesn’t offer enough customizable可定制的 attributes属性 to satisfy your needs, it makes more sense to create a new class inheriting from UIButton than from NSObject. If you simply inherited from NSObject, you’d need to duplicate重复 all the complex visual interactions视觉交互 and communication通信 defined by the UIButton class just to make your button behave in the way expected by the user. Furthermore此外, by inheriting from UIButton, your subclass automatically gains自动获得 any future enhancements or bug fixes修理 that might be applied to the internal内部 UIButton behavior.
+
+The UIButton class itself is defined to inherit from UIControl, which describes basic behavior common to all user interface controls on iOS. The UIControl class in turn inherits from UIView, giving it functionality common to objects that are displayed表现 on screen. UIView inherits from UIResponder, allowing it to respond to user input such as taps点击, gestures手势 or shakes抖动. Finally, at the root of the tree, UIResponder inherits from NSObject, as shown in Figure 1-3.
+This chain链 of inheritance means that any custom subclass of UIButton would inherit not only the functionality declared by UIButton itself, but also the functionality inherited from each superclass in turn. You’d end up with a class for an object that behaved like a button, could display itself on screen, respond to user input, and communicate with any other basic Cocoa Touch object.
+
+It’s important to keep the inheritance chain in mind for any class you need to use, in order to work out exactly what it can do. The class reference参照 documentation provided for Cocoa and Cocoa Touch, for example, allows easy navigation浏览 from any class to each of its superclasses. If you can’t find what you’re looking for in one class interface or reference, it may very well be defined or documented in a superclass further进一步 up the chain.
+
+The Interface for a Class Defines Expected Interactions
+One of the many benefits of object-oriented programming is the idea mentioned提到 earlier—all you need to know in order to use a class is how to interact with its instances. More specifically, an object should be designed to hide the details of its internal implementation.
+
+If you use a standard UIButton in an iOS app, for example, you don’t need to worry about how pixels像素 are manipulated操作 so that the button appears on screen. All you need to know is that you can change certain attributes, such as the button’s title and color, and trust that when you add it to your visual interface, it will be displayed correctly and behave in the way you expect.
+
+When you’re defining your own class, you need to start by figuring out these public attributes and behaviors. What attributes do you want to be accessible publicly? Should you allow those attributes to be changed? How do other objects communicate with instances of your class?
+
+This information goes into the interface for your class—it defines the way you intend other objects to interact with instances of your class. The public interface is described separately from the internal behavior of your class, which makes up the class implementation. In Objective-C, the interface and implementation are usually placed in separate files so that you only need to make the interface public.
+
+Properties Control Access to an Object’s Values
+Objects often have properties intended for public access. If you define a class to represent a human being in a record-keeping app, for example, you might decide you need properties for strings representing a person’s first and last names.
+
+Declarations for these properties should be added inside the interface, like this:
+
+@interface Person : NSObject
+ 
+@property NSString *firstName;
+@property NSString *lastName;
+ 
+@end
+In this example, the Person class declares two public properties, both of which are instances of the NSString class.
+
+Both these properties are for Objective-C objects, so they use an asterisk星号 to indicate表明 that they are C pointers. They are also statements语句 just like any other variable declaration in C, and therefore require a semi-colon半圆冒号 at the end.
+
+You might decide to add a property to represent代表 a person’s year of birth to allow you to sort people in year groups rather than just by name. You could use a property for a number object:
+
+@property NSNumber *yearOfBirth;
+but this might be considered overkill过度的杀伤 just to store储备 a simple numeric value. One alternative替换物 would be to use one of the primitive原始的 types provided by C, which hold scalar标量 values, such as an integer:
+
+@property int yearOfBirth;
+Property Attributes属性 Indicate表明 Data Accessibility and Storage Considerations
+
+The examples shown so far all declare properties that are intended for complete public access. This means that other objects can both read and change the values of the properties.
+
+In some cases, you might decide to declare that a property is not intended to be changed. In the real world, a person must fill out a large amount of paperwork to change their documented first or last name. If you were writing an official record-keeping app, you might choose that the public properties for a person’s name be specified as read-only, requiring that any changes be requested through an intermediary中间人 object responsible负责 for validating确认 the request and approving批准 or denying拒绝 it.
+
+Objective-C property declarations can include property attributes, which are used to indicate, among other things, whether a property is intended to be read-only. In an official官方的 record-keeping app, the Person class interface might look like this:
+
+@interface Person : NSObject
+@property (readonly) NSString *firstName;
+@property (readonly) NSString *lastName;
+@end
+Property attributes are specified详细的 inside parentheses圆括号 after the @property keyword, and are described fully in Declare Public Properties for Exposed Data.
+Declare Public Properties for Exposed Data
+Objective-C properties offer a way to define the information that a class is intended to encapsulate封装. As you saw in Properties Control Access to an Object’s Values, property declarations are included in the interface for a class, like this:
+
+@interface XYZPerson : NSObject
+@property NSString *firstName;
+@property NSString *lastName;
+@end
+In this example, the XYZPerson class declares string properties to hold a person’s first and last name.
+
+Given that one of the primary principles in object-oriented programming is that an object should hide its internal workings behind its public interface, it’s important to access an object’s properties using behavior exposed外露 by the object rather than trying to gain增加 access to the internal values directly.
+
+
+Method Declarations Indicate the Messages an Object Can Receive
+The examples so far have involved涉及 a class describing a typical model object, or an object designed primarily to encapsulate data. In the case of a Person class, it’s possible that there wouldn’t need to be any functionality beyond being able to access the two declared properties. The majority of classes, however, do include behavior in addition to any declared properties.
+
+Given that Objective-C software is built from a large network of objects, it’s important to note that those objects can interact with each other by sending messages. In Objective-C terms, one object sends a message to another object by calling a method on that object.
+
+Objective-C methods are conceptually概念上 similar to standard functions in C and other programming languages, though the syntax is quite different. A C function declaration looks like this:
+
+void SomeFunction();
+The equivalent Objective-C method declaration looks like this:
+
+- (void)someMethod;
+In this case, the method has no parameters. The C void keyword is used inside parentheses at the beginning of the declaration to indicate that the method doesn’t return any value once it’s finished.
+
+The minus sign (-) at the front of the method name indicates that it is an instance method, which can be called on any instance of the class. This differentiates it from class methods, which can be called on the class itself, as described in Objective-C Classes Are also Objects.
+
+Objective-C Classes Are also Objects
+
+In Objective-C, a class is itself an object with an opaque不透明的 type called Class. Classes can’t have properties defined using the declaration syntax shown earlier for instances, but they can receive messages.
+
+The typical use for a class method is as a factory method, which is an alternative to the object allocation and initialization procedure described in Objects Are Created Dynamically. The NSString class, for example, has a variety of factory methods available to create either an empty string object, or a string object initialized with specific characters, including:
+
++ (id)string;
++ (id)stringWithString:(NSString *)aString;
++ (id)stringWithFormat:(NSString *)format, …;
++ (id)stringWithContentsOfFile:(NSString *)path encoding:(NSStringEncoding)enc error:(NSError **)error;
++ (id)stringWithCString:(const char *)cString encoding:(NSStringEncoding)enc;
+As shown in these examples, class methods are denoted by the use of a + sign, which differentiates them from instance methods using a - sign.
+
+Class method prototypes may be included in a class interface, just like instance method prototypes. Class methods are implemented in the same way as instance methods, inside the @implementation block for the class.
+
+As with C function prototypes原型, a method declaration inside an Objective-C class interface is just like any other C statement and requires a terminating semi-colon.
+
+Methods Can Take Parameters参数
+
+If you need to declare a method to take one or more parameters, the syntax is very different to a typical C function.
+
+For a C function, the parameters are specified inside parentheses, like this:
+
+void SomeFunction(SomeType value);
+An Objective-C method declaration includes the parameters as part of its name, using colons, like this:
+
+- (void)someMethodWithValue:(SomeType)value;
+As with the return type, the parameter type is specified in parentheses, just like a standard C type-cast.
+
+If you need to supply multiple parameters, the syntax is again quite different from C. Multiple parameters to a C function are specified inside the parentheses, separated by commas; in Objective-C, the declaration for a method taking two parameters looks like this:
+
+- (void)someMethodWithFirstValue:(SomeType)value1 secondValue:(AnotherType)value2;
+In this example, value1 and value2 are the names used in the implementation to access the values supplied when the method is called, as if they were variables.
+
+Some programming languages allow function definitions with so-called named arguments; it’s important to note that this is not the case in Objective-C. The order of the parameters in a method call must match the method declaration, and in fact the secondValue: portion of the method declaration is part of the name of the method:
+
+someMethodWithFirstValue:secondValue:
+This is one of the features that helps make Objective-C such a readable language, because the values passed by a method call are specified inline, next to the relevant portion of the method name, as described in You Can Pass Objects for Method Parameters.
+
+You Can Pass Objects for Method Parameters
+If you need to pass along an object when sending a message, you supply an object pointer for one of the method parameters. The previous chapter described the syntax to declare a method with a single parameter:
+
+- (void)someMethodWithValue:(SomeType)value;
+The syntax to declare a method that takes a string object, therefore, looks like this:
+
+- (void)saySomething:(NSString *)greeting;
+You might implement the saySomething: method like this:
+
+- (void)saySomething:(NSString *)greeting {
+    NSLog(@"%@", greeting);
+}
+The greeting pointer behaves like a local variable and is limited in scope范围 just to the saySomething: method, even though the actual string object that it points to existed prior先前 to the method being called, and will continue to exist after the method completes.
+
+Note: NSLog() uses format specifiers to indicate substitution tokens, just like the C standard library printf() function. The string logged to the console is the result of modifying the format string (the first argument) by inserting the provided values (the remaining arguments).
+There is one additional额外的 substitution代替 token available in Objective-C, %@, used to denote an object. At runtime, this specifier will be substituted with the result of calling either the descriptionWithLocale: method (if it exists) or the description method on the provided object. The description method is implemented by NSObject to return the class and memory address of the object, but many Cocoa and Cocoa Touch classes override it to provide more useful information. In the case of NSString, the description method simply returns the string of characters that it represents.
+For more information about the available format specifiers for use with NSLog() and the NSString class, see String Format Specifiers in String Programming Guide.
+
+Note: The value1 and value2 value names used above aren’t strictly part of the method declaration, which means it’s not necessary to use exactly the same value names in the declaration as you do in the implementation. The only requirement is that the signature matches, which means you must keep the name of the method as well as the parameter and return types exactly the same.
+As an example, this method has the same signature as the one shown above:
+- (void)someMethodWithFirstValue:(SomeType)info1 secondValue:(AnotherType)info2;
+These methods have different signatures to the one above:
+- (void)someMethodWithFirstValue:(SomeType)info1 anotherValue:(AnotherType)info2;
+- (void)someMethodWithFirstValue:(SomeType)info1 secondValue:(YetAnotherType)info2;
+
+Class Names Must Be Unique独一无二的
+It’s important to note that the name of each class must be unique within an app, even across included libraries or frameworks. If you attempt to create a new class with the same name as an existing class in a project, you’ll receive a compiler error.
+
+For this reason, it’s advisable明智的 to prefix the names of any classes you define, using three or more letters. These letters might relate to the app you’re currently writing, or to the name of a framework of reusable可重用的 code, or perhaps just your initials英文缩写.
+
+All examples given in the rest of this document use class name prefixes, like this:
+
+@interface XYZPerson : NSObject
+@property (readonly) NSString *firstName;
+@property (readonly) NSString *lastName;
+@end
+Historical Note: If you’re wondering why so many of the classes you encounter遭遇 have an NS prefix, it’s because of the past history of Cocoa and Cocoa Touch. Cocoa began life as the collected frameworks used to build apps for the NeXTStep operating system. When Apple purchased收购 NeXT back in 1996, much of NeXTStep was incorporated合并 into OS X, including the existing class names. Cocoa Touch was introduced as the iOS equivalent of Cocoa; some classes are available in both Cocoa and Cocoa Touch, though there are also a large number of classes unique to each platform.
+Two-letter prefixes like NS and UI (for User Interface elements on iOS) are reserved保留 for use by Apple.
+Method and property names, by contrast相比之下, need only be unique within the class in which they are defined. Although every C function in an app must have a unique name, it’s perfectly acceptable (and often desirable) for multiple Objective-C classes to define methods with the same name. You can’t define a method more than once within the same class declaration, however, though if you wish to override a method inherited from a parent class, you must use the exact name used in the original declaration.
+
+As with methods, an object’s properties and instance variables (described in Most Properties Are Backed by Instance Variables) need to be unique only within the class in which they are defined. If you make use of global variables, however, these must be named uniquely within an app or project.
+
+Further naming conventions and suggestions are given in Conventions.
+
+Most Properties Are Backed by Instance Variables
+By default默认, a readwrite property will be backed by an instance variable, which will again be synthesized合成 automatically自动的 by the compiler.
+
+An instance variable实例变量 is a variable that exists and holds its value for the life of the object. The memory used for instance variables is allocated分配 when the object is first created (through alloc), and freed when the object is deallocated解除.
+
+Unless you specify otherwise, the synthesized instance variable has the same name as the property, but with an underscore下划线 prefix. For a property called firstName, for example, the synthesized instance variable will be called _firstName.
+
+Although it’s best practice for an object to access its own properties using accessor methods or dot syntax, it’s possible to access the instance variable directly from any of the instance methods in a class implementation. The underscore prefix makes it clear that you’re accessing an instance variable rather than, for example, a local variable:
+
+- (void)someMethod {
+    NSString *myString = @"An interesting string";
+ 
+    _someString = myString;
+}
+In this example, it’s clear that myString is a local局部 variable and _someString is an instance variable.
+
+In general, you should use accessor methods or dot syntax for property access even if you’re accessing an object’s properties from within its own implementation, in which case you should use self:
+
+- (void)someMethod {
+    NSString *myString = @"An interesting string";
+ 
+    self.someString = myString;
+  // or
+    [self setSomeString:myString];
+}
+The exception to this rule is when writing initialization, deallocation or custom accessor methods, as described later in this section.
+
+
+
+Categories(分类) Extend Existing Classes
+Rather than creating an entirely(完整的) new class to provide minor(较小的) additional(附加) capabilities(能力) over an existing class, it’s possible to define a category(种类) to add custom behavior to an existing class. You can use a category to add methods to any class, including classes for which you don’t have the original implementation source code, such as framework classes like NSString.
+
+If you do have the original source code for a class, you can use a class extension(扩大) to add new properties(性能), or modify(修改) the attributes(属性) of existing properties. Class extensions are commonly(通常) used to hide private behavior for use either within a single source code file, or within the private implementation of a custom framework.
+
+Relevant Chapters: Customizing Existing Classes
+
+
+Protocols(协议) Define Messaging Contracts
+The majority(多数的) of work in an Objective-C app occurs as a result of objects sending messages to each other. Often, these messages are defined by the methods declared explicitly(明确的) in a class interface. Sometimes, however, it is useful to be able to define a set of related methods that aren’t tied(绑定) directly to a specific class.
+
+Objective-C uses protocols to define a group of related methods, such as the methods an object might call on its delegate(代表), which are either optional(可选的) or required. Any class can indicate(指出) that it adopts(采用) a protocol, which means that it must also provide implementations for all of the required methods in the protocol.
+
+Relevant Chapters: Working with Protocols
+
+
+Values and Collections Are Often Represented as Objective-C Objects
+It’s common in Objective-C to use Cocoa or Cocoa Touch classes to represent values. The NSString class is used for strings of characters, the NSNumber class for different types of numbers such as integer or floating point, and the NSValue class for other values such as C structures. You can also use any of the primitive types defined by the C language, such as int, float or char.
+
+Collections are usually represented as instances of one of the collection classes, such as NSArray, NSSet, or NSDictionary, which are each used to collect other Objective-C objects.
+
+Relevant Chapters: Values and Collections
+
+
+
+Blocks Simplify Common Tasks
+Blocks are a language feature introduced to C, Objective-C and C++ to represent a unit of work; they encapsulate(封装) a block of code along with captured(捕获) state, which makes them similar to closures(闭包) in other programming languages. Blocks are often used to simplify(精简) common tasks such as collection(聚集) enumeration, sorting and testing. They also make it easy to schedule tasks for concurrent or asynchronous(异步) execution(执行) using technologies like Grand Central Dispatch (GCD)(Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。).
+
+Relevant Chapters: Working with Blocks
+
+
+
+Error Objects Are Used for Runtime Problems
+Although Objective-C includes syntax for exception handling, Cocoa and Cocoa Touch use exceptions only for programming errors (such as out of bounds(界限) array access(存取)), which should be fixed(确定) before an app is shipped(装船).
+
+All other errors—including runtime problems such as running out of disk space or not being able to access a web service—are represented by instances of the NSError class. Your app should plan for errors and decide how best to handle them in order to present the best possible user experience(经验) when something goes wrong.
+
+Relevant Chapters: Dealing with Errors
+Objective-C Code Follows Established确定的 Conventions惯例
+When writing Objective-C code, you should keep in mind a number of established coding conventions. Method names, for example, start with a lowercase小写字母 letter and use camel骆驼 case for multiple words; for example, doSomething or doSomethingElse. It’s not just the capitalization(用大写、资本化) that’s important, though; you should also make sure that your code is as readable as possible, which means that method names should be expressive善于表达, but not too verbose啰嗦.
+
+In addition此外, there are a few conventions that are required if you wish to take advantage of language or framework features. Property accessor methods, for example, must follow strict naming conventions in order to work with technologies like Key-Value Coding (KVC) or Key-Value Observing (KVO).
+
+Relevant Chapters: Conventions
+Prerequisites预备知识
+
+If you are new to OS X or iOS development, you should read through Start Developing iOS Apps Today or Start Developing Mac Apps Today before reading this document, to get a general overview of the application development process for iOS and OS X. Additionally, you should become familiar with Xcode before trying to follow the exercises at the end of most chapters in this document. Xcode is the IDE used to build apps for iOS and OS X; you’ll use it to write your code, design your app's user interface, test your application, and debug any problems.
+
+Although it’s preferable to have some familiarity with C or one of the C-based languages such as Java or C#, this document does include inline examples of basic C language features such as flow control statements. If you have knowledge of another higher-level programming language, such as Ruby or Python, you should be able to follow the content.
+
+Reasonable coverage is given to general object-oriented programming principles, particularly as they apply in the context of Objective-C, but it is assumed that you have at least a minimal familiarity with basic object-oriented concepts. If you’re not familiar with these concepts, you should read the relevant chapters in Concepts in Objective-C Programming.
+
+See Also
+
+The content in this document applies to Xcode 4.4 or later and assumes you are targeting either OS X v10.7 or later, or iOS 5 or later. For more information about Xcode, see Xcode Overview. For information on language feature availability, see Objective-C Feature Availability Index.
+
+Objective-C apps use reference counting to determine the lifetime of objects. For the most part, the Automatic Reference Counting (ARC) feature of the compiler takes care of this for you. If you are unable to take advantage of ARC, or need to convert or maintain legacy code that manages an object’s memory manually, you should read Advanced Memory Management Programming Guide.
+
+In addition to the compiler, the Objective-C language uses a runtime system to enable its dynamic and object-oriented features. Although you don’t usually need to worry about how Objective-C “works,” it’s possible to interact directly with this runtime system, as described by Objective-C Runtime Programming Guide and Objective-C Runtime Reference.
+
+
+
+Identifying and Comparing Objects
+[比较]
+isEqual:[ ？ ]
+Returns a Boolean value that indicates(表明) whether the receiver and a given object are equal. (required)
+
+Declaration
+SWIFT
+func isEqual(_ anObject: AnyObject?) -> Bool
+OBJECTIVE-C
+- (BOOL)isEqual:(id)anObject
+Parameters
+anObject	
+The object to be compared to the receiver. May be nil, in which case this method returns NO.
+Return Value
+YES if the receiver and anObject are equal, otherwise NO.
+
+Discussion
+This method defines what it means for instances(实例) to be equal. For example, a container object might define two containers as equal if their corresponding objects all respond YES to an isEqual: request. See the NSData, NSDictionary, NSArray, and NSString class specifications for examples of the use of this method.
+
+If two objects are equal, they must have the same hash value. This last point is particularly(特别的) important if you define isEqual: in a subclass(子类) and intend to put instances of that subclass into a collection. Make sure you also define hash in your subclass.
+
+Import Statement
+import ObjectiveC
+Availability
+Available in OS X v10.0 and later.
+
+
+
+isEqualToString:[比较两个字符串是否相等]
+Returns a Boolean value that indicates(表明) whether a given string is equal to the receiver using a literal(逐字的) Unicode-based comparison.
+
+Declaration
+SWIFT
+func isEqualToString(_ aString: String) -> Bool
+OBJECTIVE-C
+- (BOOL)isEqualToString:(NSString *)aString
+Parameters
+aString	
+The string with which to compare the receiver.
+Return Value
+YES if aString is equivalent to the receiver (if they have the same id or if they are NSOrderedSame in a literal comparison), otherwise NO.
+
+Discussion
+The comparison uses the canonical(标准的) representation(表示) of strings, which for a particular string is the length of the string plus the Unicode characters that make up the string. When this method compares two strings, if the individual(单独的) Unicodes are the same, then the strings are equal, regardless of the backing store. “Literal” when applied to string comparison means that various Unicode decomposition rules are not applied and Unicode characters are individually compared. So, for instance, “Ö” represented as the composed character sequence “O” and umlaut would not compare equal to “Ö” represented as one Unicode character.
+
+Special Considerations
+When you know both objects are strings, this method is a faster way to check equality than isEqual:.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+
+
+
+compare:
+Returns the result of invoking compare:options:range: with no options and the receiver’s full extent as the range.
+
+Declaration
+SWIFT
+func compare(_ aString: String) -> NSComparisonResult
+OBJECTIVE-C
+- (NSComparisonResult)compare:(NSString *)aString
+Parameters
+aString	
+The string with which to compare the receiver.
+
+This value must not be nil. If this value is nil, the behavior is undefined and may change in future versions of OS X.
+Return Value
+The result of invoking compare:options:range: with no options and the receiver’s full extent as the range.
+
+Discussion
+If you are comparing strings to present to the end-user, you should typically use localizedCompare: or localizedCaseInsensitiveCompare: instead.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+
+
+compare:options:
+Compares the string with the specified string using the given options.
+
+Declaration
+SWIFT
+func compare(_ aString: String,
+     options mask: NSStringCompareOptions) -> NSComparisonResult
+OBJECTIVE-C
+- (NSComparisonResult)compare:(NSString *)aString
+                      options:(NSStringCompareOptions)mask
+Parameters
+aString	
+The string with which to compare the receiver.
+
+This value must not be nil. If this value is nil, the behavior is undefined and may change in future versions of OS X.
+mask	
+Options for the search—you can combine any of the following using a C bitwise OR operator(或者 |): NSCaseInsensitiveSearch, NSLiteralSearch, NSNumericSearch. See String Programming Guide for details on these options.
+Return Value
+The result of invoking compare:options:range: with a given mask as the options and the receiver’s full extent as the range.
+
+Discussion
+If you are comparing strings to present to the end-user, you should typically use localizedCompare: or localizedCaseInsensitiveCompare: instead, or use compare:options:range:locale: and pass the user’s locale.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+
+NSComparisonResult
+These constants(常量) are used to indicate(表明) how items in a request are ordered.
+
+Declaration
+OBJECTIVE-C
+enum {
+   NSOrderedAscending  = -1,
+   NSOrderedSame ,
+   NSOrderedDescending 
+};
+typedef NSInteger  NSComparisonResult;
+Constants
+NSOrderedAscending
+The left operand(操作数) is smaller than the right operand.
+
+Available in OS X v10.0 and later.
+
+NSOrderedSame
+The two operands are equal.
+
+Available in OS X v10.0 and later.
+
+NSOrderedDescending
+The left operand is greater than the right operand.
+
+Available in OS X v10.0 and later.
+
+Discussion
+These constants are used to indicate how items in a request are ordered, from the first one given in a method invocation(调用) or function call to the last (that is, left to right in code).
+
+Import Statement
+Availability
+Available in OS X v10.0 and later.
+
+
+
+Search and Comparison Options
+These values represent(代表) the options available to many of the string classes’ search and comparison methods.
+Declaration
+OBJECTIVE-C
+enum {
+   NSCaseInsensitiveSearch  = 1,
+   NSLiteralSearch  = 2,
+   NSBackwardsSearch  = 4,
+   NSAnchoredSearch  = 8,
+   NSNumericSearch  = 64,
+   NSDiacriticInsensitiveSearch  = 128,
+   NSWidthInsensitiveSearch  = 256,
+   NSForcedOrderingSearch  = 512,
+   NSRegularExpressionSearch  = 1024
+};
+Constants
+NSCaseInsensitiveSearch
+A case-insensitive(不敏感的，不区分大小写的) search.
+
+Available in OS X v10.0 and later.
+
+NSLiteralSearch
+Exact character-by-character equivalence.(完全比较，区分大小写)
+
+Available in OS X v10.0 and later.
+
+NSBackwardsSearch
+Search from end of source string.
+
+Available in OS X v10.0 and later.
+
+NSAnchoredSearch
+Search is limited to start (or end, if NSBackwardsSearch) of source string.
+
+Available in OS X v10.0 and later.
+
+NSNumericSearch
+Numbers within strings are compared using numeric(数值) value, that is, Name2.txt < Name7.txt < Name25.txt.
+
+Numeric comparison only applies to the numerals in the string, not other characters that would have meaning in a true number such as a negative sign or a decimal point.
+
+This option only applies to compare methods, not find.
+
+Available in OS X v10.3 and later.
+
+NSDiacriticInsensitiveSearch
+Search ignores diacritic marks.
+
+For example, ‘ö’ is equal to ‘o’.
+
+Available in OS X v10.5 and later.
+
+NSWidthInsensitiveSearch
+Search ignores width differences in characters that have full-width and half-width forms, as occurs in East Asian character sets.
+
+For example, with this option, the full-width Latin small letter 'a' (Unicode code point U+FF41) is equal to the basic Latin small letter 'a' (Unicode code point U+0061).
+
+
+NSForcedOrderingSearch
+Comparisons are forced to return either NSOrderedAscending or NSOrderedDescending if the strings are equivalent but not strictly equal.
+
+This option ensures reliable, reproducible results when sorting. For example, “aaa” is greater than "AAA” if NSCaseInsensitiveSearch is specified.
+
+NSRegularExpressionSearch
+The search string is treated as an ICU-compatible regular expression. If set, no other options can apply except NSCaseInsensitiveSearch and NSAnchoredSearch. You can use this option only with the rangeOfString:... methods and stringByReplacingOccurrencesOfString:withString:options:range:.
+
+
+
+compare:options:range:
+Returns the result of invoking(调用) compare:options:range:locale: with a nil locale.
+
+Declaration
+SWIFT
+func compare(_ aString: String,
+     options mask: NSStringCompareOptions,
+       range range: NSRange) -> NSComparisonResult
+OBJECTIVE-C
+- (NSComparisonResult)compare:(NSString *)aString
+                      options:(NSStringCompareOptions)mask
+                        range:(NSRange)range
+Parameters
+aString	
+The string with which to compare the range of the receiver specified by range.
+
+This value must not be nil. If this value is nil, the behavior is undefined and may change in future versions of OS X.
+mask	
+Options for the search—you can combine any of the following using a C bitwise OR operator: NSCaseInsensitiveSearch, NSLiteralSearch, NSNumericSearch.
+
+See String Programming Guide for details on these options.
+range	
+The range of the receiver over which to perform the comparison. The range must not exceed the bounds of the receiver.
+IMPORTANT
+Raises an NSRangeException if range exceeds the bounds of the receiver.
+Return Value
+The result of invoking compare:options:range:locale: with a nil locale.
+
+Discussion
+If you are comparing strings to present to the end-user, use compare:options:range:locale: instead and pass the current locale.
+
+Import Statement
+import Foundation
+
+
+
+compare:options:range:locale:
+Compares the string using the specified options and returns the lexical ordering for the range.
+
+Declaration
+SWIFT
+func compare(_ aString: String,
+     options mask: NSStringCompareOptions,
+       range range: NSRange,
+      locale locale: AnyObject?) -> NSComparisonResult
+OBJECTIVE-C
+- (NSComparisonResult)compare:(NSString *)aString
+                      options:(NSStringCompareOptions)mask
+                        range:(NSRange)range
+                       locale:(id)locale
+Parameters
+aString	
+The string with which to compare the range of the receiver specified by range.
+
+This value must not be nil. If this value is nil, the behavior is undefined and may change in future versions of OS X.
+mask	
+Options for the search—you can combine any of the following using a C bitwise OR operator: NSCaseInsensitiveSearch, NSLiteralSearch, NSNumericSearch.
+
+See String Programming Guide for details on these options.
+range	
+The range of the receiver over which to perform the comparison. The range must not exceed the bounds of the receiver.
+IMPORTANT
+Raises an NSRangeException if range exceeds the bounds of the receiver.
+locale	
+An instance of NSLocale. To use the current locale, pass [NSLocale currentLocale]. For example, if you are comparing strings to present to the end-user, use the current locale. To use the system locale, pass nil.
+Return Value
+Returns an NSComparisonResult value that indicates the lexical ordering of a specified range within the receiver and a given string. NSOrderedAscending if the substring of the receiver given by range precedes aString in lexical ordering for the locale given in dict, NSOrderedSame if the substring of the receiver and aString are equivalent in lexical value, and NSOrderedDescending if the substring of the receiver follows aString.
+
+Discussion
+The locale argument affects both equality and ordering algorithms. For example, in some locales, accented characters are ordered immediately after the base; other locales order them after “z”.
+
+Special Considerations
+Prior to OS X v10.5, the locale argument was an instance of NSDictionary. On OS X v10.5 and later, if you pass an instance of NSDictionary the current locale is used instead.
+
+Import Statement
+import Foundation
+
+
+
+
+hasPrefix:[有前缀]
+Returns a Boolean value that indicates whether a given string matches the beginning characters of the receiver.
+
+Declaration
+SWIFT
+func hasPrefix(_ aString: String) -> Bool
+OBJECTIVE-C
+- (BOOL)hasPrefix:(NSString *)aString
+Parameters
+aString	
+A string.
+Return Value
+YES if aString matches the beginning characters of the receiver, otherwise NO. Returns NO if aString is empty.
+
+Discussion
+This method is a convenience(便利的) for comparing strings using the NSAnchoredSearch option. See String Programming Guide for more information.
+
+Import Statement
+import Foundation
+
+
+
+hasSuffix:[有后缀]
+Returns a Boolean value that indicates whether a given string matches the ending characters of the receiver.
+
+Declaration
+SWIFT
+func hasSuffix(_ aString: String) -> Bool
+OBJECTIVE-C
+- (BOOL)hasSuffix:(NSString *)aString
+Parameters
+aString	
+A string.
+Return Value
+YES if aString matches the ending characters of the receiver, otherwise NO. Returns NO if aString is empty.
+
+Discussion
+This method is a convenience for comparing strings using the NSAnchoredSearch and NSBackwardsSearch options. See String Programming Guide for more information.
+
+Import Statement
+import Foundation
+
+
+
+
+rangeOfString:
+Finds and returns the range of the first occurrence(发现) of a given string within the receiver.
+
+Declaration
+SWIFT
+func rangeOfString(_ aString: String) -> NSRange
+OBJECTIVE-C
+- (NSRange)rangeOfString:(NSString *)aString
+Parameters
+aString	
+The string to search for. This value must not be nil.
+
+Raises an NSInvalidArgumentException if aString is nil.
+Return Value
+An NSRange structure giving the location and length in the receiver of the first occurrence of aString. Returns {NSNotFound, 0} if aString is not found or is empty (@"").
+
+Discussion
+Invokes rangeOfString:options: with no options.
+
+Import Statement
+import Foundation
+
+
+
+rangeOfString:options:
+Finds and returns the range of the first occurrence of a given string within the receiver, subject(服从) to given options.
+
+Declaration
+SWIFT
+func rangeOfString(_ aString: String,
+           options mask: NSStringCompareOptions) -> NSRange
+OBJECTIVE-C
+- (NSRange)rangeOfString:(NSString *)aString
+                 options:(NSStringCompareOptions)mask
+Parameters
+aString	
+The string to search for. This value must not be nil.
+IMPORTANT
+Raises an NSInvalidArgumentException if aString is nil.
+mask	
+A mask specifying search options. The following options may be specified by combining them with the C bitwise OR operator: NSCaseInsensitiveSearch, NSLiteralSearch, NSBackwardsSearch, NSAnchoredSearch. See String Programming Guide for details on these options.
+Return Value
+An NSRange structure giving the location and length in the receiver of the first occurrence of aString, modulo the options in mask. Returns {NSNotFound, 0} if aString is not found or is empty (@"").
+
+Discussion
+Invokes rangeOfString:options:range: with the options specified by mask and the entire extent of the receiver as the range.
+
+Import Statement
+import Foundation
+
+
+
+
+rangeOfString:options:range:
+Finds and returns the range of the first occurrence of a given string, within the given range of the receiver, subject to given options.
+
+Declaration
+SWIFT
+func rangeOfString(_ aString: String,
+           options mask: NSStringCompareOptions,
+             range aRange: NSRange) -> NSRange
+OBJECTIVE-C
+- (NSRange)rangeOfString:(NSString *)aString
+                 options:(NSStringCompareOptions)mask
+                   range:(NSRange)aRange
+Parameters
+aString	
+The string for which to search. This value must not be nil.
+
+Raises an NSInvalidArgumentException if aString is nil.
+mask	
+A mask specifying search options. The following options may be specified by combining them with the C bitwise OR operator: NSCaseInsensitiveSearch, NSLiteralSearch, NSBackwardsSearch, and NSAnchoredSearch. See String Programming Guide for details on these options.
+aRange	
+The range within the receiver for which to search for aString.
+
+Raises an NSRangeException if aRange is invalid.
+Return Value
+An NSRange structure giving the location and length in the receiver of aString within aRange in the receiver, modulo the options in mask. The range returned is relative to the start of the string, not to the passed-in range. Returns {NSNotFound, 0} if aString is not found or is empty (@"").
+
+Discussion
+The length of the returned range and that of aString may differ if equivalent composed character sequences are matched.
+
+Special Considerations
+This method detects all invalid ranges (including those with negative lengths). For applications linked against OS X v10.6 and later, this error causes an exception; for applications linked against earlier releases, this error causes a warning, which is displayed just once per application execution.
+
+Import Statement
+import Foundation
+
+
+
+
+rangeOfString:options:range:locale:
+Finds and returns the range of the first occurrence of a given string within a given range of the receiver, subject to given options, using the specified locale, if any.
+
+Declaration
+SWIFT
+func rangeOfString(_ aString: String,
+           options mask: NSStringCompareOptions,
+             range aRange: NSRange,
+            locale locale: NSLocale?) -> NSRange
+OBJECTIVE-C
+- (NSRange)rangeOfString:(NSString *)aString
+                 options:(NSStringCompareOptions)mask
+                   range:(NSRange)aRange
+                  locale:(NSLocale *)locale
+Parameters
+aString	
+The string for which to search. This value must not be nil.
+
+Raises an NSInvalidArgumentException if aString is nil.
+mask	
+A mask specifying search options. The following options may be specified by combining them with the C bitwise OR operator: NSCaseInsensitiveSearch, NSLiteralSearch, NSBackwardsSearch, and NSAnchoredSearch. See String Programming Guide for details on these options.
+aRange	
+The range within the receiver for which to search for aString.
+
+Raises an NSRangeException if aRange is invalid.
+locale	
+The locale to use when comparing the receiver with aString. To use the current locale, pass [NSLocalecurrentLocale]. To use the system locale, pass nil.
+
+The locale argument affects the equality checking algorithm. For example, for the Turkish locale, case-insensitive compare matches “I” to “ı” (Unicode code point U+0131, Latin Small Dotless I), not the normal “i” character.
+Return Value
+An NSRange structure giving the location and length in the receiver of aString within aRange in the receiver, modulo the options in mask. The range returned is relative to the start of the string, not to the passed-in range. Returns {NSNotFound, 0} if aString is not found or is empty (@"").
+
+Discussion
+The length of the returned range and that of aString may differ if equivalent composed character sequences are matched.
+
+Special Considerations
+This method detects all invalid ranges (including those with negative lengths). For applications linked against OS X v10.6 and later, this error causes an exception; for applications linked against earlier releases, this error causes a warning, which is displayed just once per application execution.
+
+Import Statement
+import Foundation
+
+
+Method Types
+
+Creating temporary strings
++ stringWithCapacity:
+Initializing an NSMutableString
+- initWithCapacity:
+Modifying a string
+- appendFormat:
+- appendString:
+- deleteCharactersInRange:
+- insertString:atIndex:
+- replaceCharactersInRange:withString:
+- setString:
+
+Class Methods
+
+stringWithCapacity:
++ (NSMutableString *)stringWithCapacity:(unsigned int)capacity
+Returns an empty mutable可变的 string, using capacity容量 as a hint提示 for how much initial最初的 storage存储 to reserve备用.
+
+Instance Methods
+
+appendFormat:
+- (void)appendFormat:(NSString *)format, ...
+Adds a constructed string to the receiver. Creates the new string by using NSString's stringWithFormat: method with the arguments listed.
+[string appendFormat:@"human %d!",39];
+See also: - appendString:
+
+appendString:
+- (void)appendString:(NSString *)aString
+Adds the characters of aString to end of the receiver.
+
+See also: - appendFormat:
+
+deleteCharactersInRange:
+- (void)deleteCharactersInRange:(NSRange)aRange
+Removes the characters in aRange from the receiver. Raises an NSRangeException if any part of aRange lies beyond the end of the string.
+
+initWithCapacity:
+- (id)initWithCapacity:(unsigned int)capacity
+Initializes a newly allocated NSMutableString, using capacity as a hint for how much memory to allocate. Returns self.
+
+insertString:atIndex:
+- (void)insertString:(NSString *)aString atIndex:(unsigned int)anIndex
+Inserts the characters of aString into the receiver, so that the new characters begin at anIndex and the existing characters from anIndex to the end are shifted移动 by the length of aString. Raises an NSRangeException if anIndex lies beyond the end of the string.
+
+replaceCharactersInRange:withString:
+- (void)replaceCharactersInRange:(NSRange)aRange
+withString:(NSString *)aString
+Replaces the characters from aRange with those in aString. Raises an NSRangeException if any part of aRange lies beyond the end of the string.
+
+setString:
+- (void)setString:(NSString *)aString
+Replaces the characters of the receiver with those in aString.
+
+
+
+NSArray and its subclass NSMutableArray manage ordered有序 collections集合 of objects called arrays. NSArray creates static arrays, and NSMutableArray creates dynamic动态的 arrays. You can use arrays when you need an ordered collection of objects.
+
+NSArray is “toll-free bridged” with its Core Foundation counterpart, CFArrayRef. See Toll-Free Bridging in Concepts概念 in Objective-C Programming for more information on toll-free bridging.
+
+Subclassing Notes
+There is typically little reason to subclass NSArray. The class does well what it is designed to do—maintain an ordered collection of objects. But there are situations where a custom NSArray object might come in handy便利. Here are a few possibilities:
+
+Changing how NSArray stores the elements of its collection. You might do this for performance reasons or for better compatibility兼容性 with legacy遗产 code.
+
+Acquiring收集 more information about what is happening to the collection (for example, statistics统计 gathering).
+
+Methods to Override
+Any subclass of NSArray must override the primitive原始的 instance methods count and objectAtIndex:. These methods must operate on the backing store that you provide for the elements of the collection. For this backing store you can use a static array, a standard NSArray object, or some other data type or mechanism机制. You may also choose to override, partially部分 or fully, any other NSArray method for which you want to provide an alternative另一选择 implementation实现.
+
+You might want to implement an initializer初始化 for your subclass that is suited适合 to the backing store that the subclass is managing. If you do, your initializer must invoke调用 one of the designated指定的 initializers of the NSArray class, either init or initWithObjects:count:. The NSArray class adopts选择 the NSCopying, NSMutableCopying, and NSCoding protocols; if you want instances of your own custom subclass created from copying or coding, override the methods in these protocols.
+
+Remember that NSArray is the public interface for a class cluster and what this entails for your subclass. You must provide the storage for your subclass and implement the primitive methods that directly act on that storage.
+
+Alternatives替代 to Subclassing
+Before making a custom class of NSArray, investigate调查 NSPointerArray and the corresponding相应地 Core Foundation type, CFArray Reference参照. Because NSArray and CFArray are “toll-free bridged,” you can substitute代替 a CFArray object for a NSArray object in your code (with appropriate casting). Although they are corresponding types, CFArray and NSArray do not have identical完全相同的 interfaces or implementations, and you can sometimes do things with CFArray that you cannot easily do with NSArray. For example, CFArray provides a set of callbacks回调, some of which are for implementing custom retain-release behavior. If you specify NULL implementations for these callbacks, you can easily get a non-retaining array.
+
+If the behavior you want to add supplements补充 that of the existing class, you could write a category分类 on NSArray. Keep in mind, however, that this category will be in effect for all instances of NSArray that you use, and this might have unintended无意识地 consequences后果. Alternatively或者, you could use composition组合 to achieve the desired behavior.
+
+
+
+The NSMutableArray class declares the programmatic interface to objects that manage a modifiable array of objects. This class adds insertion and deletion operations to the basic array-handling behavior inherited from NSArray.
+
+NSMutableArray is “toll-free bridged” with its Core Foundation counterpart副本, CFMutableArrayRef. See Toll-Free Bridging in Concepts in Objective-C Programming for more information.
+
+Subclassing Notes
+There is typically little reason to subclass NSMutableArray. The class does well what it is designed to do—maintain维护 a mutable, ordered collection of objects. But there are situations where a custom NSArray object might come in handy. Here are a few possibilities:
+
+Changing how NSMutableArray stores the elements of its collection. You might do this for performance reasons or for better compatibility with legacy code.
+
+Acquiring more information about what is happening to the collection (for example, statistics gathering).
+
+Methods to Override
+NSMutableArray defines five primitive methods:
+
+insertObject:atIndex:
+
+removeObjectAtIndex:
+
+addObject:
+
+removeLastObject
+
+replaceObjectAtIndex:withObject:
+
+In a subclass, you must override all these methods. You must also override the primitive methods of the NSArray class.
+
+Creating and Initializing a Mutable Array
+arrayWithCapacity:
+Creates and returns an NSMutableArray object with enough allocated初始化 memory to initially hold a given number of objects.
+
+Declaration
+OBJECTIVE-C
++ (instancetype)arrayWithCapacity:(NSUInteger)numItems
+Parameters
+numItems	
+The initial capacity容量 of the new array.
+Return Value
+A new NSMutableArray object with enough allocated memory to hold numItems objects.
+
+Discussion
+Mutable arrays expand as needed; numItems simply establishes建立 the object’s initial capacity.
+
+Import Statement
+Availability
+Available in OS X v10.0 and later.
+
+
+arrayWithContentsOfFile:
+Creates and returns a mutable array containg the contents of the file specified by the given path.
+
+Declaration
+OBJECTIVE-C
++ (NSMutableArray *)arrayWithContentsOfFile:(NSString *)aPath
+Parameters
+aPath	
+The path to a file containing a string representation表现 of a mutable array produced by the writeToFile:atomically: method.
+Return Value
+A mutable array containing the contents of the file specified指定 aPath. Returns nil if the file can’t be opened or if the contents of the file can’t be parsed被解析 into a mutable array.
+
+Discussion
+The mutable array representation in the file identified被识别的 by aPath must contain only property list objects (NSString, NSData, NSDate, NSNumber, NSArray, or NSDictionaray objects). For more details, see Property List Programming Guide. The objects contained by this array are immutable even if the array is mutable.
+
+Import Statement
+Availability
+Available in OS X v10.10 and later.
+
+
+arrayWithContentsOfURL:
+Creates and returns a mutable array containing the contents specified by a given URL.
+
+Declaration
+OBJECTIVE-C
++ (NSMutableArray *)arrayWithContentsOfURL:(NSURL *)aURL
+Parameters
+aURL	
+The location of the file containing a string representation of a mutable array produced by the writeToURL:atomically: method.
+Return Value
+A mutable array containing the contents specified by aURL. Returns nil if the location can’t be opened or if the contents of the location can’t be parsed into a mutable array.
+
+Discussion
+The array representation at the location identified by aURL must contain only property list objects (NSString, NSData, NSDate, NSNumber, NSArray, or NSDictionaray objects). The objects contained by this array are immutable even if the array is mutable.
+
+Import Statement
+Availability
+Available in OS X v10.10 and later.
+
+See Also
+– writeToURL:atomically:
+
+
+-init
+Initializes a newly allocated array.
+
+Declaration
+SWIFT
+init()
+OBJECTIVE-C
+- (instancetype)init
+Return Value
+An array.
+
+Discussion
+This method is a designated initializer.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.9 and later.
+
+See Also
+– initWithCapacity:
+
+
+initWithCapacity:
+Returns an array, initialized with enough memory to initially hold a given number of objects.
+
+Declaration
+SWIFT
+init(capacity numItems: Int)
+OBJECTIVE-C
+- (instancetype)initWithCapacity:(NSUInteger)numItems
+Parameters
+numItems	
+The initial capacity初始容量 of the new array.
+Return Value
+An array initialized with enough memory to hold numItems objects. The returned object might be different than the original receiver.
+
+Discussion
+Mutable arrays expand as needed; numItems simply establishes the object’s initial capacity.
+
+This method is a designated initializer指定的初始化式.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+See Also
++ arrayWithCapacity:
+– init
+
+
+initWithContentsOfFile:
+Initializes a newly allocated mutable array with the contents of the file specified by a given path
+
+Declaration
+SWIFT
+convenience init?(contentsOfFile aPath: String)
+OBJECTIVE-C
+- (NSMutableArray *)initWithContentsOfFile:(NSString *)aPath
+Parameters
+aPath	
+The path to a file containing a representation of a mutable array produced by writeToFile:atomically: method.
+Return Value
+A mutable array initialized to contain the contents of the file specified by aPath or nil if the file can’t be opened or the contents of the file can’t be parsed into a mutable array. The returned object must be different than the original receiver.
+
+Discussion
+The mutable array representation in the file identified by aPath must contain only property list objects (NSString, NSData, NSDate, NSNumber, NSArray, or NSDictionaray objects). The objects contained by this array are immutable even if the array is mutable.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.10 and later.
+
+See Also
++ arrayWithContentsOfFile:
+– writeToFile:atomically:
+
+
+
+initWithContentsOfURL:
+Initialized a newly allocated mutable array with the contents of the location specified by a given URL.
+
+Declaration
+SWIFT
+convenience init?(contentsOfURL aURL: NSURL)
+OBJECTIVE-C
+- (NSMutableArray *)initWithContentsOfURL:(NSURL *)aURL
+Parameters
+aURL	
+The location od a file containing a string representaion of a mutable array produced by writeToURL:atomically: method.
+Return Value
+A mutable array initialized to contain the contents specified by aURL. Returns nil if the location can’t be opened or if the contents of the location can’t be parsed into a mutable array. The returned objects must be different than the original receiver.
+
+Discussion
+The array representation at the location identified by aURL must contain only property list objects (NSString, NSData,NSDate, NSNumber, NSArray, or NSDictionaray objects). The objects contained by this array are immutable, even if the array is mutable.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.10 and later.
+
+See Also
++ arrayWithContentsOfURL:
+– writeToURL:atomically:
+
+
+Adding Objects
+addObject:
+Inserts a given object at the end of the array.
+
+Declaration
+SWIFT
+func addObject(_ anObject: AnyObject)
+OBJECTIVE-C
+- (void)addObject:(id)anObject
+Parameters
+anObject	
+The object to add to the end of the array’s content. This value must not be nil.
+IMPORTANT
+Raises an NSInvalidArgumentException if anObject is nil.
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+See Also
+– addObjectsFromArray:
+– removeObject:
+– setArray:
+
+
+
+addObjectsFromArray:
+Adds the objects contained in another given array to the end of the receiving array’s content.
+
+Declaration
+SWIFT
+func addObjectsFromArray(_ otherArray: [AnyObject])
+OBJECTIVE-C
+- (void)addObjectsFromArray:(NSArray *)otherArray
+Parameters
+otherArray	
+An array of objects to add to the end of the receiving array’s content.
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+See Also
+– setArray:
+– removeObject:
+
+
+
+insertObject:atIndex:
+Inserts a given object into the array’s contents at a given index.
+
+Declaration
+SWIFT
+func insertObject(_ anObject: AnyObject,
+          atIndex index: Int)
+OBJECTIVE-C
+- (void)insertObject:(id)anObject
+             atIndex:(NSUInteger)index
+Parameters
+anObject	
+The object to add to the array's content. This value must not be nil.
+IMPORTANT
+Raises an NSInvalidArgumentException if anObject is nil.
+index	
+The index in the array at which to insert anObject. This value must not be greater than the count of elements in the array.
+IMPORTANT
+Raises an NSRangeException if index is greater than the number of elements in the array.
+Discussion
+If index is already occupied使用, the objects at index and beyond are shifted by adding 1 to their indices索引 to make room.
+
+Note that NSArray objects are not like C arrays. That is, even though you specify a size when you create an array, the specified size is regarded as a “hint”; the actual size of the array is still 0. This means that you cannot insert an object at an index greater than the current count of an array. For example, if an array contains two objects, its size is 2, so you can add objects at indices 0, 1, or 2. Index 3 is illegal and out of bounds; if you try to add an object at index 3 (when the size of the array is 2), NSMutableArray raises an exception.
+[假如声明一个有10个元素长度的数组a，目前只有a0和a1有元素，则插入时，index的值只能是0/1/2]
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.0 and later.
+
+See Also
+– removeObjectAtIndex:
+
+
+
+insertObjects:atIndexes:
+Inserts the objects in the provided array into the receiving array at the specified indexes.
+
+Declaration
+SWIFT
+func insertObjects(_ objects: [AnyObject],
+         atIndexes indexes: NSIndexSet)
+OBJECTIVE-C
+- (void)insertObjects:(NSArray *)objects
+            atIndexes:(NSIndexSet *)indexes
+Parameters
+objects	
+An array of objects to insert into the receiving array.
+indexes	
+The indexes at which the objects in objects should be inserted. The count of locations in indexes must equal the count of objects. For more details, see the Discussion.
+Discussion
+Each object in objects is inserted into the receiving array in turn at the corresponding location specified in indexes after earlier insertions have been made. The implementation is conceptually similar to that illustrated in the following example.
+
+- void insertObjects:(NSArray *)additions atIndexes:(NSIndexSet *)indexes
+{
+    NSUInteger currentIndex = [indexes firstIndex];
+    NSUInteger i, count = [indexes count];
+ 
+    for (i = 0; i < count; i++)
+    {
+        [self insertObject:[additions objectAtIndex:i] atIndex:currentIndex];
+        currentIndex = [indexes indexGreaterThanIndex:currentIndex];
+    }
+}
+The resulting behavior is illustrated by the following example.
+
+NSMutableArray *array = [NSMutableArray arrayWithObjects: @"one", @"two", @"three", @"four", nil];
+NSArray *newAdditions = [NSArray arrayWithObjects: @"a", @"b", nil];
+NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndex:1];
+[indexes addIndex:3];
+[array insertObjects:newAdditions atIndexes:indexes];
+NSLog(@"array: %@", array);
+ 
+// Output: array: (one, a, two, b, three, four)
+The locations specified by indexes may therefore only exceed the bounds of the receiving array if one location specifies the count of the array or the count of the array after preceding insertions, and other locations exceeding the bounds do so in a contiguous fashion from that location, as illustrated in the following examples.
+
+In this example, both new objects are appended to the end of the array.
+
+NSMutableArray *array = [NSMutableArray arrayWithObjects: @"one", @"two", @"three", @"four", nil];
+NSArray *newAdditions = [NSArray arrayWithObjects: @"a", @"b", nil];
+NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndex:5];
+[indexes addIndex:4];
+[array insertObjects:newAdditions atIndexes:indexes];
+NSLog(@"array: %@", array);
+ 
+// Output: array: (one, two, three, four, a, b)
+If you replace [indexes addIndex:4] with [indexes addIndex:6] (so that the indexes are 5 and 6), then the application will fail with an out of bounds exception.
+
+In this example, two objects are added into the middle of the array, and another at the current end of the array (index 4) which means that it is third from the end of the modified array.
+
+NSMutableArray *array = [NSMutableArray arrayWithObjects: @"one", @"two", @"three", @"four", nil];
+NSArray *newAdditions = [NSArray arrayWithObjects: @"a", @"b", @"c", nil];
+NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndex:1];
+[indexes addIndex:2];
+[indexes addIndex:4];
+[array insertObjects:newAdditions atIndexes:indexes];
+NSLog(@"array: %@", array);
+ 
+// Output: array: (one, a, b, two, c, three, four)
+If you replace [indexes addIndex:4] with [indexes addIndex:6] (so that the indexes are 1, 2, and 6), then the output is (one, a, b, two, three, four, c).
+
+If objects or indexes is nil this method will raise an exception.
+
+Import Statement
+import Foundation
+
+Availability
+Available in OS X v10.4 and later.
+
+See Also
+– insertObject:atIndex:
+
+
+str1=[str1 substringFromIndex:2];//从指定的索引抽取子字符串，将取出的字符串赋给str1。
+str1=[str1 substringToIndex:2];//从索引0开始到指定索引抽取字符串。
+
+
+Value object
+
+A value object is in essence本质 an object-oriented wrapper包装 for a simple data element such as a string, number, or date. The common value classes in Cocoa are NSString, NSDate, and NSNumber. Value objects are often attributes属性 of other custom objects you create.
+
+Value objects offer richer behavior than the corresponding相应地 simple scalar标量 types (such as char, NSTimeInterval, int, float, or double):
+
+You can put any of the value objects in a collection, such as an instance of NSArray or NSDictionary.
+Using NSString, and its subclass NSMutableString, you can perform执行 a wide range of string-related operations运行. For example, you can join strings together, split strings apart, work on file paths, transform the case of characters, and search for substrings. In all of these, string objects are treated as Unicode.
+Using NSDate, in conjunction with NSCalendar and other related classes, you can perform complicated calendrical calculations such as determining the number of months and days between two instants in time based on the user’s preferred calendar, taking into account variables such as time zones and leap years.
+Using the NSNumber subclass NSDecimalNumber, you can accurately perform currency-based calculations.
+NSValue
+NSValue provides a simple container for a single C or Objective-C data item. It can hold any of the scalar types such as char, int, float, or double, as well as pointers, structures, and object IDs. It lets you add items of such data types to collections such as instances of NSArray and NSSet, which require their elements to be objects. This is particularly useful if you need to put point, size, or rectangle structures (such as NSPoint, CGSize, or NSRect) into a collection.

@@ -1,0 +1,2227 @@
+NeXTSTEP(Cocoa)----NS----像先辈致敬。
+
+一、隐藏或显示所有隐藏文件
+
+打开终端，输入 defaults write com.apple.finder AppleShowAllFiles -bool false 回车，再接着输入 killall Finder 可隐藏所有的隐藏文件；
+
+输入 defaults write com.apple.finder AppleShowAllFiles -bool true 回车，再接着输入 killall Finder 可显示所有的隐藏文件。
+
+
+二、设置指定文件为隐藏文件或可见文件
+
+打开终端，输入 chflags hidden ~/路径/文件夹名，即可实现隐藏某个指定的文件；
+
+输入chflags nohidden ~/路径/文件夹名，即可实现将某个隐藏文件设置为可见文件。
+
+char str[200]; scanf("%[^\n]",str);
+类方法中不能直接用self调用实例方法,不能直接调用实例变量
+[self printZhouC];
+类方法可直接调用类方法。
+只要对象的某些处理不依赖于实例变量时，可以直接使用类方法。如： 创建对象和释放对象。
+//类也是一个对象，是一个类类型的对象
+typedef struct objc_class *Class; //Class是类类型，是一个指针类型。
+-(Class)class;
+NSLog(@"%@",[shape1 class]); //取对象所属的类型。
++(Class)class;
+NSLog(@"%@",[Shape class]);
+
++(void)load		//程序运行，首先运行load方法。
+{
+	    NSLog(@"程序开始运行，首先加载类");
+}
+//在第一次需要创建对象时，程序自动调用initialize方法，创建类对象，只创建一次而不再销毁。知道程序结束。
++(void)initialize
+{
+	    NSLog(@"创建类对象");
+}
+[数学函数]
+pow(x,y); x的y次方。
+sqrt(x); x的平方根。
+floor(x); 小于x的最大整数
+ceil(x); 大于x的最小整数
+log(x); 即ln(x)。	log10(x); 以10为底的x的对数。
+abs(x); 整数x的绝对值。	fabs(x);浮点数x的绝对值
+[随机数]
+NSInteger i;
+srand((unsigned)time(NULL));
+for (i=0; i<10; i++) {
+    NSLog(@"%i",rand()%100+1);
+}
+#import <Foundation/Foundation.h> //#import可保证头文件只被包含一次，不论此命令实际上在那个文件出现多少次。可避免重复包含文件。
+[Foundation 框架]处理的是用户界面之下的层(layer)中的特性，例如数据结构和通信机制。
+[Application Kit AppKit]
+
+[NSLog]相比printf，它添加了时间戳、日期戳和自动换行'\n'。
+NSLog(@"Hello!");
+[@ ]双引号前的@，表示引用的字符串应该作为Cocoa的NSString元素来处理。
+[NSSting]相比string，添加了：告知其长度，将自身与其他字符串比较，将自身转成为整型或浮点值。
+[ %@ ],使用%@可以输出任意对象的值，结合NSString的description方法，对象可以简单的输出字符串中的字符。只是简单的调用每个对象的description方法并显示结果。
+- (NSString *)description is a useful method to override (it’s %@ in NSLog()). Example ... NSLog(@“array contents are %@”, myArray);
+The %@ is replaced with the results of invoking [myArray description].
+
+[BOOL (signed char的字符类型)]有YES值和NO值。YES和NO只是一种约定，当讲一个长度大于一个字节的整型值(如short/int)赋给一个BOOL变量时，会发生截断操作，只有低位字节会用作BOOL值，假设该低位字节刚好为0，则BOOL值将会是0，即NO值。
+FILE *wordFile = fopen ("/tmp/words.txt", "r");
+char word[100];
+while (fgets(word, 100, wordFile)) {
+	// strip off the trailing \n
+	word[strlen(word) - 1] = '\0';
+	NSLog (@"%s is %lu characters long",word, strlen(word));
+}
+	fclose (wordFile);
+注：使用代码自动完成时，名称旁边的彩色方框表示该符号的类型：E表示枚举，f表示函数，#表示#define指令，m表示方法，C表示类，等。
+[@class]告诉编译器，这是个已有的类。可以减少必须导入头文件的数量，缩短编译时间。
+注：所有Objective-C对象都使用动态分配的内存，编译器只需知道这是一个类就行了，然后就会知道实例变量就是指针的大小，在整个程序都是如此。
+[头文件 .h]存放接口部分的代码：类的@interface指令、公共struct定义、enum常量、#defines和extern全局变量等。
+[类的实现 .m]类的@implementation指令、全局变量的定义、私有struct等。
+[ .mm] 编译器认为是OC++编写的代码，可以使用C++和OC来编程。
+[防御式编程]必须检查数组索引值是否有效。
+[get]get在Cocoa中有特殊的含义。get开头的方法，就意味着这个方法使用指针作为参数传递。谨慎使用get开头来定义方法名。
+[super]重写方法后，用于调用超类中的实现方法。当向super发送消息时，实际上是在请求OC向该类的超类发送消息。如果超类没有定义该消息，OD会继续在继承链上一级中查找。
+[CoreFoundation 框架]函数和变量以CF开头。
+[Foundation Kit 框架]以CoreFoundation为基础创建。两类UI框架的基础，不包含UI对象，他的对象可以在iOS和OS X应用程序中兼容。
+[NSRange 范围结构体]表示相关事物的范围。
+typedef struct _NSRange
+{
+    unsigned int location; //范围的起始位置
+    unsigned int length;	//所含的元素个数
+}NSRange;
+NSRange range1;//直接给字段赋值
+range1.location=17;
+range1.length=4;
+NSRange range2={17,4};//C语言的聚合结构赋值机制。
+NSRange range3= NSMakeRange(17, 4); //快捷函数。NSMakeRange()的好处是可以在任何能够使用函数的地方使用，例如在方法调用中将其作为参数传递。
+[几何数据类型]
+[NSString 字符串类]
+[创建字符串]
++ (instancetype)stringWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);//1.定义最后的省略号，他表示这个方法可以接受多个以逗号隔开的其他参数，就像printf()和NSlog()一样。2.方法声明前的起始字符+号，表示把这个方法定义为类方法，类方法属于类对象，通常用于创建新的实例，这种创建新对象的类方法叫做工厂方法。不兼容中文，当在格式字符串中插入中文时，会输出乱码。
+注：OC生成一个类的时候，会创建一个代表该类的类对象。类对象包括了只想超类、类名和类方法列表的指针，还包含一个long类型的数据，为新创建的的实例对象指定大小(以字节为单位)。
+注：自己创建的大部分方法都是实例方法，用-号作为前缀来声明。这些方法将在指定的对象实例中起作用。如果某个方法所实现的是很通用的功能，比如创建一个实例对象或者访问一些全局类数据，那么最好使用+号前缀将它声明为类方法。
+NSString *height;
+height=[NSString stringWithFormat:@"Your height is %d feet, %d inches",5,11];//创建字符串，类似sprintf的语法。不兼容中文，当在格式字符串中插入中文时，会输出乱码。
+[length 实例方法]返回字符串中的字符个数
+- (NSUInteger)length;
+NSUInteger length=[height length];
+if ([height length] >35) {
+	NSLog(@"wow");
+}
+[字符串比较]
+[isEqualToString:]
+- (BOOL)isEqualToString:(NSString *)aString;//返回BOOL值，表示俩字符串的内容是否相同。
+if ([height isEqualToString: thing]) {}
+[==]仅仅比较两字符串的指针是否相等。
+注：如果检查两个对象是否为同一个时，使用==；当要检测是否相等时(即俩字符串内容是否相等)，使用isEqualToString:。
+[compare:]区分大小写的比较。返回NSOrderedAscending,表示左侧数值小于右侧数值，字典中的排序位置更靠前。
+//OC的字符串有两种类型
+//  1.一种是不可变字符串 NSString,不可变是指不能删除或者添加字符。  
+//NSString不仅仅有一个字符串，里面还有很多属性和方法
+//  2.一种是可变字符串  NSMuableString
+/***************************************************
+*  创建OC的字符串对象
+用 alloc + init 来创建字符串：存储在常量区
+***************************************************
+*/
+NSString *str=@"frewgerw";//创建常量字符串
+
+//创建空字符串，给予赋值。
+NSString *astring = [[NSString alloc] init];
+astring = @"This is a String!";
+NSLog(@"astring:%@",astring);
+// [astring release];//用对象方法创建的字符串要记得释放内存。
+
+
+//NSString *astring1 = [[NSString alloc] initWithString:@"This is a String!"];
+
+/**
+- (instancetype)initWithString:(NSString *)aString;
+用指定的字符串来初始化新字符串对象
+*/
+NSString *str1 = [[NSString alloc] initWithString:str];
+NSLog(@"%p      %p      %p",@"baidu",str,str1);//地址相同
+
+//用标准c创建字符串:initWithCString方法
+char *Cstring = "This is a String!";
+NSString *astring1 = [[NSString alloc] initWithCString:Cstring];
+NSLog(@"astring:%@",astring1);
+//[astring release];
+
+/**
+*  用C语言的字符串初始化OC字符串对象，把C字符串转换成oc字符串。
+*  UTF8 需要多少字节就分配多少字节
+*  unicode 指定每个字符占两个字节。
+- (instancetype)initWithUTF8String:(const char *)nullTerminatedCString;
+*/
+NSString *str2=[[NSString alloc] initWithUTF8String:"hello"];//分配的空间在堆上面
+NSLog(@"%@",str2);
+
+/**
+- (instancetype)initWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
+格式化的初始化字符串对象
+常用用法：  1.拼接字符串
+    2.组装数据
+    3.把其他类型的数据转换成字符串对象。
+*/
+NSString *str3=[[NSString alloc] initWithFormat:@"%@%@%d",str,str2,3];
+NSLog(@"%@",str3);
+
+
+/*********************************************************************
+*  用类方法创建字符串
+用类方法创建的对象不用操心内存，系统会将str5当作局部变量，会自动释放。临时字符串对象：存储在堆区
+注：当创建对象时，+号方法不需要创建对象，只需要通过类名调用+号方法即可-号方法则需要创建一个该类的对象，然后通过对象来调用-号方法
+*********************************************************************
++ (instancetype)string;
++ (instancetype)stringWithString:(NSString *)string;
++ (instancetype)stringWithCharacters:(const unichar *)characters length:(NSUInteger)length;
++ (instancetype)stringWithUTF8String:(const char *)nullTerminatedCString;
++ (instancetype)stringWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
+
+- (instancetype)initWithCString:(const char *)nullTerminatedCString encoding:(NSStringEncoding)encoding;
++ (instancetype)stringWithCString:(const char *)cString encoding:(NSStringEncoding)enc;
+
+*/
+
+/*---------------给字符串分配容量----------------*/
+//stringWithCapacity:
+NSMutableString *String=[NSMutableString stringWithCapacity:40];//字符串的大小并不限制于所提供的容量，这个容量只是个最优值。
+NSString *str4=@"hello234";
+NSString *str5=[NSString stringWithString:str4];//只能在当前块内使用。
+
+NSString *str6=[NSString stringWithUTF8String:"hello"];//用类方法实现C字符串转换成OC字符串,要注意C字符串前面没有@符号。
+NSString *str7=[NSString stringWithCString:"hello323" encoding:NSUTF8StringEncoding];//并指定字符编码
+
+NSString *str8=[NSString stringWithFormat:@"wrew%drew%f",56,55.000];不兼容中文，当在格式字符串中插入中文时，会输出乱码。
+
+/*******************************************************************/
+/*  比较字符串
+*
+- (BOOL)isEqualToString:(NSString *)aString;
+对象方法， 返回布尔BOOL值。相等返回一个字节的1，不相等返回一个字节的0.
+*/
+NSLog(@"%@",[str7 isEqualToString:str8]?@"相等":@"不相等");
+
+/**
+*  compare 固定返回枚举类型的三个值
+*
+- (NSComparisonResult)compare:(NSString *)string;
+
+typedef NS_ENUM(NSInteger, NSComparisonResult) {
+NSOrderedAscending = -1L,     升序
+NSOrderedSame,                相等
+NSOrderedDescending};         降序
+*
+*  比较规则,可以用或 增加比较规则
+*
+enum {
+NSCaseInsensitiveSearch  = 1,        忽略大小写
+NSLiteralSearch  = 2,                 完全比较
+NSBackwardsSearch  = 4,               从后往前，逆序比较
+NSAnchoredSearch  = 8,
+NSNumericSearch  = 64,		      按照字符串里的数字进行辅助排序
+NSDiacriticInsensitiveSearch  = 128,	忽略’-’符号的比较
+NSWidthInsensitiveSearch  = 256,
+NSForcedOrderingSearch  = 512,
+NSRegularExpressionSearch  = 1024
+};
+*/
+NSComparisonResult rec=[str1 compare:str2];
+rec=[str1 compare:str2 options:NSCaseInsensitiveSearch];//添加参数指定比较规则，忽略大小写
+/*
+- (NSComparisonResult)compare:(NSString *)string 
+                options:(NSStringCompareOptions)mask 
+                range:(NSRange)compareRange;//range表示范围
+*/
+if (rec == NSOrderedAscending) {
+NSLog(@"%@",@"左边小于右边-----升序");
+}else if (rec == NSOrderedSame){
+NSLog(@"%@",@"左边等于右边-----相等");
+}else NSLog(@"%@",@"左边大于右边-----降序");
+
+
+//不考虑大小写比较字符串1
+NSString *astring01 = @"this is a String!";
+NSString *astring02 = @"This is a String!";
+BOOL result = [astring01 caseInsensitiveCompare:astring02] == NSOrderedSame;
+NSLog(@"result:%d",result);
+
+//不考虑大小写比较字符串2
+BOOL result0 = [astring01 compare:astring02
+                 options:NSCaseInsensitiveSearch | NSNumericSearch] == NSOrderedSame;
+NSLog(@"result:%d",result0);
+
+//NSCaseInsensitiveSearch:不区分大小写比较 NSLiteralSearch:进行完全比较，区分大小写 NSNumericSearch:比较字符串的字符个数，而不是字符值。
+
+/**
+*  搜索字符串
+*  查询字符串中是否包含其他字符串，返回第一次查到的range类型。
+- (NSRange)rangeOfString:(NSString *)aString;
+
+*NSRange类型，
+typedef struct _NSRange {
+NSUInteger location; //索引从0开始
+NSUInteger length;
+} NSRange;
+
+*关于NSUInteger类型，可根据系统的种类进行匹配
+*
+#if __LP64__ || (TARGET_OS_EMBEDDED && !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+typedef long NSInteger;
+typedef unsigned long NSUInteger;
+#else
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
+#endif
+*/
+NSString *q1=@"adfgtre";
+NSString *q2=@"tre";
+
+NSRange rea=[q1 rangeOfString:q2];
+NSLog(@"location=%ld\nlenth=%ld",rea.location,rea.length);
+NSRange range52= [str51 rangeOfString:@"/" options:NSBackwardsSearch];//逆序查找。
+/*
+//想要判断是否出现过，有两种方式：1.判断length是否为0，2.判断出现的位置。
+enum {NSNotFound = NSIntegerMax};   #define NSIntegerMax    LONG_MAX
+NSNotFound的值为字符串的最大长度，当rea.location==NSNotFound时，即表示字符串搜索结束。
+*/
+if (rea.location!=NSNotFound) {
+NSLog(@"location=%ld\nlenth=%ld",rea.location,rea.length);
+}else NSLog(@"未发现");
+rea = [str1 rangeOfString:str2 options:NSCaseInsensitiveSearch];//忽略大小写进行匹配
+rea = [str1 rangeOfString:str2 options:NSLiteralSearch range:NSMakeRange(2, 4)];
+/**
+*  提取子字符串
+- (NSString *)substringFromIndex:(NSUInteger)from;
+- (NSString *)substringToIndex:(NSUInteger)to;
+- (NSString *)substringWithRange:(NSRange)range;
+*/
+str1=[str1 substringFromIndex:2];//从指定的索引开始提取子字符串，将取出的字符串赋给str1。包含给定索引对应的字符。
+str2=[str1 substringToIndex:2];//从索引0开始到指定索引抽取字符串。不包含给定索引对应的值。
+str2=[str1 substringWithRange:NSMakeRange(2,2)];//从指定的索引location开始，抽取length个字符。
+/*
+* 设定范围NSRange
+NS_INLINE NSRange NSMakeRange(NSUInteger loc, NSUInteger len) {
+NSRange r;
+r.location = loc;
+r.length = len;
+return r;//返回值
+}//将设定的两个范围值赋给NSRange结构体，进行参数传值
+
+
+*替换字符串
+*
+
+- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target
+withString:(NSString *)replacement 
+options:(NSStringCompareOptions)options 
+range:(NSRange)searchRange NS_AVAILABLE(10_5, 2_0);
+
+- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target
+withString:(NSString *)replacement NS_AVAILABLE(10_5, 2_0);
+
+- (NSString *)stringByReplacingCharactersInRange:(NSRange)range
+withString:(NSString *)replacement NS_AVAILABLE(10_5, 2_0);
+*/
+NSString *str11 = [str5 stringByReplacingCharactersInRange:NSMakeRange(2, 4) withString:@"哇咔咔卡卡咔"];//将搜索中的字符串替换成为一个新的字符串
+NSLog(@"替换后字符串为%@", str11);
+
+str2 = [str1 stringByReplacingOccurrencesOfString :@" " withString:@"@"]; //将字符串中" " 全部替换成 @  。
+NSLog(@"替换后字符串为%@", str2);
+NSString *str=@"abcdabcdabcd";
+NSString *str1=[str stringByReplacingOccurrencesOfString:@"a" withString:@"#"];
+NSLog(@"%@",str1);
+//扩展路径
+
+NSString *Path1 = @"~/NSData.txt";
+NSString *absolutePath = [Path1 stringByExpandingTildeInPath];
+NSLog(@"absolutePath:%@",absolutePath);
+NSLog(@"Path1:%@",[absolutePath stringByAbbreviatingWithTildeInPath]);
+
+//文件扩展名
+NSString *Path2 = @"~/NSData.txt";
+NSLog(@"Extension:%@",[Path2 pathExtension]);//取后缀名。
+[name hasPrefix:@".lrc"]等价[strName isEqualToString[name pathExtension]]
+/*
+@property (readonly) NSUInteger length;
+取字符串有效字符长度
+*/
+NSLog(@"%ld",[str length]);
+/**取出索引所在位置的字符,并将提取出的字符转成unicode字符类型
+- (unichar)characterAtIndex:(NSUInteger)index;
+*  typedef unsigned short unichar;
+*/
+str=@"中国";
+unichar cc=[str characterAtIndex:0];
+
+NSLog(@"%C",cc);// %C输出特殊字符
+/**
+*  直接将range转换成字符串输出
+FOUNDATION_EXPORT NSString *NSStringFromRange(NSRange range);
+FOUNDATION_EXPORT NSRange NSRangeFromString(NSString *aString);
+*/
+NSLog(@"%@",NSStringFromRange(NSMakeRange(1,10)));
+/** 将字符串中各个单词转换大小写
+三种字符串大小写转化方法，不会改变原来的字符串，而是会产生一个新的字符串，并且会将该新字符串的对象空间地址返回，存放在新声明的不可变字符串对象指针中
+*@property (readonly, copy) NSString *uppercaseString;将字符串转换成大写
+@property (readonly, copy) NSString *lowercaseString;将字符串转换成小写
+@property (readonly, copy) NSString *capitalizedString;将每个单词首字母转换成大写，单词以空格分隔
+- (NSString *)uppercaseStringWithLocale:(NSLocale *)locale NS_AVAILABLE(10_8, 6_0);
+- (NSString *)lowercaseStringWithLocale:(NSLocale *)locale NS_AVAILABLE(10_8, 6_0);
+- (NSString *)capitalizedStringWithLocale:(NSLocale *)locale NS_AVAILABLE(10_8, 6_0);
+*/
+str=@"i an a tercher";
+str=[str capitalizedString];
+NSLog(@"%@",str);
+/*检测是否有前后缀
+- (BOOL)hasPrefix:(NSString *)aString;
+- (BOOL)hasSuffix:(NSString *)aString;
+*/
+str=@"www.baidu.com";
+NSLog(@"%@",[str hasPrefix:@"www"]?@"you":@"没有");
+str=@"photo.jpg";
+NSLog(@"%@",[str hasSuffix:@".jpg"]?@"是照片":@"不是照片");
+
+//Mutable可变字符串 @interface NSMutableString : NSString
+
+NSMutableString *str21 = [NSMutableString stringWithString:@"123"];
+//创建空的可变字符串是有意义的
+[深拷贝与浅拷贝]
+- (id)copy;//返回不可变副本
+- (id)mutableCopy;//返回可变副本
+NSString * str=[mutableStr copy];//将一个可变字符串拷贝成一个不可变字符串
+NSMutableString * mutableStr=[str1 mutableCopy];//将不可变字符串拷贝成为一个可变的字符串
+/**
+*  实现将不可变字符串与可变字符串相互转换,创建了新的字符串。
+*/
+NSMutableString *stq=[NSMutableString stringWithString:str];
+NSLog(@"%p",str);
+NSLog(@"%p",stq);//地址不同
+NSString *stw=[NSString stringWithString:stq];
+NSLog(@"%p",stw);//地址不同
+/**
+  *  可变仅仅在不可变的基础上增加了： 增 删 改
+  - (void)insertString:(NSString *)aString atIndex:(NSUInteger)loc;
+  *
+  *删除可变字符串的一段内容
+  - (void)deleteCharactersInRange:(NSRange)range;
+  *
+  *在可变字符串结尾添加字符串
+  - (void)appendString:(NSString *)aString;
+  - (void)appendFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
+  *
+  *直接将字符串设置成某一内容
+  - (void)setString:(NSString *)aString;
+  *
+  *用指定的字符串替换可变字符串内指定范围的内容
+  - (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)aString;
+  */
+[stq appendString:@"-----"];
+[stq appendFormat:@"%d+%d=%d",1,2,3];
+[stq insertString:@"ta" atIndex:0];
+注：当索引下标为原可变字符串最后一个下标时，原可变字符串的最后一个字符后移，而将需要插入的字符串将以原可变字串的最后一个字符位置为起始点插入；当索引下标为原可变字符串最后一个下标+1时，该方法会将需要插入的字符串，追加到原字符串的末尾位置；当所以下标为原可变字符串最后一个下标+2时，那么恭喜你，程序就会崩溃。
+[str21 insertString:[NSString stringWithFormat:@"rew%@rew%drew",@"56",4] atIndex:i2];因为在可变字符串中，没有插入格式化字符串这一方法，所以我们可以使用此种方式来简单实现这一功能
+NSLog(@"%@",stq);
+[stq deleteCharactersInRange:NSMakeRange(11, 5)];
+[stq replaceCharactersInRange:NSMakeRange(10, 3) withString:@"##"];
+NSLog(@"%@",stq);
+[stq setString:@""];//清空字符串,将字符串设置为空字符串
+NSLog(@"%@",stq);
+/** 将oc字符串转换成不可变的c字符串。
+  返回不可变字符串
+  *  @property (readonly) __strong const char *UTF8String NS_RETURNS_INNER_POINTER;
+  */
+const char *cStr=[str UTF8String];//将一个OC字符串转化为C语言字符串
+NSLog(@"%s",cStr);
+
+/*--------将已有的字符串换成其它的字符串------*/
+//-setString:
+NSMutableString *String1 = [[NSMutableString alloc] initWithString:@"This is a NSMutableString"];
+[String1 setString:@"Hello Word!"];
+NSLog(@"String1:%@",String1);
+注：不可变字符串，不涉及字符串的增删改,但是在NSString类中，有一类追加方法需要注意。
+NSString * str61=@"I love qianfeng";
+NSString * str62=@"qianfeng";
+str61=[str61 stringByAppendingString:str62];
+使用不可变字符串对象指针str61所指向的对象空间的内容，以及不可变字符串对象指针str62所指向的对象空间的内容，生成一个新的不可变字符串对象，并将该对象的空间地址返回给str61，实现不可变字符串的拼接功能
+str61=[str61 stringByAppendingFormat:@" %@",str62];
+//与上边类似，只不过拼接的第二部分的输入格式不同
+/*
+从文件读取字符串
+*/
+NSString *path = @"astring.text";
+NSString *astrin = [[NSString alloc] initWithContentsOfFile:path];
+NSLog(@"astring:%@",astrin);
+//[astrin release];
+NSString * str26=[[NSString alloc] initWithContentsOfFile:@"/Users/qianfeng/Desktop/qfile.txt" encoding:NSUTF8StringEncoding error:nil];//在堆空间中动态开辟一个不可变字符串对象空间，并从文件中读取出文件中得数据，使用这些数据初始化当前不可变字符串对象空间
+/*----------------写字符串到文件:writeToFile方法----------------*/
+
+
+NSString *astring0 = @"This is a String!";
+NSLog(@"astring:%@",astring);
+NSString *path0 = @"astring.text";
+[astring0 writeToFile: path atomically: YES];
+//[astring0 release];
+
+
+Person *p=[[Person alloc] init];
+NSLog(@"%@",p);
+
+
+    Person *p=[[Person alloc] init];
+    NSLog(@"%@",p);
+/**
+ *   NSNumber类：将基本数据类型封装成对象形式，可以放入字典或数组中。
+    Object wrapper around primitive types like int, float, double, BOOL, enums, etc.
+ NSNumber *match = @([card match:@[otherCard]]); // expression that returns a primitive type
+ * 装箱   把基本类型封装成对象
+ *  - (NSNumber *)initWithChar:(char)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedChar:(unsigned char)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithShort:(short)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedShort:(unsigned short)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithInt:(int)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedInt:(unsigned int)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithLong:(long)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedLong:(unsigned long)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithLongLong:(long long)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedLongLong:(unsigned long long)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithFloat:(float)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithDouble:(double)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithBool:(BOOL)value NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithInteger:(NSInteger)value NS_AVAILABLE(10_5, 2_0) NS_DESIGNATED_INITIALIZER;
+ - (NSNumber *)initWithUnsignedInteger:(NSUInteger)value NS_AVAILABLE(10_5, 2_0) NS_DESIGNATED_INITIALIZER;
+ *
+ *  @数字是oc-2.0的新特性，表示一个数字类型的对象。
+ */
+NSNumber *number=@YES; //布尔值
+NSNumber *number=@123.45f; //浮点型
+NSNumber *intNum=@65;  //整型
+NSNumber *number=@'X'; //字符型
+NSNumber *charNum1=[[NSNumber alloc] initWithChar:'A'];
+NSLog(@"--%@--%@--",intNum,charNum1);
+/** 开箱 从对象中提取基本类型的数据。
+* 将一个基本类型数据封装到NSNumber中后，可以使用如intValue这样的实例方法来重新获得它。将字符串数字转成整型时，当字符串中含有非数字字符，则返回0。
+@property (readonly) char charValue;
+@property (readonly) unsigned char unsignedCharValue;
+@property (readonly) short shortValue;
+@property (readonly) unsigned short unsignedShortValue;
+@property (readonly) int intValue;
+@property (readonly) unsigned int unsignedIntValue;
+@property (readonly) long longValue;
+@property (readonly) unsigned long unsignedLongValue;
+@property (readonly) long long longLongValue;
+@property (readonly) unsigned long long unsignedLongLongValue;
+@property (readonly) float floatValue;
+@property (readonly) double doubleValue;
+@property (readonly) BOOL boolValue;
+@property (readonly) NSInteger integerValue NS_AVAILABLE(10_5, 2_0);
+@property (readonly) NSUInteger unsignedIntegerValue NS_AVAILABLE(10_5, 2_0);
+例如：用numberWithFloat:创建的NSNumber对象可以使用intValue方法来提取数值。
+*/
+int c=[str intValue];
+NSLog(@"%d",c);
+BOOL ret11 = [intNumber11 isEqualToNumber:intNumber12];//判断两个NSNumber类型的对象的大小关系
+/**
+ * NSValue ,NSNumber是NSValue的子类，NSValue可以封装任意值。例如可以使用NSValue将结构体放入NSArray或NSDictionary中。类似于C struct.
++ (NSValue *)valueWithBytes:(const void *)value objCType:(const char *)type;//创建新的NSValue对象，第一个参数是要封装的数值的地址，有时需要使用&取地址。第二个参数用来说明要封装的数值的类型和大小的字符串，不需要手动生成这个字符串，@encode编译器指令可以接受数据类型的名称并生成合适的字符串。
+ */
+NSRect rect=NSMakeRect(1,2,33,44);
+NSValue *value21 = [[NSValue alloc] initWithBytes:&range21 objCType:@encode(NSRect)];//使用初始化方法，将结构体类型转化为NSValue类型的数据
+NSValue *value=[NSValue valueWithBytes:&rect objCType:@encode(NSRect)];//使用类方法，将结构体类型转化为NSValue类型的数据
+[array1 addObject:value];
+//使用getValue:方法来提取前面封装的数值。
+//- (void)getValue:(void *)value;
+NSValue *value1=[array1 objectAtIndex:0];
+[value geyValue:&rect];
+/**
+*Cocoa提供了将常用的struct型数据转换成NSValue的快捷方法。
++ (NSValue *)valueWithPoint:(NSPoint)point;
++ (NSValue *)valueWithSize:(NSSize)size;
++ (NSValue *)valueWithRect:(NSRect)rect;
++ (NSValue *)valueWithRange):(NSRange)range;
+将NSValue值快捷转换成相应地struct型数据。
+@property (readonly) NSPoint pointValue;
+@property (readonly) NSSize sizeValue;
+@property (readonly) NSRect rectValue;
+@property (readonly) NSRange rangeValue;
+//官方提供的方法，直接把NSRange/NSRect/NSSize/Point转化为NSValue类型的对象
+NSString * str21 = @"hello world";
+NSValue * stringValue21 = [NSValue valueWithNonretainedObject:str21];
+//通过这个方法，NSValue把OC的任意对象转化为NSValue的对象--------------?有什么意义
+NSString *newStr21 = [stringValue21 nonretainedObjectValue];
+//通过该方法，NSValue将转化后的数据还原为原来的OC对象类型
+*/
+//在NSArray中快捷存储和提取NSRect值
+value = [NSValue valueWithRect:rect];
+[array1 addObject:value];
+NSRect an=[value rectValue];
+NSLog(@"%f,%f,%f,%f",an.origin.x,an.origin.y,an.size.height,an.size.width);
+const char *  typeName = value1.objCType;//通过该方法获取value1在转化之前的类型通过@encode(类型名)关键字转化得到的类型字符串
+/**
+* NSNull类  ， 只有一个方法：  
+  + (NSNull *)null;
+ 因为不能将nil放入集合中，所以使用null表示这里什么都没有。
+ 例如有一个存储联系人信息的字典。在键@"home fox maachine"下存储的是这个人的家庭传真号。设置value值为NSNull值表示没有传真机，而当value值为空时表示不确定有没有传真机。
+*/
+[dic setObject:[NSNull null] forKey:@"home fax machine"];
+id homefax = [dic objectForKey:@"home fax machine"];
+if(homefax == [NSNull null]) {
+	//确定没有传真机则。。。//【NSNull null]总是返回null值，可以使用==将该值与其他值进行比较。
+}
+我们有些时候需要在数组中存放一个空的对象提前占位
+NSArray *array31 = [NSArray arrayWithObjects:@"1",@"2",[NSNull null],@"3", nil];
+//此时数组array31的元素个数为4，而不是三
+/**
+ *  NSArray：Cocoa类，用来存储对象的有序列表。
+    C中的数组是一组相同类型的数据有序排列而成的集合。
+    OC中，数组分为：
+                    不可变数组：NSArray 和 可变数组 NSMutableArray
+    OC的数组本身就是一个对象，可以存储任意的对象。数组成员是对象指针。
+    OC中的NSArray类有两个限制，首先，它只能存储Objective-C对象，而不能存储原始的C语言基础数据类型，如int/float/enum/struce等和NSArray中的随机指针。同时，也不能在NSArray中存储nil（对象的零值或NULL值），因为NSArray以nil代表列表结尾。
+ */
+//[不可变数组]：
+/**
+ 创建数组
+ + (instancetype)array;
+ + (instancetype)arrayWithObject:(id)anObject;
+ + (instancetype)arrayWithObjects:(const id [])objects count:(NSUInteger)cnt;
+ + (instancetype)arrayWithObjects:(id)firstObj, ... NS_REQUIRES_NIL_TERMINATION;
+ + (instancetype)arrayWithArray:(NSArray *)array;
+ 
+ - (instancetype)initWithObjects:(id)firstObj, ... NS_REQUIRES_NIL_TERMINATION;
+ - (instancetype)initWithArray:(NSArray *)array;
+ - (instancetype)initWithArray:(NSArray *)array copyItems:(BOOL)flag;
+ 
+ + (NSArray *)arrayWithContentsOfFile:(NSString *)path;
+ + (NSArray *)arrayWithContentsOfURL:(NSURL *)url;
+ - (NSArray *)initWithContentsOfFile:(NSString *)path;
+ - (NSArray *)initWithContentsOfURL:(NSURL *)url;
+ 
+ */
+NSArray *array1=[[NSArray alloc] init];//对于不可变数组，初始化为空，是没有意义的。但对可变数组初始化为空，是有意义的。
+NSArray *array2=[[NSArray alloc] initWithObjects:@"1",@"2",@"3", nil];//直接用对象元素来初始化数组。最后一位必须有nil。
+NSLog(@"%@--%@",array2,array1);
+NSArray *array3=[[NSArray alloc] initWithArray:array2];//拷贝数组对象，可实现可变与不可变的转换。
+NSLog(@"array3=%@",array3);
+NSArray *array4=[NSArray arrayWithObject:@100];//类方法创建数组，当只有一个元素时，可以使用不带nil的方法。
+NSLog(@"array4=%@",array4);
+NSArray *array5=[NSArray arrayWithObjects:@"1",@2,@"3", nil];//当要定义的元素为字符串时，必须加引号。
+NSLog(@"array5=%@",array5);
+NSArray *array6=[NSArray arrayWithArray:array5];//相当于拷贝
+NSArray *array7=@[@1,@2,@3];
+NSArray *array8=@[@"rw",@"rr",@"rtee"];// 使用字面量语法（字面量对象）创建数组时，不必在结尾处特意补上nil。
+NSLog(@"%@--%@--%@",array6,array7,array8);
+NSMutableArray * arr13 = [[NSMutableArray alloc] initWithArray:arr11 copyItems:YES];//启用深拷贝，将数组arr11中得内容深拷贝到新的数组arr13中去，
+/**
+ *  不可变数组指的是:对象指针不可改变;数组元素位置不可改变；数组元素个数/数组大小不可改变，即不能添加任何元素也不能删除任何元素。而数组指针指向的对象可以改变。
+ */
+NSString *str1=@"AAAAA";
+NSMutableString *str2=[NSMutableString stringWithString:@"AAAAA"];
+NSString *str3=@"AAAAA";
+NSArray *arr=[NSArray arrayWithObjects:str1,str2,str3, nil];
+NSLog(@"%@",arr);
+[str2 appendFormat:@"%@",str1 ];
+NSLog(@"%@",arr);
+/**
+ *  与索引有关的方法
+ */
+Person *q=[[Person alloc] init];
+NSArray *array=[NSArray arrayWithObjects:@"1",@"2",@"3",q, nil];
+/**
+ *  取数组元素个数
+ @property (readonly) NSUInteger count;
+ */
+NSUInteger count=[array count];
+NSLog(@"%ld",count);
+//链式调用中，要注意内存泄露。
+//NSArray *arra=[NSArray arrayWithObjects:array,[NSArray arrayWithObjects:@"1",@"2",@"3", nil], nil];
+NSLog(@"%@",[array count]>2?[NSArray arrayWithObjects:@"1",@"2",@"3", nil]:[NSArray arrayWithObjects:@"1",@"2",@"3", nil]);
+/**
+ *取索引对应的元素，返回的是一个id类型(泛型，可指向任意的类型)，即指向被取出元素对应的类型。
+ - (id)objectAtIndex:(NSUInteger)index;
+ */
+[array objectAtIndex:i];
+/**
+ *  采用数组字面量语法调用数组元素
+ NSArray *array=@[@"aaaa",@"bbbb",@"cccc",@"dddd",@"eeee",@"ffff"];
+ for (NSInteger i=0; i<[array count]; i++) {
+ NSLog(@"index %ld has %@.",i,[array objectAtIndex:i]);
+ }
+ id my=array[1]; //使用下标直接调用
+ for (NSInteger i=0; i<[array count]; i++) {
+ NSLog(@"index %ld has %@.",i,array[i]);
+ }
+ NSLog(@"%@",my);
+ 注：数组越界异常，当引用的索引大于数组中对象的个数时，会抛出[NSRangeException]异常，表明传递给方法的范围参数有问题。
+ */
+id obj=[array objectAtIndex:3];//此id类型的obj指向Person类型
+Person *q1=[array objectAtIndex:3];//当知道数组某个元素的类型时，可直接指定类型接收。
+[q1 myTest];
+[obj myTest];//只有确定id接收到的数组元素的类型与被调用函数的类型一致时，才会调用成功。
+/**
+ *  怎么去检测id取到的类型
+    判断对象是否是某一个类或者其子类的对象
+ - (BOOL)isKindOfClass:(Class)aClass;
+    只检测是不是当前这个类的对象
+ - (BOOL)isMemberOfClass:(Class)aClass;
+ */
+introspection(内省法)
+if([obj isKindOfClass:[Person class]]){
+    [obj myTest];
+}
+if([obj isMemberOfClass:[Person class]]){
+    [obj myTest];
+}
+/**[class方法]
+
+*FOUNDATION_EXPORT NSString *NSStringFromClass(Class aClass);
+FOUNDATION_EXPORT Class NSClassFromString(NSString *aClassName);
+*/
+Class class1 = [array class];//获取对象指针array所指向的空间的类型
+class1=NSClassFromString(@"NSMutableArray");//将一个字符串转换为一个类型名
+NSString * str11=NSStringFromClass(class1);//将一个类型名转换为一个字符串
+/**查找
+ *  取元素对应的索引，返回第一次出现的索引，如果不存在，返回NSNotFound
+ - (NSUInteger)indexOfObject:(id)anObject;
+    指定范围内查找对象对应的索引
+ - (NSUInteger)indexOfObject:(id)anObject inRange:(NSRange)range;
+ enum {NSNotFound = NSIntegerMax}; 最大值
+ */
+NSUInteger index=[array indexOfObject:p];
+if(index==NSNotFound)   //判断数组中是否出现过某一个对象
+NSLog(@"--%ld",index);
+NSLog(@"%ld",[array indexOfObject:@"2" inRange:NSMakeRange(1, 3)]);
+/**
+ *  取数组最index后一个、第一个元素。
+ @property (nonatomic, readonly) id lastObject;
+ @property (nonatomic, readonly) id firstObject NS_AVAILABLE(10_6, 4_0);
+ */
+[array lastObject];
+[array firstObject];
+/*
+    判断数组中是否存在某一个对象
+ - (BOOL)containsObject:(id)anObject;
+ */
+NSLog(@"%d",[array containsObject:@"hello"]);
+/**
+ *  指定范围抽取子数组，不会改变原数组
+ - (NSArray *)subarrayWithRange:(NSRange)range;
+ */
+NSArray *a=[array subarrayWithRange:NSMakeRange(1, 2)];
+NSLog(@"%@",a);
+NSLog(@"%@",array);
+/**
+ *  索引集合：里面的元素是无序的
+ *
+ *创建不可变索引
+ + (instancetype)indexSet;
+ + (instancetype)indexSetWithIndex:(NSUInteger)value;
+ + (instancetype)indexSetWithIndexesInRange:(NSRange)range;//将range范围中的所有元素都作为索引放入索引集中。
+ *
+ *创建可变索引集合
+ @interface NSMutableIndexSet : NSIndexSet {
+    @protected
+    void *_reserved;
+ }
+ *
+ - (void)addIndexes:(NSIndexSet *)indexSet;
+ - (void)removeIndexes:(NSIndexSet *)indexSet;
+ - (void)removeAllIndexes;
+ - (void)addIndex:(NSUInteger)value;
+- (void)removeIndex:(NSUInteger)value;
+ - (void)addIndexesInRange:(NSRange)range;
+ - (void)removeIndexesInRange:(NSRange)range;
+ *
+ *  取出索引集合对应的数组元素。返回一个新数组
+- (NSArray *)objectsAtIndexes:(NSIndexSet *)indexes;
+ */
+NSIndexSet *indexSet=[NSIndexSet indexSetWithIndex:1];//不可变的索引，创建索引集合对象。
+NSMutableIndexSet *indexSet2=[NSMutableIndexSet indexSet];//可变索引
+[indexSet2 addIndex:2];
+[indexSet2 addIndex:0];
+[indexSet2 addIndex:1];
+[indexSet2 addIndex:3];
+a = [array objectsAtIndexes:indexSet2];
+NSLog(@"%@",a);//取出来的是原来在数组中的排序。
+NSLog(@"%@",indexSet2);
+NSArray *arq=[array objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];//该方法将我们所传入的范围结构体中的每一个下表索引抽取出来，构成一个下标索引集合
+        //并返回一个NSIndexSet类型的新对象的对象地址
+NSLog(@"鹿港小镇：%@",arq);
+/**
+ *  切分数组：返回的为不可变数组，若需修改数组内容，需先转换成Mutable数组
+ [字符串和数组]
+ - (NSArray *)componentsSeparatedByString:(NSString *)separator;按特定字符串切割字符串，返回数组。
+ - (NSArray *)componentsSeparatedByCharactersInSet:(NSCharacterSet *)separator NS_AVAILABLE(10_5, 2_0);按照字符集合来切割字符串.遇到字符集合里的任意一个字符.都要切割一次
+ - (NSString *)componentsJoinedByString:(NSString *)separator;将数组中的元素用特定的字符串进行连接，
+ */
+NSString *str = @"oop:ack:bork:greeble:ponies";
+//切割字符串
+//将字符串按照指定的字符串切割.并放到数组里面
+NSArray *array0 = [str componentsSeparatedByString:@":"];
+NSLog(@"切割：%@",array0);
+for (id obj in array0) {
+    NSLog(@"id为何：%@",[obj class]);
+}
+/*字符集合 [NSCharacterSet]
+ 按照字符集合来切割字符串.遇到字符集合里的任意一个字符.都要切割一次
+ 创建一个字符集合
++ (NSCharacterSet *)characterSetWithCharactersInString:(NSString *)aString;
+ */
+array0 = [str componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"c:rp"]];//以字符集合切割，遇到字符集合中的任何一个字符都会进行切割。
+//[array0 removeObject:@""];
+NSLog(@"%@",array0);
+for (id obj in array0) {
+    NSLog(@"当前元素的类型--%@",[obj class]);
+    if (![obj isEqualToString:@""]) {
+        
+        NSLog(@"去空后--%@",obj);
+    }
+}
+
+str = [array0 componentsJoinedByString:@"；-）"];
+NSLog(@"%@",str);
+/* 若分割条件出现在开头或者结尾，则会出现空串@""，如果不需要，则需要转化成NSMutableString对空串进行处理
+    [array1 removeObject:@""];     //找到空串直接删除
+    for(id obj in array1){
+        if([obj length] == 0)           //空串的长度为0
+        if([obj isEqualToString:@""])   //与空串进行比较(字符串是不能进行==比较的，要使用函数)
+    }
+*/
+
+NSArray *path=@[@"/users",@"Aaron",@"Decke"];
+NSArray *path1=@[@"",@"users",@"Aaron",@"Decke"];//只要有对象就会插入，不论是否是空对象。
+NSString *sew=[path componentsJoinedByString:@"/"];
+NSString *sew1=[path1 componentsJoinedByString:@"/"];
+NSLog(@"路径：%@",sew);
+NSLog(@"路径1：%@",sew1);
+
+NSString *st1r=@"asdghhrrt gfdfgdss";
+NSRange ran=[st1r rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"tdgs"]];//搜索字符串中是否存在字符集中的元素，返回第一个找到的坐标。
+NSLog(@"%@",NSStringFromRange(ran));
+/*[可变数组]：
+    在不可变数组的基础上添加了：增删改
+ - (void)addObject:(id)anObject;
+ - (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
+ - (void)insertObjects:(NSArray *)objects atIndexes:(NSIndexSet *)indexes; 
+ - (void)removeLastObject;
+ - (void)removeObjectAtIndex:(NSUInteger)index;
+ - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject;
+ - (id)firstObjectCommonWithArray:(NSArray *)otherArray;取出array对象跟demo对象第一个交集元素
+ */
+NSMutableArray *qw=[NSMutableArray arrayWithCapacity:20];
+NSMutableArray *array09 = [NSMutableArray array];//创建一个空的可变数组。
+NSArray * arr13 = [[NSArray alloc] initWithArray:arr11 copyItems:YES];
+//启用深拷贝，将数组arr11中得内容深拷贝到新的数组arr13中去，（特殊创建方法）
+
+/*增
+ 每一次增加元素都会增加在最末尾
+ 
+ 
+ - (instancetype)init NS_DESIGNATED_INITIALIZER;
+ - (instancetype)initWithCapacity:(NSUInteger)numItems NS_DESIGNATED_INITIALIZER;
+ - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+ 
+ 
+ - (void)addObjectsFromArray:(NSArray *)otherArray;
+ - (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
+ - (void)removeAllObjects;
+ - (void)removeObject:(id)anObject inRange:(NSRange)range;
+ - (void)removeObject:(id)anObject;
+ - (void)removeObjectIdenticalTo:(id)anObject inRange:(NSRange)range;
+ - (void)removeObjectIdenticalTo:(id)anObject;
+ - (void)removeObjectsFromIndices:(NSUInteger *)indices numIndices:(NSUInteger)cnt NS_DEPRECATED(10_0, 10_6, 2_0, 4_0);
+ - (void)removeObjectsInArray:(NSArray *)otherArray;//从一个数组中删除存在于另一个数组中的元素。
+ - (void)removeObjectsInRange:(NSRange)range;
+ - (void)replaceObjectsInRange:(NSRange)range withObjectsFromArray:(NSArray *)otherArray range:(NSRange)otherRange;
+ - (void)replaceObjectsInRange:(NSRange)range withObjectsFromArray:(NSArray *)otherArray;
+ - (void)setArray:(NSArray *)otherArray;
+*/
+[array09 addObject:@4];//在数组尾部插入元素
+[array09 addObject:@1];
+[array09 addObject:@6];
+[array09 addObject:@1];
+[array09 addObject:@6];
+[array09 addObject:@1];
+[array09 addObject:@6];
+[array09 addObject:@1];
+[array09 addObject:@6];
+NSLog(@"addObject--%@",array09);
+
+NSMutableArray *array20 = [NSMutableArray array];
+[array20 addObject:@0];
+[array20 addObjectsFromArray:array09];//将其它的数组中的元素添加到当前数组里面.并且是有序的
+NSLog(@"%@",array20);
+
+[array09 insertObject:@9.8 atIndex:2];//在数组指定索引插入元素
+NSLog(@"insertObject--%@",array09);
+[arr22 insertObjects:arr23 atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)]];//将数组arr23整体插入到数组arr22的指定位置。
+NSMutableIndexSet *indexSet2=[NSMutableIndexSet indexSet];//创建可变索引
+[indexSet2 addIndex:0];
+[indexSet2 addIndex:3];
+[arr22 insertObjects:arr23 atIndexes:indexSet2];//将数组arr23中的元素按照索引集合中的位置插入到arr22数组中。数组arr23中的元素个数必须和索引中的元素个数相同。相应地插入顺序和原来元素在数组arr23中的顺序相同，而与索引集中索引的顺序无关。
+//删除一个指定元素.所有的这个对象都删掉了;删除一个对象后，数组中并没有留下漏洞，位于被删除对象后面的数组元素都被前移来填补空缺。
+//[array09 removeObjectAtIndex:1];//删除指定索引的内容
+//[array09 removeObject:@6];//删除指定的对象，会把数组中所有的对象都删除。
+//[array20 removeLastObject];//删除最后一个元素
+[array09 removeObject:@1 inRange:NSMakeRange(3, 2)];//删除指定范围内的指定对象
+//[array20 removeAllObjects];//删除所有元素
+NSLog(@"remove--%@",array09);
+
+//修改
+[array20 replaceObjectAtIndex:1 withObject:@3];//将指定索引的元素替换为指定元素
+//NSLog(@"%@",array20);
+
+[array20 exchangeObjectAtIndex:1 withObjectAtIndex:2];//将指定索引的两个元素进行交换。
+NSLog(@"%@",array20);
+
+/**
+ *  枚举
+ @interface NSEnumerator : NSObject <NSFastEnumeration>
+ - (id)nextObject;
+ @end
+ 创建一个枚举器 把数组的每个元素的地址一次赋给枚举器,然后建立起某种关联 (枚举器只能用来读数组成员)
+ 枚举时 会和数组创建某种关联(修改监视器/迭代器) 限制枚举的同时不能修改元素 只能读不能写
+ 
+ 枚举器：是一个容器，暂时保留数组中的数组，中间对数组做任何操作，枚举器中的保留数据都不会改变。枚举器只能用一次！即只能遍历一次。
+    正序枚举器
+ - (NSEnumerator *)objectEnumerator;
+    逆序枚举器
+ - (NSEnumerator *)reverseObjectEnumerator;
+ */
+NSArray *shuzu=@[@1,@2,@3,@4];
+NSEnumerator *enumerator=[shuzu objectEnumerator]; //把数组的内容正序的遍历到枚举器中。
+id think=nil;//第一次循环把数组的第一个元素赋给think  第二次循环把第二个数组元素赋给think
+while (think=[enumerator nextObject]) {//遍历数组
+    NSLog(@"I found %@",think);
+}
+/**
+ *  快速枚举：oc2.0语法
+ */
+for(id ob in shuzu){
+    NSLog(@"--%@",ob);
+}
+for (NSString *string in shuzu)
+    NSLog(@"sfds %@",string);
+/**
+ *  代码块block, 在NSArray中通过代码块枚举对象的方法。通过代码块可以让循环操作并发执行，而通过快速枚举，执行操作只能一项一项的线性完成。代码块只有在Apple LLVM编译器上才有效。
+- (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block NS_AVAILABLE(10_6, 4_0);
+ */
+NSArray *array=[NSArray arrayWithObjects:@"2",@"3",@"4", nil];
+[array enumerateObjectsUsingBlock:^(NSString *string,NSUInteger index,BOOL *stop){
+    NSLog(@"代码块枚举：%@",string);
+}];
+//逆序输出数组(创建逆序枚举器  第一次循环把最后一个元素赋给obj )
+NSEnumerator * enumer1 = [shuzu reverseObjectEnumerator];
+while (obj = [enumer1 nextObject]) {
+    NSLog(@"q--%@",obj);
+    if ([obj isEqualTo:@3]) {
+        break;//跳出后，如果再次调用枚举器，则从下一个元素继续遍历。
+    }
+    
+}
+while (obj = [enumer1 nextObject]) {
+    if ([obj isEqualTo:@3]) {
+        break;
+    }
+    NSLog(@"w--%@",obj);
+}
+/**
+ *  数组排序
+ 如果想保存一些原始的C数据（例如，int, float, double, BOOL等），则需要将这些原始的C数据封装成NSNumber类型的，NSNumber对象是cocoa对象，可以被保存在集合类中。
+ */
+//NSMutableArray *sarray=[NSMutableArray arrayWithArray:@[@1,@2,@3,@4,@5]];
+NSMutableArray *sarray=[NSMutableArray array];
+for (int i=1; i<=20; i++) {
+    //NSString *str=[NSString stringWithFormat:@"%d",i];
+    NSNumber *num=[NSNumber numberWithInt:i];//将int转换成NSNumber类型对象。
+    [sarray addObject:num];
+}
+//循环排序
+for (int i=0; i< [sarray count]-1; i++) {
+    for (int j=i+1; j< [sarray count]; j++) {
+        if ([(NSString *)[sarray objectAtIndex:i] compare:[sarray objectAtIndex:j]]==NSOrderedAscending) {  //NSInteger也可以使用conpare:进行比较
+            [sarray exchangeObjectAtIndex:i withObjectAtIndex:j];
+        }
+    }
+}
+
+//按年龄对person排序
+NSMutableArray *ageArray=[NSMutableArray array];
+for (int i=1; i<=10; i++) {
+    Person *person=[[Person alloc] initWithAge:i];
+    [ageArray addObject:person];
+}
+NSLog(@"%@",ageArray); 
+for (int i=0; i< [ageArray count]-1; i++) {
+    for (int j=i+1; j< [ageArray count]; j++) {
+        if ([(Person *)[ageArray objectAtIndex:i] age] < [(Person *)[ageArray objectAtIndex:j] age]) {
+            [ageArray exchangeObjectAtIndex:i withObjectAtIndex:j];
+        }
+    }
+}
+NSLog(@"%@",ageArray);
+/**
+ *  数组排序
+ */
+- (NSArray *)sortedArrayUsingSelector:(SEL)aSelector;
+- (void)makeObjectsPerformSelector:(SEL)aSelector withObject:(id)selectorArgument;
+- (NSString *)componentsJoinedByString:(NSString *)separator;
+// - (void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context; //指定方法升序比较
+// [demoMutableArray insertObjects:demoArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(3, 2)]];
+// - (void)removeObjectsAtIndexes:(NSIndexSet *)indexes; 移除指定索引集合元素
+// [demoMutableArray removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 3)]];
+
+/** 选择器 用来存放消息，也就是存放方法。
+    软加载
+    @selector(方法名)是OC中的一个关键字，用来将OC的方法转化为SEL类型
+    SEL类型，就是一个选择器类型，类似于C语言中得函数指针
+
+//使用数组中的每一个元素调用该选择器方法,Using makeObjectsPerformSelector: methods in NSArray
+[array makeObjectsPerformSelector:shootSelector];
+[array makeObjectsPerformSelector:shootAtSelector withObject:target];
+//可将遍历数组执行某一方法的代码缩减成一行。
+
+ *  根据参数个数的不同选择不同的选择器方法调用
+ - (id)performSelector:(SEL)aSelector;
+ - (id)performSelector:(SEL)aSelector withObject:(id)object;
+ - (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
+ *  - (void)sortUsingSelector:(SEL)comparator;
+ *  类似C语言的qsort排序
+ */
+Person *p=[[Person alloc] init];
+// [array sortUsingSelector:@selector(myCompare:)];
+[p performSelector:@selector(myTest)];//间接调用。类似于[p myTest],与直接调用不同的是，即使没有在接口中声明的方法，也可以调用。
+[p performSelector:@selector(myTest1:) withObject:p];//当有一个参数时。
+//当有两个参数的时候
+[p performSelector:@selector(myTest1:andNumber:) withObject:[NSNumber numberWithInt:10] withObject:[NSNumber numberWithInt:100]];
+//当有三个参数或更多参数时，可以把参数封装到一个对象中，直接把整个对象传进去。
+/**
+ *  选择器作用：
+    1.判断某一个对象是否实现了某一方法。
+        检测对象是否能响应某一消息
+        可以响应则返回真，不能返回假。
+	- (BOOL)respondsToSelector:(SEL)aSelector;
+    2.控件的事件响应
+    3.不同的对象触发同一个事件，会有不同的响应。
+ */
+Person *q1=[[Person alloc] init];
+Person *q2=[[Person alloc] init];
+Person *q3=[[Person alloc] init];
+Dog *nu1=[[Dog alloc] init];
+Dog *nu2=[[Dog alloc] init];
+Dog *nu3=[[Dog alloc] init];
+NSArray *array=@[q1,q2,q3,nu1,nu2,nu3];
+for (id obj in array) {
+    if ([obj respondsToSelector:@selector(song)]) {	//返回方法是否实现的真假值,即使方法没有声明，也可以使用选择器类的方法调用。
+        [obj performSelector:@selector(song) ];//不同的对象调用各自相应的方法做出响应。
+    }
+}
+[array sortUsingSelector:@selector(personCompare:)];//根据不同的规则进行相应规则的排序。
+/**[SEL选择器专题]
+ *  例如People类继承于NSObject， 它有一个eat方法。 你创建了一个对象People *p = [People new];
+ 然后你可以使用[p eat]或者 [p perfomSelector:@selector(eat)]来。
+ 两种到底有什么区别？ 其实对于方法调用本身来说，都是调用eat方法，但是performSelector提供了一种间接性，它可以通过传入不同的selector来调用不同的方法。[p eat]对于编译器来说，内部应该会编译成[p performSelector:@selector(eat)]的方法，这个是我的猜想。 然后在运行时期，根据@selector(eat)得到的方法字符串SEL得到eat方法的实现代码的函数指针IMP， 然后调用以C语言的方式使用eatImp(p, @selector(eat);来调用eat方法。
+ 
+ 实际上对于上面的两个区别，你可能会用到的是这种情况。
+ 在头文件.h中你不声明eat，在外部使用People时候，你不能使用[p eat]，但你可以使用performSelector的方式，这是由于编译器在[p eat]就根本不让你编译通过， performSelector是运行期的事情，编译器只会给出警告，不会阻拦你，会有更好的灵活性。
+ 
+ 对于上面两个方法还有一点，performSelector相当于是一个控制中心，它可以接收selector来进行调用不同的方法。这相当于apple给我们一个自己统一处理方法的机会。例如我们需要做一个消息控制中心，根据不同的消息调用不同的方法，我可以写出这样的代码：
+ void processMethodByMsg:(NSString*)methodName
+ {
+ NSDictionary* methodDic = @{@"eat": @selector(eat), @"drink":@selector(drink), @"sleep":@selector(sleep)};
+ [p performSelector:methodDic[methodName]];
+ }
+ 通过一个dic就完成了字符串和方法的映射，methodName是由外部输入的消息名字，需要修改或者添加的时候，你仅仅需要修改dic词典就可以了，完成了代码的归一。
+ */
+NSMutableArray *array = [NSMutableArray array];
+    for(int i = 0; i < 10; i++){
+        Person *p = [[Person alloc] initWithAge:i+1];
+        [array addObject:p];
+    }
+    [array mySortBySelector:@selector(personCompare:)]; //此处的personCompare将会传给下面函数的action。
+    NSLog(@"%@",array);
+
+-(void)mySortBySelector:(SEL)action   
+{//这里的形参action就是指自己实现的方法,可以可以根据action方法的不同实现而产生不同的排序结果。
+    for(int i = 0; i < [self count]-1; i++){
+        for(int j = i+1; j < [self count];j++){
+            if([[self objectAtIndex:i] respondsToSelector:action]){
+                if([[self objectAtIndex:i] performSelector:action withObject:[self objectAtIndex:j]])
+                {
+                    [self exchangeObjectAtIndex:i withObjectAtIndex:j];
+                }
+            }
+        }
+    }
+}
+[选择器与字符串]
+SEL sel1 = @selector(addObject:);
+NSString *str1 = NSStringFromSelector(sel1);
+//将选择器类型的变量转化为一个对应的不可变字符串，
+SEL sel2 = NSSelectorFromString(str1);
+//将一个字符串转换成一个对应的选择器，可以用来从一个文件中读取一个字符串，然后分解成多个字符串，再转化为多个选择器
+
+
+/**
+ *  字典-也是一个集合，无序的，也称为散列表或关联数组，使用哈希算法，
+    存储的都是键值对，键值对必须成对出现。
+    键-必须是唯一的。key
+    值-可以有多个。 value
+    键和值都是对象。
+    通常会以字符串做key。
+ NSDictionay
+ NSMutableDictionary
+ */
+
+/**
+ *  不可变字典
+ */
+//NSDictionary *dic=[[NSDictionary alloc] init];//这种用法对不可变字典无意义。
+//用键值对来初始化数组
+NSDictionary *dic1=[[NSDictionary alloc] initWithObjectsAndKeys:@1,@"one",@2,@"two",@3,@"three", nil];//键值对一一对应。一个值，一个键。存储是无序的。
+//用字典来初始化新的字典
+dic1=[[NSDictionary alloc] initWithDictionary:dic1];
+/**直接使用键的数组和值的数组来初始化新的字典
+注：键的数组和值的数组中的元素排列顺序要一致，个数要相同。
+ */
+NSArray *keyArray=@[@"one",@"two",@"three"];//中文乱码
+NSArray *valueArray=@[@1,@2,@3];
+dic1=[[NSDictionary alloc] initWithObjects:valueArray forKeys:keyArray];
+dic1=[NSDictionary dictionaryWithObjects:keyArray forKeys:valueArray];
+dic1=[NSDictionary dictionaryWithDictionary:dic1];
+NSDictionary *dict13 = [[NSDictionary alloc] initWithDictionary:dict11 copyItems:YES];//启用深拷贝，将字典dict11中得内容深拷贝到新的字典dict13中去，（特殊创建方法）
+/*新特性
+    {}表示字典
+    : 表示键值对，格式为：  @"键":@值。
+ */
+dic1=@{@"one":@1,@"two":@2,@"three":@3};
+NSLog(@"%@",dic1);
+NSLog(@"%ld",[dic1 count]);//取键值对的个数
+id obj=[dic1 objectForKey:@"one"];//找出键所对应的值，或者obj=dic1[@"one"];
+obj=dic1[@"one"];
+NSLog(@"%@",[obj class]);
+NSLog(@"%@",obj);
+
+NSArray *keys=[dic1 allKeysForObject:@1];//取值对应的键
+NSLog(@"%@",keys);
+NSArray *allKeys=[dic1 allKeys];//取所有键
+NSArray *allValues=[dic1 allValues];//取所有值
+NSLog(@"%@",allKeys);
+NSLog(@"%@",allValues);
+/**
+ *  字典遍历
+ */
+for(id obj in dic1){
+    NSLog(@"%@",obj);
+    NSLog(@"%@",[dic1 valueForKey:obj]);
+    NSLog(@"%@",[dic1 objectForKey:obj]);
+}
+NSEnumerator *equ=[dic1 keyEnumerator];//把键key遍历到枚举器中
+equ=[dic1 objectEnumerator];//把值 Value遍历到枚举器中
+for (id obj=nil;obj=[equ nextObject];) {
+    //NSLog(@"%@",[dic1 valueForKey:obj]);
+    NSLog(@"%@",equ);
+}
+
+NSMutableDictionary *dic2=[NSMutableDictionary dictionary];
+/**
+ *  增删改
+ key可使用NSString和NSNumber
+- (void)setDictionary:(NSDictionary *)otherDictionary;
+ */
+
+[dic2 setObject:@1 forKey:@"one1"];//必须实现Copying协议的对象才可以做键的对象，现在还不能用自定义的对象，
+[dic2 setObject:@2 forKey:@"two1"];
+[dic2 setObject:@3 forKey:@"one1"];//键值相同时，会覆盖旧的value， 实现了修改。
+[dic2 addEntriesFromDictionary:dic1];//按照字典dict32中得内容，对dict31进行增加和修改，dict32中与dict31中相同的键值，按照键的对应关系把dict32中对应的值，赋值给dict31中对应的值dict32中与dict31中不同的键值，则将该键值对增加到dict31中去。
+[dict31 setDictionary:dict32];//将原字典中的条目设置为另一个字典中的所有条目。
+/**成对删除
+ - (void)removeObjectForKey:(id)aKey;
+ *  - (void)removeAllObjects;
+ - (void)removeObjectsForKeys:(NSArray *)keyArray;
+ */
+[dic2 removeAllObjects];
+NSArray * key31=@[@"One",@"Two"];
+[dict31 removeObjectsForKeys:key31];//删除该字典中，存放于key31数组中的键对应的键值对
+/**
+*  几何数据类型，用来处理集合图形的数据类型，都带有CG前缀。由Core Graphics框架提供。核心会话。
+
+* Points.
+
+struct CGPoint { //笛卡尔平面中的坐标。
+CGFloat x;
+CGFloat y;
+};
+typedef struct CGPoint CGPoint;
+
+* Sizes.
+
+struct CGSize {  //存储高度和宽度。
+CGFloat width;
+CGFloat height;
+};
+typedef struct CGSize CGSize;
+
+* Vectors.
+
+#define CGVECTOR_DEFINED 1
+
+struct CGVector {
+CGFloat dx;
+CGFloat dy;
+};
+typedef struct CGVector CGVector;
+
+* Rectangles.
+
+struct CGRect {  //矩形数据类型
+CGPoint origin;
+CGSize size;
+};
+typedef struct CGRect CGRect;
+
+* Rectangle edges.
+
+typedef CF_ENUM(uint32_t, CGRectEdge) {
+CGRectMinXEdge, CGRectMinYEdge, CGRectMaxXEdge, CGRectMaxYEdge
+};
+*
+*  创建的快捷函数
+CG_INLINE CGPoint
+CGPointMake(CGFloat x, CGFloat y)
+{
+CGPoint p; p.x = x; p.y = y; return p;
+}
+
+CG_INLINE CGSize
+CGSizeMake(CGFloat width, CGFloat height)
+{
+CGSize size; size.width = width; size.height = height; return size;
+}
+
+CG_INLINE CGVector
+CGVectorMake(CGFloat dx, CGFloat dy)
+{
+CGVector vector; vector.dx = dx; vector.dy = dy; return vector;
+}
+
+CG_INLINE CGRect
+CGRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height)
+{
+CGRect rect;
+rect.origin.x = x; rect.origin.y = y;
+rect.size.width = width; rect.size.height = height;
+return rect;
+}
+*/
+/*
+ 单例
+ 单例是一种设计模式
+ 一个类只能创建一个对象.这个对象就叫做单例.这个类叫做单例类
+1.单例相当于全局变量
+ 2.在整个生命周期内，该对象只有一份在内存中
+ 3.可以在多个对象之间共享数据 
+ 单例的应用场景很多
+    1.废纸篓---节省资源
+    2.网页计数器---数据共享
+    3.日志
+    4.任务管理器
+    5.线程池
+    6.文件管理器
+当要创建N多相同的类的对象并且没有任何区别,也都能完成功能的时候,用单例,可以节省资源。
+ 单例的作用
+    数据的共享
+    管理资源
+在Cocoa中很多类都支持单例架构（singleton architecture），也就是说只需要一个实例就够了。文件管理器、字体管理器或图形上下文确实只需要一个就够了。这些类都提供了一个类方法让你访问唯一的共享对象，以完成工作。
+ */
+//———————————————典型的写法—————————————————————
+//这种写法不是非常的规范，但是这个写法非常的工业化
+/*
+ static mySingleTon * sharedMySingleTon;
+ //在类的上面定义了一个全局的类的对象
+ + (id) sharedMySingleTon{
+     if(sharedMySingleTon == nil)
+     {
+         sharedMySingleTon = [[[self class] alloc] init];
+     }
+     return sharedMySingleTon;
+ }
+ */
+
+//———————————————单例的创建—————————————————————
+MySingleTon * mySingleTon=[MySingleTon sharedMySingleTon];
++ (id) sharedMySingleTon;
+//单例的方法名，一般使用sharedXXXX,defaultXXXX,currentXXXX
++ (id) sharedMySingleTon{
+    if (mySingleTon == nil)
+    //如果该单例的实例化对象为空
+    {
+        mySingleTon = [[[self class] alloc] init];
+        //则为该单例创建一个实例化对象
+    }
+    return mySingleTon;
+    [mySingleTon isKindOfClass:[mySingleTon class]];
+    //如果该单例的实例化对象不为空，说明该单例已经实例化，所以直接返回该单例的对象空间的地址
+}
+//单例的另一种创建方式：//一般以share 或者 default 开头的方法都是单例方法
+//对于单例类,不使用alloc创建对象
+static TaskManager *manager = nil;
++(instancetype)defaultManager
+{
+    @synchronized(self){//考虑到线程安全， //加锁
+        if(!manager){
+            manager = [[self alloc] init];
+        }
+    }
+    return manager;
+}
+/**
+NSDate 时间日期类
+Used to find out the time right now or to store past or future times/dates.
+See also NSCalendar, NSDateFormatter, NSDateComponents.
+If you are going to display a date in your UI, make sure you study this in detail (localization).
+获取当前系统时间
+默认获取的是：格林威治时间/GMT
+*/
+NSDate * date11=[[NSDate alloc] init];
+//NSDate * date11=[NSDate date]等价于上边一行代码
+NSTimeInterval t11=[date11 timeIntervalSince1970];
+//date11距离（计算机元年）1970年1月1号 0：0：0的时间间隔多少秒
+t11=[date11 timeIntervalSinceNow];
+//data11时间距离当前timeIntervalSinceNow运行时候的系统时间
+NSDate * date12=[NSDate date];//该方法默认获取的是格林威治时间.需要我们把当前的格林威治时间转化为当前系统所在时区的时间
+NSTimeInterval t12=[date12 timeIntervalSinceDate:date11];
+//获取两个时间的时间间隔
+NSDate * date13=[date12 dateByAddingTimeInterval:365*24*3600];
+//距离date12一年以后的时间
+NSDate * date14=[NSDate dateWithTimeIntervalSince1970:3600];
+//距离计算机元年一小时以后的时间
+NSDate * date15=[NSDate dateWithTimeInterval:3600 sinceDate:date14];
+//获取date14一小时以后的时间
+NSDate * date21=[date11 laterDate:date12];
+//获取两个时间中较晚的那个时间  /（earlierDate）较早
+NSDate * date22=[NSDate distantPast];
+//获取过去很遥远的一个时间
+NSDate * date23=[NSDate distantFuture];
+//获取将来很遥远的一个时间
+NSTimeZone *timeZone41 = [NSTimeZone systemTimeZone];//获取当前系统所在时区
+NSTimeInterval time42 = [timeZone41 secondsFromGMTForDate:date46];//获取当前系统时区和格林威治时区的时间差
+NSDate *locationDate41 = [NSDate dateWithTimeInterval:time42 sinceDate:date46];//获取真正的本地系统时间
+//———————————————时间格式化——————————————————
+
+NSDateFormatter *dateFm41 = [[NSDateFormatter alloc] init];
+dateFm41.dateFormat = @"yyyy/MM/dd HH:mm:ss:SS";//设置时间格式化字符串
+        //yyyy年，MM月，dd天，HH24进制小时（hh12进制），mm分钟，ss秒,SS毫秒
+NSDate*date47= [NSDate date];//获取一个当前的格林威治时间
+NSString *dateString41 =[dateFm41 stringFromDate:date47];//把date47按照上面的格式转化为一个时间字符串，该方法在格式化时间的同时，会将时间转化为当前系统的本地时间，所以dateString时间字符串就是当前系统的本地时间不需要再转换了
+NSString *newString41= @"2000/01/20 13:13:13";
+NSDate *newDate = [dateFm41 dateFromString:newString41];
+//把一个时间字符串转化为NSDate类型的时间
+
+[字符串与NSDate类]
+NSData * data21=[@"hello world" dataUsingEncoding:NSUTF8StringEncoding];//将一个字符串类型的数据，转化为一个NSData(二进制流)类型的数据
+NSString * str27=[[NSString alloc]initWithData:data21 encoding:NSUTF8StringEncoding];//使用一个NSData类型的数据，来创建并初始化一个字符串
+
+[数据存储方式]
+数据存储的五种方式：
+1.普通文件
+2.plist文件
+3.归档文件
+4.NSUserDefaults
+5.数据库sqlite
+[数据存储方式之文件操作]
+文件操作分为两个部分
+1.对文件本身进行的操作，不需要打开文件，此时需要用到NSFileManager类
+2.对文件中的内容进行的操作，需要打开文件，此时需要用到NSFileHandle类
+//————————————————第一点——————————————————————
+//————————————NSFileManager——————————————————
+//创建一个文件管理器
+NSFileManager * fm =[NSFileManager defaultManager];
+//这是一个单例的应用，说明NSFileManager类是一个单例类
+//—————查看一个目录下有哪些文件和文件夹———————————
+NSError * error11=nil;
+NSArray * array11=[fm contentsOfDirectoryAtPath:PATH error:&error11];
+//浅度遍历目录,只会遍历一层目录，将PATH路径下的所有文件以及文件夹的名字存入数组，数组中存储的是相对于当前目录的相对路径,要注意的是路径包含目录名，当路径错误或者不是文件夹的时候会返回null,说明错误了。
+NSArray * array12=[fm subpathsOfDirectoryAtPath:PATH error:&error11];
+//深度遍历目录，将当前路径下所有文件，文件夹以及每个文件夹中的文件夹和文件都遍历到数组中
+//———————————新建一个目录或者文件—————————————
+[fm createDirectoryAtPath:[NSString stringWithFormat:@"%@/dir1",PATH] withIntermediateDirectories:YES attributes:nil error:&error11];
+//该方法的功能是创建一个新的目录
+//第一个参数表示：在某个目录下创建新目录(在PATH路径下，创建dir1目录)，
+//第二个参数表示：在创建新目录时，是否创建缺少的中间路径目录，如果你需要创建新目录(@"%@/middle/dir1")，但是你得真实文件路径中缺少/middle部分，并且该参数选择NO的时候，就会报错，所以，当创建新目录是，路径中间缺少了一部分，就需要将该参数选择为YES，那么该方法就会将缺少的中间路径补充完整。
+//第三个参数：属性
+//第四个参数;错误信息
+--
+//创建一个新的文件，如果文件已存在，会创建一个新文件来覆盖原来的文件。
+BOOL ret1=[fm fileExistsAtPath:PATH];
+//检测PATH路径文件是否存在
+- (BOOL)createFileAtPath:(NSString *)path contents:(NSData *)data attributes:(NSDictionary *)attr;
+NSString *newPath=[NSString stringWithFormat:@"%@/wodemaya.txt",Path];
+NSString *content=@"九阴白骨爪";
+NSData *data=[content dataUsingEncoding:NSUTF8StringEncoding];
+[fm createFileAtPath:newPath contents:data attributes:nil];
+//第一个参数表示：在某个路径目录PATH/dir1下创建新的文件file(如，PATH/dir1",PATH);
+//第二个参数表示：向文件中写入的NSData类型的数据，[@"hello",dataUsingEncoding:NSUTF8StringEncoding]表示将字符串转化为NSData，如果不向文件中写入内容的话，该参数可以写nil。
+//第三个参数表示：文件的属性，nil表示选择系统默认的属性
+//————————————————删除文件————————————————————
+[fm removeItemAtPath:[NSString stringWithFormat:@"%@/dir1",PATH] error:&error11];
+//删除该路径PATH下的dir文件夹
+//————————————————复制文件——
+[fm copyItemAtPath:[NSString stringWithFormat:@"%@/dir1",PATH] toPath:[NSString stringWithFormat:@"%@/dir2",PATH] error:&error11];
+//将当前路径下的目录或者文件复制到指定路径，形成新的目录或文件
+//————————————————移动文件———
+[fm moveItemAtPath:[NSString stringWithFormat:@"%@/dir1",PATH] toPath:[NSString stringWithFormat:@"%@/dir2/dir1",PATH] error:&error11];
+//将当前路径下得目录或者文件移动到指定路径，形成新的目录或者文件
+//拷贝目录是深度拷贝，会把目录下的所有东西都拷贝过来。
+BOOL isDir=NO;
+BOOL rec=[manager fileExistsAtPath:(NSString *) isDirectory:(BOOL *)]//判断是否为目录。
+BOOL ret1=[fm fileExistsAtPath:PATH];
+//检测PATH路径文件是否存在
+NSDictionary * dict11=[fm attributesOfItemAtPath:PATH error:&error11];
+//获取PATH路径文件信息（属性和权限）
+unsigned long long len=[dict11 fileSize];
+//从文件信息字典中，获取文件的长度
+//————————————————第二点————————————————
+//—————————————NSFileHandle—————————————
+//————————————————文件句柄——————————————
+//对句柄做操作，就是对文件做操作。
+//读---将磁盘上的内容转移到内存
+//写---将内存中的内容转移到磁盘
+//————————————————只读方式————————————————————
+NSFileHandle * fh=[NSFileHandle fileHandleForReadingAtPath:PATH];
+//以只读的方式，打开指定路径下得文件，并生成文件句柄fh，这个文件句柄就是文件的代表，可以通过该文件句柄，将文件中的内容读出来
+//句柄fh为空，表示文件不存在。
+句柄会自动记录当前读取的位置。使用之后会停留在读取位置，下次接着句柄记录的位置继续读取。
+NSData *data21=[fh readDataOfLength:3];
+//从读指针位置（文件的开头）开始读取3个字节的数据内容
+NSString *str21=[[NSString alloc]initWithData:data21 encoding:NSUTF8StringEncoding];
+//将data21中的数据转化为NSString类型的字符串
+NSData *data22=[fh readDataOfLength:5];
+//从读指针位置（上次读取文件的末尾位置）开始读取5个字节的数据内容
+NSString *str22=[[NSString alloc]initWithData:data22 encoding:NSUTF8StringEncoding];
+//将data21中的数据转化为NSString类型的字符串
+NSData *data23=[fh readDataToEndOfFile];
+//如果文件的内容不是特别多得话，可以使用这种方法，直接从句柄（读指针）位置开始一直读取到文件末尾。
+//————————————————只写方式————————————————————
+//写入文件，从句柄开始写入。
+fh=[NSFileHandle fileHandleForWritingAtPath:PATH];
+//以只写的方式，打开指定路径下的文件，并生成文件句柄fh，可以通过该文件句柄，将数据写入到文件中去
+[fh writeData:data];
+[fh writeData:[@"hello world" dataUsingEncoding:NSUTF8StringEncoding]];
+//向文件中，从句柄位置开始写入一个NSData类型的数据，当打开的文件中已经有内容时，那么新传入的内容将替代原来的内容
+[fh truncateFileAtOffset:0];
+//将文件内容截断至0字节(相当于原来的内容只保留0字节)，也就相当于清空原文件中已经存在的内容，进行重新写入
+[fh seekToEndOfFile];
+//将文件句柄fh所指向的文件的读写指针移动到文件的末尾位置
+[fh seekToFileOffset:10];
+//将文件句柄fh所指向的文件的读写指针移动到开始的10字节的地方
+//————————————————读写方式————————————————————
+fh=[NSFileHandle fileHandleForUpdatingAtPath:PATH];
+//以读写方式打开已经存在的文件，读写指针都定位到文件的起始位置
+———————————————————————————————————————————
+————————————————plist——————————————————————
+———————————————————————————————————————————
+//文件内容中所能存放的数据类型有NSString，NSNumber，NSDate，NSData，NSArray，NSDictionary
+//不能是其他类型的对象，比如我们自定义的对象
+//plist文件的作用:对一些登陆注册信息或者程序的配置信息（小数据）进行持久化存储
+//plist创建
+//plist文件的创建，除了使用Xcode的功能以外，还可以通过代码来进行
+//想要将我们需要保存的数据存放到plist文件中，那么我们必须要将这些数据存放到一个数组或者字典中
+NSString *name11 = @"xiaohong";
+NSNumber *num11 = @123;
+NSDate *date11 = [NSDate date];
+NSArray *array11 = @[@"OC",@"UI"];
+NSArray *array12 = @[name11,num11,date11,array11];
+BOOL ret11 = [array12 writeToFile:@"/Users/qianfeng/Desktop/new1.plist" atomically:YES];
+//用数组的写文件函数进行写入，那么写到plist文件中最外层就是是一个数组（最外层是一个[]），这个方法只能写plist格式的文件，当调用该方法时，plist文件会自动创建，当存在同名文件时，会发生覆盖。当不指定plist文件名时，会自动生成随机的plist文件名。
+NSDictionary *dict11 = @{@"name": name11,@"number":num11,@"date":date11,@"array":array11};
+BOOL ret12 = [dict11  writeToFile:@"/Users/qianfeng/Desktop/new2.plist" atomically:YES];
+//用字典的写文件函数进行写入，那么写到plist文件中最外层就是是一个字典（最外层是一个{}），这个方法只能写plist格式的文件，当调用该方法时，plist文件会自动创建
+//plist读取
+//当我们需要读取一个plist文件时,我们首先需要知道所需要读取的plist文件的最外层是数组还是字典,如果是字典，那么就需要用字典的读文件,如果是数组，那么就用数组的读文件
+NSArray *array13 = [[NSArray alloc] initWithContentsOfFile:@"/Users/qianfeng/Desktop/new1.plist"];
+NSDictionary *dict12 = [[NSDictionary alloc] initWithContentsOfFile:@"/Users/qianfeng/Desktop/new2.plist"];
+//不论是数组的，还是字典的该方法，都只能读取plist文件中的内容
+//———————————————————————————————————————————
+//————————————————归  档——————————————————————
+//———————————————————————————————————————————
+1.归档(也称对象序列化)就是通过某种格式把对象保存的本地文件，以便以后读回该对象的内容
+2.解档(也称解归档/读档)就是把归档的对象文件读成原来的对象的过程。
+3.归档和解档分为两类：系统类的归档和解档，自定义类的归档和解档
+//————————————————系统类———————————
+//1.系统类中都遵守了<NSCoding>协议，实现了协议中的方法，所以系统类可以直接进行归档和解档
+//2.不仅仅归档的对象需要遵守<NSCoding>协议，包括这个对象中的所有属性，它们所属类的都必须要遵守NSCoding协议，该对象才能成功的进行归档和解档
+NSArray *array21 = @[@"OC",@"UI",@"iOS"];
+BOOL ret21 = [NSKeyedArchiver archiveRootObject:array21 toFile:@"/Users/qianfeng/Desktop/array.archiver"];
+//把数组进行归档，因为数组的元素都遵守了<NSCoding>协议,归档会对文件进行加密
+NSArray *newArray21 = [NSKeyedUnarchiver unarchiveObjectWithFile:@"/Users/qianfeng/Desktop/array.archiver"];
+//归档的最外层是数组,所以解档的时候要用数组类进行接收
+//————————————————自定义————
+1.如果自定义的类对象要进行归档那么这个对象的属性所属的类也必须要遵守归档协议NSCoding
+2.自定义的类型，如果想要进行归档和解档，必须遵守<NSCoding>协议
+3.因为不管是自定义的类，还是系统类，进行归档和解档的时候，所调用的方法都是相同的,所以我们需要对<NSCoding>协议中所需要实现的两个方法进行重写
+//遵守<NSCoding>协议，必须实现以下两个方法:
+//- (void)encodeWithCoder:(NSCoder *)aCoder归档的时候调用的方法
+//- (id)initWithCoder:(NSCoder *)aDecoder解归档的时候要调用的函数
+/*
+归档的时候要调用的方法
+- (void)encodeWithCoder:(NSCoder *)aCoder{
+//归档和读档的时候key要保持一致，这里的key是给<NSCoding>协议的制定者来使用的，所以我们只需要保持归档和读档的时候的key一致就行，而不需要我们通过这些key来获取数据
+    [aCoder encodeInt:self.weight forKey:@"weight"];
+    [aCoder encodeObject:self.name forKey:@"name"];
+    [aCoder encodeObject:self.engine forKey:@"engine"];
+}
+读档的会调用的方法
+- (id)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super init]) {
+//在进行读档的时候，用setter方法进行赋值不要直接用成员变量,因为这样我们能够获取数据的绝对绝对拥有权，不至于在<NSCoding>协议的制定者被自动释放池释放的时候，使我们丢失该对象的对象空间
+    self.name = [aDecoder decodeObjectForKey:NAME];
+    self.weight = [aDecoder decodeIntForKey:WEIGHT];
+    self.engine = [aDecoder decodeObjectForKey:ENGINE];
+}
+
+[文件扩展名]
+NSString *string=@"/users/qianfeng/desktop/file.tar.bz2";
+NSString *end=[string pathExtension];//取文件扩展名，只会取出最后一个，在本例中只会取出 bz2 。
+NSFileManager *manager;//文件管理器
+manager=[NSFileManager defaultManager];
+NSString *home;
+home =[@"~" stringByExpandingTildeInPath];//将~替换成当前用户的主目录
+NSDirectoryEnumerator *direnum;//目录枚举器
+direnum=[manager enumeratorAtPath:home];//用文件管理器在home目录建立目录迭代器。
+
+类簇：类簇不能直接继承。如NSString等等。
+NSString 是一个抽象类/类簇，是不能被继承
+类簇 :底层由很多不同的类构成，是不能被继承的
+类簇 有 NSString NSArray NSDictionary NSNumber NSDate等
+//抽象类 只声明方法 不实现
+//子类 来实现
+
+
+//@class B;//前向引用声明
+//只是声明一个B这个类型而已
+
+//A.h 包含了 B.h  B.h 包含了A.h 这叫头文件相互包含，#import不能解决这个问题
+//头文件是不能相互包含的
+//为了解决这个问题 我们一般 在.h文件中使用@class 来前向引用声明一个类型 在.m文件中导入头文件
+
+
+/*
+ 内存管理:如何正确释放堆上的空间
+
+ 内存没有释放             -->内存泄露
+ 在使用之前内存被释放了     -->提前释放
+ 释放过后又释放            -->重复释放
+ 
+ 
+ 当有多个模块要使用同一块堆空间的时候
+ 
+ 半自动的内存管理机制
+ - (instancetype)retain OBJC_ARC_UNAVAILABLE;
+- (oneway void)release OBJC_ARC_UNAVAILABLE;
+- (instancetype)autorelease OBJC_ARC_UNAVAILABLE;
+- (NSUInteger)retainCount OBJC_ARC_UNAVAILABLE;
+ retainCount        专门用来计数 引用计数
+ retain             给计数器加1(方法)
+ release            给计数器减1(方法)
+ OC里面的黄金法则
+ 只要使用了alloc retain new 以copy开头的方法 以 mutableCopy开头的方法.都要相应的使用release  autorelease
+ 
+ 自己收拾自己的工作
+ */
+注：不要使用任何刚释放的内存，否则可能误用陈旧的数据，从而引发各种各样的错误，而且如果该内存已经加载了其他数据，将会破坏这些新数据。
+[引用计数]也叫保留计数，每个对象都有一个与之相关联的整数，叫做它的引用计数器或保留计数器。当某段代码需要访问一个对象时，该代码就将该对象的保留计数器值加1，表示“我要访问该对象”；当这段代码结束对象访问时，将对象的保留计数器减1，表示它不再访问该对象。当保留计数器的值为0时，表示不再有代码访问该对象了，这时，对象将被销毁，释放内存以便重用。
+当使用alloc/new/copy创建对象时，对象的保留计数器值被设置为1，发送retain消息可使计数器加1，，发送release消息可使计数器减1.当一个对象因其保留计数器归0而即将被销毁时，OC会自动向对象发送一条dealloc消息，你可以在自己的对象中重写dealloc方法，这样就能释放掉已经分配的全部相关资源。一定不要直接调用dealloc，OC会在需要销毁对象时自动调用它。
+[访问方法中的保留和释放,set方法]
+-(void)setEngine:(Engine*)newWngine{
+	[newEngine retain];
+	[engine release];
+	engine=newEngine;
+}//先保留新的engine对象，即使newEngine和engine是同一个对象，保留计数器的值也将先增加，然后立即减少。由于没有归0，engine对象未被销毁，这样就不会引发错误。在访问方法中，如果先保留新对象，然后再释放对象就不会出现问题了。
+[能很好管理内存的description方法]
+-(NSString*)description{
+	NSString* description;
+	description=[[NSString alloc] initWithFormat:@"I an %d years old",4];
+	return ([description autorelease]);
+}//description方法会首先创建一个新的字符串对象，然后自动释放该对象，最后将其返回给NSLog方法，所以内存管理问题至此圆满解决。其中的description对象暂时被放入到了当前活动的自动释放池中，等到调用NSLog的代码运行结束后，自动释放池会被自动销毁。
+NSLog(@"%@",[someObject description]);
+[创建自动释放池] 
+通过@autoreleasepool关键字。当使用@autorelease{}时，所有在花括号中的代码都会被放入这个新池子中。如果程序是内存密集型的，就可以使用这种自动释放池。需要注意的是，任何在花括号里定义的变量在括号外都是无效的。就像典型的C语言中的有效范围。
+通过NSAutoreleasePool对象。使用NSAutoreleasePool对象时，创建和释放该对象之间的代码都会使用这个新池子。
+NSAutoreleasePool *pool;
+[pool release];//NSAutoreleasePool是一个普通对象，与其他对象遵循一样的内存管理机制。
+推荐使用@autoreleasePool关键字，因为比对象方法更快。
+注：在Xcode自动生成的代码中有另一种销毁自动释放池中对象的方式：-drain方法。该方法只是清空自动释放池而不会销毁它。且只适用于Mac OSX 1.4(Tiger)以后的操作系统。在自己编写的代码中，我们使用-release方法，因为该方法可以支持更古老的OSX版本。
+[Cocoa内存管理规则]如果使用了new、alloc、copy方法获得一个对象，就释放或自动释放该对象。
+1.当使用new、alloc或copy创建一个对象时，该对象的保留计数器的值为1。当不在使用该对象时，应该向该对象发送一条release或autorelease消息，这样，该对象将在其使用寿命结束时被销毁。
+2.当你通过其他方法获得一个对象时，假设该对象的保留计数器的值为1，而且已经被设置为自动释放，那么你不需要执行任何操作来确保该对象得到清理。如果你打算在一段时间内拥有该对象时，则需要保留并确保在操作完成时释放它。
+3.如果你保留了某个对象，就需要最终释放或自动释放该对象。必须保持retain方法和release方法的使用次数相等。
+[内存管理生命周期]
+1. NSArray *array=[[NSArray alloc] init];       [array release];
+2. arrayWithCapacity:方法不同于new/alloc/copy，可假设该对象被返回时，保留计数器的值为1且已经被设置为自动释放。
+3. NSColor *color=[NSColor blueColor];  //blueColor方法也不属于new/alloc/copy，因此可假设该对象被返回时，保留计数器的值为1且已经被设置为自动释放。blueColor方法返回一个全局单例对象--每个对象需要访问它的程序都可以共享的单一对象，这个对象永远不会销毁，不需手动释放color。
+4.要在多段代码中一直拥有某个对象，典型的做法是，把它们加入到诸如NSArray或NSDictionary等集合中，作为其他对象的实例变量来使用，或作为全局变量来使用（比较罕见）。
+4.1 使用new、alloc、copy方法获得一个对象，则不需要执行任何其他操作，该对象的保留计数器值为1，因此它将一直存在，你只需确保在拥有该对象的dealloc方法中释放它即可。
+-(void)doStuff
+{
+	flonkArray=[NSMutableArray new];
+}
+-(void)dealloc
+{
+	[flonkArray release];
+	[super dealloc];
+}
+注: //创建button时使用buttonWithType函数创建，不需要手动释放内存。所以加上[button release]是错误的，会导致程序崩溃。
+4.2 如果使用除alloc、new、copy以外的方法获得了一个对象，需要记得保留该对象。如果编写的是GUI应用程序，要考虑到事件循环，你需要保留自动释放的对象，以便这些对象在当前的事件循环结束后仍能继续存在。
+[事件循环]一个典型的图形应用程序往往话费许多时间等待用户操作，在等待期间程序一直处于空闲状态，当用户做出决定时，程序将被唤醒并开始工作，执行必要的操作响应这一事件，当事件处理完成后又回到休眠状态并等待下一个事件发生。为了降低程序的内存占用，Cocoa会在程序开始处理事件之前创建一个自动释放池，并在事件处理结束后销毁，这样可以尽量减少累计的临时对象的数量。
+-(void)doStuff //当使用自动释放对象时，可使用如下形式：
+{
+	flonkArray=[NSMutableArray arrayWithCapacity:17];
+	[flonkArray retain];
+}
+-(void)dealoc
+{
+	[flonkArray release];
+	[super dealloc];
+}
+注：在当前事件循环结束或自动释放池被销毁时，flonkArray对象会接受到一条release消息，其保留计数器值从2减到1，因为其保留计数器的值大于0，所以该对象将继续存在。因此我们需要在自己的dealloc方法中释放它。
+注：自动释放池会在正确地时间被清理：要么在代码中自己手动清理，要么是使用AppKit时在事件循环结束时销毁。要注意的是自动释放池在循环执行过程中是不会被销毁的。当循环的过于庞大时，因为自动释放池会等到循环结束才会释放，因而可能会产生占用大量内存的问题，解决这类问题的方法就是在循环中创建自己的自动释放池。
+NSAutoreleasePool *pool;
+pool=[[NSAutoreleasePool alloc] init];
+int i;
+for(i=0;i<1000000000;i++){
+	id object=[someArray objectAtIndex:i];
+	NSString *desc=[object descrption];
+	if(i%1000 == 0){
+		[pool release];
+		pool=[[NSAutoreleasePool alloc] init];
+	}
+}
+[pool release];
+//循环每执行1000次，新的自动释放池就会被销毁，同时有一个更新的自动释放池被创建。现在，自动释放池中同时存在的description字符串不会超过1000个，因此程序的内存占用不会持续增加。自动释放池的分配和销毁代价很小，因此甚至可以在循环的每次迭代中创建一个新的自动释放池。
+注：自动释放池以栈的形式存在：当创建一个新的自动释放池时，它就被添加到栈顶。当自动释放池为嵌套结构时，一定是内层池先释放，然后外层池才会释放。
+注：对象是否被释放只看对应的保留计数器的值是否为0.
+注：对象加到数组或字典。。会给对象做一次retain操作。
+注：苹果建议不要在自己的代码中使用autorelease方法，也不要使用会返回自动释放对象的一些便利方法。（一般这些便利的方法都会返回一个新对象的类方法。如NSString，所以以stringWith开头的方法都是便利方法）
+[ARC automatic reference counting，自动引用计数]启动了ARC之后，只管像平常那样按需分配并使用对象，编译器会帮你插入retain和release语句，无需自己动手。
+注：垃圾回收器在运行时工作，通过返回的代码来定期检查对象，与此相反，ARC是在编译时进行工作的。
+注：ARC只对可保留对象指针(ROPs)有效：代码块指针、OC对象指针、通过__attribute__((NSObject))类型定义的指针。所有其他的指针类型，包括char*等C类型和CF对象都不支持ARC特性。
+注：要在代码中使用ARC，必须满足三个条件：能够确定那些对象需要进行内存管理；能够表明如何去管理对象；有可行的办法传递对象的所有权。
+[强引用与弱引用]当用指针指向某个对象时，你可以管理(retain/release)它的内存也可以不管理。如果管理了，就拥有了对这个对象的强引用；如果没有管理，就是弱引用。比如，属性使用了assign特性，便创建了一个弱引用。
+strong means:
+“keep the object that this property points to in memory until I set this property to nil (zero) (and it will stay in memory until everyone who has a strong pointer to it sets their property to nil too)”
+weak would mean:
+“if no one else has a strong pointer to this object, then you can throw it out of memory and set this property to nil (this can happen at any time)”
+[归零弱引用]
+有两种方法可以声明归零弱引用，声明变量时使用__week关键字或对属性使用weak特性。
+__weak NSString *myString;
+@property (weak) NSString *myString;
+使用ARC时，有两种命名规则需要注意：属性名称不能以new开头，比如@property NSString *newString;是不被允许的。 属性不能只有一个readonly而没有内存管理特性。
+强引用也有自己的__strong关键字和strong特性。内存管理的关键字和特性不能同时使用。两者互斥。
+_unsafe_unretained与weak功能一致，区别在于当指向的对象销毁后，weak会将变量>置为nil，防止野指针.
+[拥有者权限]与被称为桥接转换(bridged cast)的C语言技术。__bridge,__bridge_retained,__bridge_transfer
+因为指针支持ARC的一个条件是必须是可保留对象指针。这意味着不能简单地将一个ROP表示成不可保留对象指针(non-ROP)，因为指针所有权会移交。如下代码：
+NSString *theString=@"this is a ROP";
+CFStringRef cfString=(CFStringRef)theString;//需要告诉编译器哪个对象是指针的拥有者。
+(__bridge类型)操作符：这种类型的转换会传递指针但不会传递它的所有权。
+cfString=(__bridge CFStringRef)theString;//cfString接收了指令，但指针的所有权仍然由theString保留。
+(__bridge_retained类型)操作符,使用这种类型，所有权会转移到non-ROP上。
+cfString=(__bridge_retained CFStringRef)theString;//这个实例中，cfString字符串拥有指针并且它的保留计数器加1，因为ARC只会注意到ROP，而cfString是non-ROP,所以要使用retain和release来管理它的内存。
+(__bridge_transfer类型)操作符，这种类型，它把所有权交给ROP。ROP拥有对象并能确保它会像其他ARC对象一样得到释放。
+另一个限制是：结构体和联合体不能使用ROP作为成员。
+struct{
+	char *bar;
+	NSString *baz;
+}MyStruct;//这种写法是不被允许的。可以通过使用void*和桥接转换来解决这个问题。如果想要分配并获取字符串，可以使用如下代码：
+struct{
+	char *bar;
+	void *baz;
+}MyStruct;
+MyStruct.baz=(__bridge_retained void *)theString;
+NSString *myString=(__bridge_transfer NSString*)MyStruct.baz;
+-----------------------------
+注：对不能使用ARC管理的对象调用的管理方法有：retain/retainCount/release/autorelease/dealloc.因为有时需要释放不支持ARC的对象或执行其他清理操作，所以仍要实现dealloc方法，但不能直接调用[super dealloc]。
+注：不能对ARC对象进行重写的方法：retain/retainCount/release/autorelease。
+可以这样
+- (void)dealloc
+{
+	a = nil;
+	//[super dealloc];ARC中，不能这样直接调用dealloc
+}
+ARC如果内存管理不当的话，同样会存在内存泄露，例如：ARC中也会循环引用导致内存泄露，OC对象与CoreFoundation类之间桥接时，管理不当也会产生内存泄露。
+
+[异常]NSException类型，可以创建其子类作为自己的异常
+在运行的系统中创建并处理异常的行为被称为抛出异常，或者说提出异常。
+处理被抛出的异常的行为被称为捕捉异常。
+异常关键字以@开头
+@try 定义用来测试的代码块以决定是否要抛出异常。
+@catch() 定义用来处理已抛出异常的代码块，接受一个参数，通常上NSException类型，也可能是其他类型。
+@finally 会在@throw之前调用。
+@throw 抛出异常
+可以使用goto和return退出异常处理代码
+NSException *theException=[NSException exceptionWithName: _];//创建异常
+#throw theException //抛出异常
+[theException raise];//两种方法都可以使用，但不要同时使用，两者的区别是raise只对NSEception对象有效，而#throw也可以用于其他对象上。
+@try{//通常会在异常处理代码中抛出异常，可以通过再次发送raise消息和使用@throw关键字来通知异常。
+	NSException *e=...;
+	@throw e;
+}@catch(NSException *e){
+	@throw;//在@catch异常处理代码中，可以重复抛出异常而无需指定异常对象。	
+}
+注：OC异常机制与C++的异常机制兼容。在OC中的异常会对程序资源有影响，捕捉异常会消耗大量资源并影响程序运行的速度。
+NSDictionary *dictionary=[pNSDictionary alloc[ initWith...];
+@try{
+	[self processDictionary:dictionary];
+}@finally{
+	[dictionary release];
+}//本例中，即使由于processDictionary产生异常而退出方法，也能够释放该字典对象，不会出现内存泄露。
+[异常与自动释放池]因为不知道异常该什么时候释放，所以异常几乎总是作为自动释放对象而创建。当自动释放池销毁后，自动释放池中的所有对象也会被销毁，包括异常。
+-(void)myMethod{//通过使用retain方法，我们在当前池中保留了异常，当池被释放时，我们早已保存了一个异常指针吗、，他会同当前池一同释放。这样就不会因为本地pool释放早于异常通知也造成可怕的僵尸异常。
+	id savedException=nil;
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSDictionary *myDictionary=[[NSDictionary alloc] initWithObjectsAndKeys:@"asd",nil];
+	@try{
+		[self processDictionary:myDictionary];
+	}@catch(NSException *e){
+		savedException=[e retain];
+		@throw;
+	}@finally{
+		[pool release];
+		[savedException autorelease];//新创建的异常指针会在自动释放池中，会自动释放，因为不是立刻释放，所以说保留了异常。
+	}
+}
+
+
+
+/**
+ *  继承
+ 
+ 继承官方或第三方类库，重写或添加新的方法，创建出符合自己使用的类（最常用的用法）。
+ 
+ 有时候会觉得官方或第三方的某些方法会对我们更方便，又不能直接对原来的类进行修改，这时可以使用继承对其进行扩展，假如又不能进行扩展，我们可以使用类别对其进行扩展。
+    
+    父类： super class, father class
+    //综合子类的一些公有特性。
+ 
+    子类： subclass , child class, 派生类
+    //子类会继承父类的一些特征，并且还会派生出自己独有的特性。
+    //子类不可以定义父类已经拥有的属性。因为在创建子类时，该属性已变成子类的属性。
+    NSObject 基类，综合了所有类的公有特征。
+ 
+    *减少代码冗余，提高代码复用率。
+ */
+//继承父类的方法。
+//当父类的方法在子类中不再适用时，子类可以重写父类的方法。重写的方法可以不声明
+//类方法和实例方法可以重名。
+//要创建大量相似类时，可以使用继承。
+//super 在类方法中使用super时，调用父类的类方法；在实例（对象）方法中使用super时，调用父类的实例（对象）方法。
+子类不能直接使用父类私有的变量但是可以通过父类的方法间接使用。
+
+
+/**
+ *  多态，继承可以帮我们实现多态。OC里只有单继承。
+ 一个接口，不同的实现。
+可以被用来统一接口
+Father *f = son;//父类指针可以指向子类对象,赋值兼容原则,然后父类指针调用子类重写的方法。执行过程:运行时,会去f指针指向的对象所属的类去找有没有jump方法，找到就调用，如果找不到 去父类当中找，依次类推，直到找到 如果最终找不到 那么崩溃
+//虽然是父类指针，但调用方法还要看对象本身的类型。
+//父类指针指向子类的对象。调用方法时，还是会调用子类的方法。
+//父类指针不能调用子类特有的方法。只能调用子类重写的子类方法。
+ */
+
+
+[init初始化]
+//1.先初始化继承过来父类的成员变量
+self = [super init];//通过父类初始化方法 给继承父类的变量赋一些合理的初始值，初始化成功 返回当前对象的地址 失败返回nil
+if (self) {//判断父类的是否初始化成功
+    _age = age;//成功 那么再初始化子类专有的变量
+}
+
+
+
+[创建类别]
+创建一个objective-c file , 可以选择 category, extension ,protocol, empty 文件。选category 就能建立类别。若要创建.pch ，在other里选择 PCH file,并需要修改一下设置。在build settings 里设置 Precompile Prefix Header的值为YES，并设置Prefix Header的路径。
+习惯把类别放在独立的文件中，通常会以"类名称+类别名成"的风格命名。
+/*
+* 	类别  也叫类目  分类
+	主要作用:扩展一个类
+	副作用:可以把方法进行分类管理
+	副作用:可以分工合作
+//类别定义的方式
+/**
+ @interface 原类名 (类别名)
+ @end
+ @implementation 原类名 (类别名)
+ @end//包含类名、类别名以及新方法的实现。 
+@interface NSString (NumberConvenience)
+@end//为NSString类添加了一个名为NumberConvenience的类别，要保证类别名称唯一
+注：可以在类别中添加属性，但不能添加实例变量，而且属性必须是@dynamic类型的。添加属性的好处在于可以通过点表达式来访问setter/getter方法。
+注：@"字符串"这种形式的字符串实际上就是NSString对象。
+[类别的缺陷]1.无法向类中添加新的实例变量。2.名称冲突，当类别中的方法和现有方法重名时，类别具有更高德优先级，类别方法将完全取代初始方法，导致初始方法不可再用。
+[类别的优势]1.将类的实现代码分散到多个不同的文件或框架中，创建对私有方法的前向引用，向对象添加非正式协议(informal protocol)。
+//7.在类别中,可以使用原来类的方法,但是必须提供接口
+//10.父类类别的方法,子类也可以使用,但是要包含头文件
+[类扩展]匿名类别：不需要名字，可在自己的类中使用，可添加实例变量，可将只读权限改成可读写权限，创建数量不限。改变仅限于在次类别中使用，私有的。
+当把类别放在这个类的头文件中，这样就可以让其子类或友类访问这些内容。
+注：类别可以访问其继承的类的实例变量。类别的方法具有更高的优先级。使用一个对象时，对象的方法是在接口中声明、在父类中声明还是在类别中声明并不重要，也不回影响结果。
+注：Cocoa设计人员通过类别使NSString的数据功能放在Foundation方法中，而NSString的绘图功能放在AppKit框架中。
+[前向引用]当调用某个对象未声明或未定义的方法时，编译器会给出警告。只要在类别中声明这个方法，并将类别放在实现文件的最前面，就可以消除警告，而类别可以不实现。。
+
+一般写在类的实现上方
+@interface Father ()
+{
+    int _age;//默认是私有的
+}
+- (void)show;
+//我们可以在匿名类别中声明一些 私有的变量 和方法 不对外公开
+@end
+@implementation Father
+- (void)show{
+    NSLog(@"-show");
+}
+- (void)print{//没有声明 只有实现  私有化方法
+    NSLog(@"-print");
+}
+@end
+子类是可以直接使用 父类用类别增补的方法，类别增补的方法子类可以继承。
+
+[自己的实例变量使用_，父类的使用点语法]
+/**
+ *  点语法
+ 最原始的目的是为了我们更加方便的访问实例变量。
+ 其实是在发送set/get消息。
+ */
+p.test=10;//虽然没有test这个实例变量（属性），但因为点语法会发送set/get方法，所以也会调用setTest方法。由此可知：当点语法在等号的左边时，点语法只是在前面加一个set并把test首字母大写，然后向这个方法发送消息。
+NSLog(@"%d",p.test11);//当点语法在等号的右边或者没有等号时，会当做get方法调用该方法。
+
+[属性]
+@property预编译指令的作用是自动声明属性的setter和getter方法。
+@synthesize预编译指令。给实例变量自动的实现setter/getter方法。（在Xcode 4.5后的版本中，可以省略）。
+注：所有属性都是基于变量的，所以在合成(synthesize)getter和setter方法时，编译器会自动创建与属性名相同的实例变量。如果没有声明这些变量，编译器也会声明。有两个地方可以用来添加实例变量的声明：头文件和实现文件，甚至可以一部分在头文件，一部分在实现文件中声明。如果想要从子类直接通过属性来访问变量，就必须放在头文件中；如果变量只属于当前类，则可以放在.m文件中(私有实例变量)。
+@property (nonatomic,copy) NSString *name;
+//@property的作用仅仅是声明下面两个接口。
+//-(void)setName:(NSString*)name;
+//-(NSString*)name;
+/**
+ *  nonatomic   非原子操作，不考虑线程安全(不加同步)，多线程并发访问会提高性能。默认
+    atomic      原子操作，考虑到线程安全。
+ */
+注：如果自己定义了setter和getter方法，就不能使用atomic特性了，必须使用nonatomic特性。
+/** @property (copy) NSString *name;
+初始化时，使用： name=[[NSString alloc] initWithString:@"Car";//复制对象。例如从用户界面(如文本框)中获得一个字符串，并将其作为某事物的名称使用。文本框中的字符串通常都是可变字符串，会因为用户输入新的内容而发生变化。复制该字符串可以防止因意外的变化而产生的不利影响。
+ *  copy修饰符,因为name属性使用的是copy特性，所以编译器和类的使用者会知道name属性将被复制。这意味着当我们给name赋值时，Car类会创建这条字符串的副本并将其保存下来。如果我们没有启用ARC，需要在Car类的dealloc方法中添加[name release]。如果启用了ARC，则不需要担心。
+ *  某些对象，尤其是字符串的值，都使copy属性
+ */
+/** @property (retain)Engine *engine;//保留和释放特性。
+-(void)setEngine:(Engine*)newEngine{
+	[newEngine retain];
+	[engine release];
+	engine=newEngine;
+}
+ *  当遇到属性是对象时，用retain属性。
+ */
+/**
+ * 当属性(如基本数据类型)不涉及内存操作时，用assign,不保留某个变量对象，可以避免发生保留死循环，是默认值
+ 当使用委托代理时，使用assign可避免循环引用造成的死循环。
+ */
+@property (nonatomic,assign) int num;//默认使用(nonatomic,assign)。
+/**
+ *  readwrite 要生成setter和getter 两个方法，  默认缺省。
+ */
+@property (nonatomic,readwrite,assign) int num2;
+//有readwrite会自动生成set get 方法。默认
+//readonly 只生成get方法。
+//自己指定set方法的名字。
+@property (nonatomic,assign,setter=changeNum:)int num3;
+//可以自己指定方法名
+//2.如果不存在带_的实例变量，会自动创建一个。----好疑惑
+@synthesize name=appellation;//编译器仍将创建-setName:和-name方法，但在其实现代码中用的却是appellation实例变量。[实例变量和公开的属性不是同一个名称]。
+@synthesize name=_name;在类的内部，我们总是使用下划线属性名。当在代码中自己实现setter和geotter方法时，需加上这句话。
+@dynamic编译器指令来指定这个属性并告诉编译器不需要生成任何代码或创建相应地实例变量。
+@property (readonly) float bodyMassIndex;
+@dynamic bodyMassIndex;//不会生成setter和getter方法。
+-(float)bodyMassIndex
+{
+	//根据计算得出返回值。
+}
+注：属性不支持那些需要额外参数的方法。如：
+-(void)setTire:(Tire*)tire atIndex:(int)index;
+-(Tire*)tireAtIndex:(int)index;
+-----------------------------
+[OC协议] 正式协议。
+规范接口,让对象与对象能交换信息
+[声明协议]
+@protocol NSCopying		//协议名必须是唯一的，能够创建自身的副本。
+-(id)copyWithZone:(NSZone*)zone;    //方法声明列表
+@end
+@protocal NSCoding		//Cocoa的NSCoding协议，对自身进行编码或解码。
+-(void)encodeWithCoder:(NSCoder*)encoder;  //接收对象的实例变量并将其转换为NSCoder类的对象。
+-(id)initWithCoder:(NSCoder*)decoder;	//从NSCoder类的对象中提取经过转换雪藏的实例变量，并使用他们去初始化新的对象。
+@end
+注：这两个方法总是成对出现的，如果你从未将一个对象转换为另一个新对象，那么对该对象进行编码是毫无意义的；如果你不对对象进行编码，那么也就不能创建新的对象。
+//@protocol 协议名<父协议>
+//@end
+//NSObject 基协议、根协议
+//定义一个协议
+//就是用来规定方法接口长什么样
+@protocol Score <NSObject>
+-(int)answer;
+@end
+id<IOSCode> obj=boy;  //可以用一个泛型指针指向某一个遵循了协议的对象。
+[obj writeIosCode];   //同时可以直接通过ID类型的指针调用协议方法。
+//[obj writeJavaCode];  //error但是不能直接调用协议之外的方法。
+注：如果一个用尖括号括起来的协议名称跟随在id之后，则编译器将指导你会接受任何类型的对象，前提是要遵守该协议。
+[传递原则]如果一个协议A遵循了另外一个协议B,那么遵循该协议A的对象也需要遵循协议B.
+[采用协议]的办法是在类的@interface声明中列出协议的名称。采用协议就意味着要实现该协议的所有方法。
+可以同时遵循多个协议，协议之间用逗号(,)隔开。遵循了多个协议,要实现多个协议的接口
+@interface Boy : NSObject <IOSCode,JAVACode>
+-(void)writeJavaCode;
+@end
+[@optinol和@required]
+@protocol BaseballPlayer
+-(void)drawHugeSalary;
+@optional
+-(void)slideHome;
+-(void)catchBall;
+-(void)throwBall;
+@required
+-(void)swingBat;
+@end //BaseballPlayer
+这段代码采用了BaseballPlayer协议，并且必须要实现-drawHugeSalary和-swingBat方法，而另几个方法可选择是否实现。
+[委托]委托是一个经常和协议一起使用的特性。委托就是某个对象指定另一个对象处理某些特定任务的设计模式。
+NSNetSeviceBrowser类的委托方法：
+-(id)<NSNetServiceBrowserDelegate>delegate;
+-(void)setDelegate:(id <NSNetServiceBrowserDelegate>)delegate;
+第一个方法返回当前的委托对象（如果没有就返回nil）。
+第二个方法用来设置委托，参数的委托类型告诉我们，只要遵守所需的协议，就可以设置任意对象为委托。
+-(void)doWork
+{
+	[delegate doSomeRequiredWork];
+	if(YES==[delegate respondsToSelector:@selector(doSomeOptionalWork)]){
+		[delegate doSomeOptionalWork];
+	}
+	[self myWork];
+}//Manager使用委托来让Worker执行必须的和可选的工作，首先询问委托是否实现了某个方法，如果实现了，就会要求委托处理这个方法。最终，Manager完成工作。
+
+要实现自定义对象的拷贝（可变和不可变拷贝），必须实现copying和mutableCopying协议，表示返回一个不可变和可变的对象。否则程序将出现异常。
+需要实现对应的方法： 
+	1. - (id) copyWithZone: (NSZone *) zone;
+	2. - (id) mutableCopyWithZone: (NSZone *) zone;
+
+[使用NSCopying举例]：
+@interface Engine : NSObject <NSCopying>
+@end // Engine采用NSCopying协议，意味着必须实现copyWithZone方法。zone是NSZone类的一个对象，指向一块可供分配的内存区域。当你向一个对象发送copy消息时，该copy消息在到达该对象之前会被转换成copyWithZone:方法。
+- (id) copyWithZone: (NSZone *) zone
+{	//使用[self class]可使该方法适用于其子类。
+	Engine *engineCopy;
+	engineCopy = [[[self class] allocWithZone: zone] init];
+	return (engineCopy);
+} // Engine类的copyWithZone:方法实现
+----
+- (id) copyWithZone: (NSZone *) zone
+{
+	Tire *tireCopy;
+	tireCopy = [[[self class] allocWithZone: zone]
+				initWithPressure: pressure
+				treadDepth: treadDepth];
+	return (tireCopy);	
+} // copyWithZone
+---
+- (id) initWithPressure: (float) p treadDepth: (float) td
+{
+    if (self = [super init]) {
+        pressure = p;
+        treadDepth = td;
+    }
+    return (self);
+} // initWithPressure:treadDepth:
+---
+NSString *str = [NSString stringWithContentsOfFile:@"/users/Aaron/desktop/std.json" encoding:NSUTF8StringEncoding error:nil];
+NSLog(@"%@",str);
+//字符串转成二进制数据流
+//NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
+//直接从文件读成二进制数据流
+NSData *data = [NSData dataWithContentsOfFile:@"/users/Aaron/desktop/std.json"];
+
+//NSJSONSerialization
+//+ (id)JSONObjectWithData:(NSData *)data options:(NSJSONReadingOptions)opt error:(NSError **)error;
+//参数一:接收到的二进制数据流
+//参数二:表示要转成什么对象
+/**
+ NSJSONReadingMutableContainers = (1UL << 0),  要转成字典或者数组
+ 下面两个不用
+ NSJSONReadingMutableLeaves = (1UL << 1),      转成字符串
+ NSJSONReadingAllowFragments = (1UL << 2)      不限制类型
+ */
+NSArray * obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+
+NSArray *array = @[@"AAA",@"BBB",@"CCC",@3];
+//把数据写入plist文档
+[array writeToFile:@"/users/Aaron/desktop/归档1.plist" atomically:YES];
+NSArray * array1 = [NSArray arrayWithContentsOfFile:@"/users/Aaron/desktop/归档1.plist"];
+NSLog(@"%@",array1);
+
+//plist文档只能存储7种数据
+//数组  字典  数字  字符串 日期  二进制  布尔值
+
+NSString *str = @"hello";
+[str writeToFile:@"/users/Aaron/desktop/test1.txt" atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+//数组和字典的写入文件的方法,会把数据转成plist文件的格式,也就是xml
+
+NSDictionary *dic = @{@"number":@3,@"score":@100};
+[dic writeToFile:@"/users/Aaron/desktop/test2.plist" atomically:YES];
+[NSCoding归档协议]
+@interface Student : NSObject  <NSCoding>
+//这两个方法不是我们调用的,是由系统自动调用的
+//归档是让自定义的对象支持与二进制数据流之间的转换
+//归档方法
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    //归档器
+    //"name":"小白"
+    [aCoder encodeObject:self.name forKey:@"name"];
+    [aCoder encodeObject:[NSNumber numberWithInt:self.number] forKey:@"number"];
+    [aCoder encodeObject:[NSNumber numberWithInt:self.score] forKey:@"score"];
+}
+//解档方法
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if(self = [super init])
+    {
+        self.name = [aDecoder decodeObjectForKey:@"name"];
+        self.number = [[aDecoder decodeObjectForKey:@"number"] intValue];
+        self.score = [[aDecoder decodeObjectForKey:@"score"] intValue];
+    }
+    return self;
+}
+
++(void)test3
+{
+    Student *std = [[Student alloc] init];
+    std.name = @"小白";
+    std.number = 100;
+    std.score = 10;
+    
+    //NSKeyedArchiver 归档器
+    //把对象归档到文件
+    [NSKeyedArchiver archiveRootObject:std toFile:@"/users/Aaron/desktop/归档3.data"];
+    //NSKeyedUnarchiver  解档器
+    //从文件里面把对象解档出来
+    Student *std1 = [NSKeyedUnarchiver unarchiveObjectWithFile:@"/users/Aaron/desktop/归档3.data"];
+    NSLog(@"%@",std1.name);
+}
+
++(void)test4
+{
+    NSMutableArray *array = [NSMutableArray array];
+    for(int i = 0; i < 10; i++)
+    {
+        //Dog *dog = [[Dog alloc] init];
+        Student *std = [[Student alloc] init];
+        std.name = [NSString stringWithFormat:@"小白%d",i+1];
+        [array addObject:std];
+    }
+    //数组和字典的writeToFile:这个方法只能写入plist文件
+    BOOL rec = [array writeToFile:@"/users/Aaron/desktop/归档4.plist" atomically:YES];
+    NSLog(@"%d",rec);
+    rec = [NSKeyedArchiver archiveRootObject:array toFile:@"/users/Aaron/desktop/归档4.data"];
+    NSLog(@"%d",rec);
+    
+    id obj = [NSKeyedUnarchiver unarchiveObjectWithFile:@"/users/Aaron/desktop/归档4.data"];
+    NSLog(@"%@",[obj class]);
+    for(Student *std in obj)
+    {
+        NSLog(@"%@",std.name);
+    }
+}
+
++(void)test5
+{
+    Student *std = [[Student alloc] init];
+    std.name = @"小黑";
+    std.number = 10;
+    std.score = 100;
+    //把对象归档成二进制数据流
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:std];
+    //把二进制数据流归解档成对象
+    Student *std1 = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSLog(@"%@",std1.name);
+    // 1000000
+    
+    //创建可变的NSData
+    NSMutableData *send = [NSMutableData data];
+    NSKeyedArchiver *archi = [[NSKeyedArchiver alloc] initForWritingWithMutableData:send];
+    [archi encodeObject:std forKey:@"student"];
+    [archi encodeObject:[NSNumber numberWithInt:100000] forKey:@"num"];
+    [archi finishEncoding];
+    
+    NSKeyedUnarchiver *unarchi = [[NSKeyedUnarchiver alloc] initForReadingWithData:send];
+    NSNumber *number = [unarchi decodeObjectForKey:@"num"];
+    NSLog(@"%@",number);
+    [unarchi finishDecoding];
+    
+}
+
+[OC对象初始化]在Cocoa中，分配和初始化是两个分离的操作：来自NSObject的类方法alloc为对象分配一块内存区域并将其清零，实例方法init用于获得一个对象并使其运行。
+Car *car=[[Car alloc]init];//这种嵌套调用技术非常重要，因为初始化方法返回的对象可能与分配的对象不同。
+初始化方式：
+1.使用init方法创建engine对象和全部的4个tire对象。“出产即用”
+2.在init方法中不创建任何对象，只为engine对象和tire对象预留位置。即等到调用者需要时再创建对象。“惰性求值”/惰性实例化
+//打开指定路径的文本文件，读入内容，并用文件内容初始化一个字符串。
+NSError *error=nil;
+NSSringEncoding encoding=NSUTF8StringEncoding;
+NSString *string=[[NSString alloc] initWithContentsOfFile:@"/tmp/words.txt" useEncoding:&encoding error:&error];
+if(nil != error){
+	NSLog(@"Unable to read data from file,%@",[error localizedDescription]);
+}//如果出现了错误，可以使用localizedDescription方法来查明情况。
+- (id) init
+{
+    if (self = [self initWithPressure: 34
+                     treadDepth: 20]) {
+    }
+    return (self);
+} // init
+- (id) initWithPressure: (float) p
+{
+    if (self = [self initWithPressure: p
+                     treadDepth: 20.0]) {
+    }
+    return (self);
+} // initWithPressure
+- (id) initWithTreadDepth: (float) td
+{
+    if (self = [self initWithPressure: 34.0
+                     treadDepth: td]) {
+    }
+    return (self);
+} // initWithTreadDepth
+- (id) initWithPressure: (float) p treadDepth: (float) td
+{//指定初始化函数。调用超类的指定初始化函数。
+    if (self = [super init]) {
+        pressure = p;
+        treadDepth = td;
+    }
+    return (self);
+}
+[代码块对象]是对C语言函数的扩展。除了函数中的代码，代码块还包含变量绑定。也称为闭包。
+代码块包含两种类型的绑定：自动型和托管型。自动绑定(automatic binding)使用的是栈的内存，而托管绑定(managed binding)是通过堆创建的。
+注：因为代码块是由C语言实现的，所以它们在各种以C为基础的语言内都是有效的。
+代码块特征：返回类型可以手动声明也可以由编译器推导；具有指定类型的参数列表；有名称。
+int (^square_block)(int number)=
+	^(int number){return (number * number);};//这个代码块获取一个整型参数并返回这个数字的平方。等号前面是代码块定义，等号后面是实现内容。
+有参数：<returntype>(^blockname)(list of arguments)=^(arguments){body;};
+无参数：void(^theBlock)()=^{printf("Hello Blocks!\n");};
+调用代码块：int result=square_block(5);
+[内联代码块]使用代码块时，通常不需要创建代码块变量，而是直接在代码中内联代码块的内容。通常，你会需要一个将代码块作为参数的方法或函数。
+NSArray *array=[NSArray arrayWithObjects:@"vaa",@"rbb",@"cc",@"tdd", nil];
+NSArray *sortedArray=[array sortedArrayUsingComparator:
+                      ^(NSString *object1,NSString *object2)
+                      {return [object1 compare:object2];}];
+NSLog(@"%@",sortedArray);//简单地创建了一个代码块，用完之后就可以不管它了。
+[代码块与变量]代码块被声明后回捕捉创建点的状态。
+对于本地变量，代码块会在定义时复制并保存他们的状态(即本地变量会被代码块作为常量获取)，所以即使后面本地变量改变了，再次调用该代码块，返回值也不会改变。理解捕捉创建点的状态。
+对于全局变量和static变量，当改变后再次调用该代码块，返回值会改变。捕捉创建点的状态。
+对于参数变量，同理于函数的参数变量。
+对于__block变量，因为本地变量会被代码块作为常量获取，所以在代码块中不可改变该变量的值。给改变了添加__block前缀，将变量设置为可修改的变量，当变量在块定义之前有值时，在块中也可以修改该变量的值。但是，没有长度可变的数组和没有包含可变长度数组的结构体不能声明为__block类型。
+对于代码块内部的本地变量，同理于函数中的本地变量。
+有关代码块的内存管理规则：1.如果引用了一个OC对象，必须保留它；2.如果通过引用访问了一个实例变量，要保留一次self(即执行方法的对象)；3.如果通过数值访问了一个实例变量，变量需要保留。
+MKSampleVoidBlockRef block1 = ^{
+            NSLog(@"Block1");
+        };
+MKSampleVoidBlockRef block2 = ^{
+            NSLog(@"Block2");
+        };
+	Block_release(block2);// 释放block2的内存
+	block2 = Block_copy(block1);//复制代码块
+
+1 什么是block
+对于闭包（block),有很多定义，其中闭包就是能够读取其它函数内部变量的函数，这个定义即接近本质又较好理解。对于刚接触Block的同学，会觉得有些绕，因为我们习惯写这样的程序main(){ funA();} funA(){funB();} funB(){.....}; 就是函数main调用函数A，函数A调用函数B... 函数们依次顺序执行，但现实中不全是这样的，例如项目经理M，手下有3个程序员A、B、C，当他给程序员A安排实现功能F1时，他并不等着A完成之后，再去安排B去实现F2，而是安排给A功能F1，B功能F2，C功能F3，然后可能去写技术文档，而当A遇到问题时，他会来找项目经理M，当B做完时，会通知M，这就是一个异步执行的例子。在这种情形下，Block便可大显身手，因为在项目经理M，给A安排工作时，同时会告诉A若果遇到困难，如何能找到他报告问题（例如打他手机号），这就是项目经理M给A的一个回调接口，要回掉的操作，比如接到电话，百度查询后，返回网页内容给A，这就是一个Block，在M交待工作时，已经定义好，并且取得了F1的任务号（局部变量），却是在当A遇到问题时，才调用执行，跨函数在项目经理M查询百度，获得结果后回调该block。
+
+
+
+[并发性，GCD，Grand Central Dispatch]
+[互斥 mutex]mutex是mutual exclusion的缩写，确保两个线程不会在同一时间进入临界区。	@synchronized(theObject){ 	}
+[代码后台执行]NSObject中含有performSelector:的方法。
+- (void)runSelectors
+{
+    [self performSelector:@selector(myBackgroundMehod1)];
+    [self performSelector:@selector(myBackgroundMethod2:) withObject:@"Hello Selector"];
+    NSLog(@"Done performing selectors");
+}
+- (void)myBackgroundMehod1
+{//后台运行的方法1
+    @autoreleasepool
+    {
+        NSLog(@"myBackgroundMehod1");
+    }
+}
+- (void)myBackgroundMethod2:(id)object
+{//后台运行的方法2
+    @autoreleasepool
+    {
+        NSLog(@"myBackgroundMethod2 %@", object);
+    }
+}//1.这些方法运行在各自的线程中，因此必须为这些Cocoa对象创建一个自动释放池，而主自动释放池是与主线程有关的。2.这些方法不能有返回值，并且要么没有参数，要么只有一个参数。换句话说，该方法的格式只能为：-(void)maMethod;和-(void)myMethod:(id)myObject;中的一种。
+想在后台执行自己的方法，像下面这样调用就行。
+[self performSelectorInBackground:@selector(myBackgroundMehod) withObject:nil];
+[self performSelectorInBackground:@selector(myOtherBackgroundMethod:) withObject:arugmentObject];
+当方法执行结束后，OC会特地清理并弃掉线程。要注意的是方法执行结束后并不会通知你。
+[GCD 调度队列dispatch queue]与线程相似但更简单，只需将需要的代码指派为一个队列，系统就会执行它。可以同步异步执行任意代码。一共三种类型的队列：
+类型一，连续队列，每个连续队列都会根据指派的顺序执行任务。可以按自己的想法创建任意数量的队列，他们会并行操作任务。任务执行顺序为先入先出(FIFO)，只要任务是异步提交的，队列会确保任务根据预定顺序执行，这些队列都不会发生死锁。
+类型二，并发队列，每个并发队列都能并发执行一个或多个任务。任务会根据指派到队列的顺序开始执行。你无法创建连续队列，只能从系统提供的三个队列内选择一个来使用。适用于那些可以并行运行的任务。并发队列也遵循FIFO规范，且任务可以在前一个任务结束前就开始运行。一次所运行的任务数量是无法预测的。
+注：如果需要确保每次运行的任务数量都是一样的，可以通过线程API来手动管理线程。
+每个应用程序都有3中并发队列可以使用：高优先级、默认优先级、低优先级。
+#define DISPATCH_QUEUE_PRIORITY_HIGH 2
+#define DISPATCH_QUEUE_PRIORITY_DEFAULT 0
+#define DISPATCH_QUEUE_PRIORITY_LOW (-2)
+类型三，主队列，是应用程序中有效地主队列，执行的是应用程序的主线程任务。
+ 获取当前队列，dispatch_queue_t myQueue=dispatch_get_current_queue();可找出当前运行的队列代码块，如果在代码块对象之外调用了这个函数，则它将返回主队列。
+
+
+内省（Introspection）是面向对象语言和环境的一个强大特性，Objective-C和Cocoa在这个方面尤其的丰富。内省是对象揭示自己作为一个运行时对象的详细信息的一种能力。这些详细信息包括对象在继承树上的位置，对象是否遵循特定的协议，以及是否可以响应特定的消息。NSObject协议和类定义了很多内省方法，用于查询运行时信息，以便根据对象的特征进行识别。
+
+明智地使用内省可以使面向对象的程序更加高效和强壮。它有助于避免错误地进行消息派发、错误地假设对象相等、以及类似的问题。
+
+下面的部分将介绍如何在代码中有效地使用NSObject的内省方法。
+
+1、isKindOfClass:Class
+
+检查对象是否是那个类或者其继承类实例化的对象
+
+2、isMemberOfClass:Class
+
+检查对象是否是那个类但不包括继承类而实例化的对象
+if ([item isKindOfClass:[NSData class]]) {  
+    const unsigned char *bytes = [item bytes];  
+    unsigned int length = [item length];  
+    // ...  
+}
+注：如果item是NSMutableData类实例化的对象，而该类是NSData类的子类，那么[item isKindOfClass:[NSData class]]的值也是TRUE，而[item isMemberOfClass:[NSData class]]的值则为False。
+如果item是NSData类实例化的对象，那么[item isMemberOfClass:[NSData class]]的值则为TRUE。
+
+3、respondToSelector:selector
+
+检查对象是否包含这个方法
+- (void)doCommandBySelector:(SEL)aSelector {  
+    if ([self respondsToSelector:aSelector]) {  
+        [self performSelector:aSelector withObject:nil];  
+    } else {  
+        [_client doCommandBySelector:aSelector];  
+    }  
+}
+
+4、conformsToProtocol:protocol
+
+检查对象是否符合协议，是否实现了协议中所有的必选方法。
+if (!([((id)testObject) conformsToProtocol:@protocol(NSMenuItem)])) {  
+    NSLog(@"Custom MenuItem, '%@', not loaded; it must conform to the  
+        'NSMenuItem' protocol.\n", [testObject class]);  
+    [testObject release];  
+    testObject = nil;  
+}
+
+
+OC新增泛型支持
+// 1、使用泛型，可以声明容器类型的类如Array里面的元素是NSString *，但是尽管是这样的声明，同样可以在array中新增一个非NSString *类型的元素，这点需要注意！
+NSMutableArray *array = [NSMutableArray<NSString *> array];
+// 2.新增NSString *
+    [array addObject:@"a"];
+// 3.新增NSNumber *
+    [array addObject:@(1)];

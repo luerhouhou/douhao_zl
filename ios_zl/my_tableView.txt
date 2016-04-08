@@ -1,0 +1,570 @@
+[理解 Scroll View]
+可能你很难相信，UIScrollView和一个标准的UIView差异并不大，scroll view确实会多一些方法，但这些方法只是UIView一些属性的表面而已。因此，要想弄懂UIScrollView是怎么工作之前，你需要了解 UIView，特别是视图渲染过程的两步。
+光栅化和组合
+
+渲染过程的第一部分是众所周知的光栅化，光栅化简单的说就是产生一组绘图指令并且生成一张图片。比如绘制一个圆角矩形、带图片、标题居中的UIButtons。这些图片并没有被绘制到屏幕上去；取而代之的是，他们被自己的视图保持着留到下一个步骤用。
+
+一旦每个视图都产生了自己的光栅化图片，这些图片便被一个接一个的绘制，并产生一个屏幕大小的图片，这便是上文所说的组合。视图层级(view hierarchy)对于组合如何进行扮演了很重要的角色：一个视图的图片被组合在它父视图图片的上面。然后，组合好的图片被组合到父视图的父视图图片上面，就这样，最终视图层级最顶端是窗口(window)，它组合好的图片便是我们看到的东西了。
+
+概念上，依次在每个视图上放置独立分层的图片并最终产生一个图片，单调的图像将会变得更容易理解，特别是如果你以前使用过像Photoshop这样的工具。我们还有另外一篇文章详细解释了像素是如何绘制到屏幕上去的
+
+现在，回想一下，每个视图都有一个bounds和frame。当布局一个界面时，我们需要处理视图的frame。这允许我们放置并设置视图的大小。 视图的frame和bounds的大小总是一样的，但是他们的origin有可能不同。弄懂这两个工作原理是理解UIScrollView的关键。
+
+在光栅化步骤中，视图并不关心即将发生的组合步骤。也就是说，它并不关心自己的frame(这是用来放置视图的图像)或自己在视图层级中的位置(这是决定组合的顺序)。这时视图只关心一件事就是绘制它自己的content。这个绘制发生在每个视图的drawRect:方法中。
+
+在drawRect:方法被调用前，会为视图创建一个空白的图片来绘制content。这个图片的坐标系统是视图的bounds。几乎每个视图 bounds的origin都是{0，0}。因此，当在删格化图片左上角绘制一些东西的时候，你都会在bounds的origin({x:0,y:0}) 处绘制。在一个图片右下角的地方绘制东西的时候，你都会绘制在{x:width, y:height}处。如果你的绘制超出了视图的bounds，那么超出的部分就不属于删格化图片的部分了，并且会被丢弃。
+
+在组合的步骤中，每个视图将自己光栅化图片组合到自己父视图的光栅化图片上面。视图的frame决定了自己在父视图中绘制的位置，frame的 origin表明了视图光栅化图片左上角相对父视图光栅化图片左上角的偏移量。所以，一个origin为{x:20,y:15}的frame所绘制的图片 左边距其父视图20点，上边距父视图15点。因为视图的frame和bounds矩形的大小总是一样的，所以光栅化图片组合的时候是像素对齐的。这确保了 光栅化图片不会被拉伸或缩小。
+
+记住，我们才仅仅讨论了一个视图和它父视图之间的组合操作。一旦这两个视图被组合到一起，组合的结果图片将会和父视图的父视图进行组合。。。这是一个雪球效应。
+
+考虑一下组合图片背后的公式。视图图片的左上角会根据它frame的origin进行偏移，并绘制到父视图的图片上：
+
+CompositedPosition.x = View.frame.origin.x - Superview.bounds.origin.x;  
+   
+CompositedPosition.y = View.frame.origin.y - Superview.bounds.origin.y; 
+
+这样做是有道理的。我们改变button的frame.origin后，它会改变自己相对紫色父视图的位置。注意，如果我们移动button直到它 的一部分已经在紫色父视图bounds的外面，当光栅化图片被截去时这部分也将会通过同样的绘制方式被截去。然而，技术上讲，因为iOS处理组合方法的原 因，你可以将一个子视图渲染在其父视图的bounds之外，但是光栅化期间的绘制不可能超出一个视图的bounds。
+
+Scroll View的Content Offset
+
+现在，我们所讲的跟UIScrollView有什么关系呢？一切都和它有关！考虑一种我们可以实现的滚动：我们有一个拖动时frame不断改变的视 图。这达到了相同的效果，对吗？如果我拖动我的手指到右边，那么拖动的同时我增大视图的origin.x，瞧，这货就是scroll view。
+
+当然，在scroll view中有很多具有代表性的视图。为了实现这个平移功能，当用户移动手指时，你需要时刻改变每个视图的frames。当我们提出组合一个view的光栅化图片到它父视图什么地方时，记住这个公式：
+
+CompositedPosition.x = View.frame.origin.x - Superview.bounds.origin.x;  
+   
+CompositedPosition.y = View.frame.origin.y - Superview.bounds.origin.y;
+
+我们减少Superview.bounds.origin的值(因为他们总是0)。但是如果他们不为0呢？我们用和前一个图例相同的frames，但是我们改变了紫色视图bounds的origin为{-30,-30}。得到下图：
+
+现在，巧妙的是通过改变这个紫色视图的bounds，它每一个单独的子视图都被移动了。事实上，这正是一个scroll view工作的原理。当你设置它的contentOffset属性时：它改变scroll view.bounds的origin。事实上，contentOffset甚至不是实际存在的。代码看起来像这样：
+
+- (void)setContentOffset:(CGPoint)offset  
+{  
+    CGRect bounds = [self bounds];  
+    bounds.origin = offset;  
+    [self setBounds:bounds];  
+}
+
+注意：前一个图例，只要足够的改变bounds的origin，button将会超出紫色视图和button组合成的图片的范围。这也是当你足够的移动scroll view时，一个视图会消失！
+
+世界之窗：Content Size
+
+现在，最难的部分已经过去了，我们再看看UIScrollView另一个属性：contentSize。scroll view的content size并不会改变其bounds的任何东西，所以这并不会影响scroll view如何组合自己的子视图。反而，content size定义了可滚动区域。scroll view的默认content size为{w:0,h:0}。既然没有可滚动区域，用户是不可以滚动的，但是scroll view仍然会显示其bounds范围内所有的子视图。
+
+当content size设置为比bounds大的时候，用户就可以滚动视图了。你可以认为scroll view的bounds为可滚动区域上的一个窗口：
+
+当content offset为{x:0,y:0}时，可见窗口的左上角在可滚动区域的左上角处。这也是content offset的最小值；用户不能再往可滚动区域的左边或上边移动了。那儿没啥，别滚了！
+
+content offset的最大值是content size和scroll view size的差。这也在情理之中：从左上角一直滚动到右下角，用户停止时，滚动区域右下角边缘和滚动视图bounds的右下角边缘是齐平的。你可以像这样记 下content offset的最大值：
+
+contentOffset.x = contentSize.width - bounds.size.width;  
+contentOffset.y = contentSize.height - bounds.size.height; 
+
+用Content Insets对窗口稍作调整
+
+contentInset属性可以改变content offset的最大和最小值，这样便可以滚动出可滚动区域。它的类型为UIEdgeInsets，包含四个值： {top，left，bottom，right}。当你引进一个inset时，你改变了content offset的范围。比如，设置content inset顶部值为10，则允许content offset的y值达到10。这介绍了可滚动区域周围的填充。
+
+这咋一看好像没什么用。实际上，为什么不仅仅增加content size呢？除非没办法，否则你需要避免改变scroll view的content size。想要知道为什么？想想一个table view（UItableView是UIScrollView的子类，所以它有所有相同的属性），table view为了适应每一个cell，它的可滚动区域是通过精心计算的。当你滚动经过table view的第一个或最后一个cell的边界时，table view将content offset弹回并复位，所以cells又一次恰到好处的紧贴scroll view的bounds。
+
+当你想要使用UIRefreshControl实现拉动刷新时发生了什么？你不能在table view的可滚动区域内放置UIRefreshControl，否则，table view将会允许用户通过refresh control中途停止滚动，并且将refresh control的顶部弹回到视图的顶部。因此，你必须将refresh control放在可滚动区域上方。这将允许首先将content offset弹回第一行，而不是refresh control。
+
+但是等等，如果你通过滚动足够多的距离初始化pull-to-refresh机制，因为table view设置了content inset，这将允许content offset将refresh control弹回到可滚动区域。当刷新动作被初始化时，content inset已经被校正过，所以content offset的最小值包含了完整的refresh control。当刷新完成后，content inset恢复正常，content offset也跟着适应大小，这里并不需要为content size做数学计算。(这里可能比较难理解，建议看看EGOTableViewPullRefresh这样的类库就应该明白了)
+
+如何在自己的代码中使用content inset？当键盘在屏幕上时，有一个很好的用途：你想要设置一个紧贴屏幕的用户界面。当键盘出现在屏幕上时，你损失了几百个像素的空间，键盘下面的东西全都被挡住了。
+
+现在，scroll view的bounds并没有改变，content size也并没有改变(也不需要改变)。但是用户不能滚动scroll view。考虑一下之前一个公式：content offset的最大值并不同于content size和bounds的大小。如果他们相等，现在content offset的最大值是{x:0,y:0}.
+
+现在开始出绝招，将界面放入一个scroll view。scroll view的content size仍然和scroll view的bounds一样大。当键盘出现在屏幕上时，你设置content inset的底部等于键盘的高度。
+
+这允许在content offset的最大值下显示滚动区域外的区域。可视区域的顶部在scroll view bounds的外面，因此被截取了(虽然它在屏幕之外了，但这并没有什么)。
+
+但愿这能让你理解一些滚动视图内部工作的原理，你对缩放感兴趣？好吧，我们今天不会谈论它，但是这儿有一个有趣的小窍门：检查 viewForZoomingInScrollView:方法返回视图的transform属性。你将再次发现scroll view只是聪明的利用了UIView已经存在的属性。
+
+[将像素绘制到屏幕上]
+
+一个像素是怎样绘制到屏幕上去的？有多种方式将一些东西映射到显示屏上，他们需要调用不同的框架、许多功能和方法的结合体。这里我们走马观花的看一下屏幕之后发生的一些事情。当你想要弄清楚什么时候、怎么去查明并解决问题时，我希望这篇文章能帮助你理解哪一个API将能更好的帮你解决问题。我们将聚焦于iOS，然而我讨论的大多数问题也同样适用于OS X。
+
+图形堆栈
+
+当像素映射到屏幕上的时候，后台发生了很多事情。但是一旦他们显示到屏幕上，每一个像素均由三个颜色组件构成：红，绿，蓝。三个独立的颜色单元会根据给定的颜色来显示到一个像素之上。在iPhone5的液晶显示器上有1,136×640=727,040个像素，因此有2,181,120个颜色单元。在15寸的视网膜屏的MacBook Pro上，这一数字在15.5百万以上。所有的图形堆栈一起工作以确保每一次正确的显示。当你滚动整个屏幕的时候，数以百万计的颜色单元必须以每秒60次的速度刷新。这是一个很大的工作量。
+
+软件组成
+
+从简单的角度来看，软件堆栈看起来有点像这样：
+
+Display的上一层便是图形处理单元GPU，GPU是一个专门为图形高迸发计算而量身定做的处理单元。这也是为什么它能同时更新所有的像素，并呈现到显示器上。它迸发的本性让它能高效的将不同纹理合成起来。我们将有一小块内容来更详细的讨论图形合成。关键的是，GPU是非常专业的，因此在某些工作上非常高效。比如，GPU非常快，并且比CPU使用更少的电来完成工作。通常CPU都有一个普遍的目的，它可以做很多不同的事情，但是合成图像在CPU上却显得比较慢。
+
+GPU驱动是直接和GPU交流的代码块。不同的GPU是不同的性能怪兽，但是驱动使他们在下一个layer上显示的更为统一，典型的驱动有OpenGL/OpenGL ES.
+
+OpenGL(Open Graphics(绘图) Library)是一个提供了2D和3D图形渲染的API。GPU是一块非常特殊的硬件，OpenGL和GPU密切的工作以提高GPU的能力，并实现硬件加速渲染。对大多数人来说，OpenGL看起来非常底层，但是当它在1992年第一次发布的时候(20多年前的事了)是第一个和图形硬件(GPU)交流的标准化方式，这是一个重大的飞跃，程序员不再需要为每个GPU重写他们的应用了。
+
+OpenGL之上扩展出很多东西。在iOS上，几乎所有的东西都是通过Core Animation(动画)绘制出来，然而在OS X上，绕过Core Animation直接使用Core Graphics绘制的这种情况并不少见。对于一些专门的应用，尤其是游戏，程序可能直接和OpenGL/OpenGL ES交流。事情变得使人更加困惑，因为Core Animation使用Core Graphics来做一些渲染。像AVFoundation，Core Image框架，和其他一些混合的入口。
+
+要记住一件事情，GPU是一个非常强大的图形硬件，并且在显示像素方面起着核心作用。它连接到CPU。从硬件上讲两者之间存在某种类型的总线，并且有像OpenGL，Core Animation和Core Graphics这样的框架来在GPU和CPU之间精心安排数据的传输。为了将像素显示到屏幕上，一些处理将在CPU上进行。然后数据将会传送到GPU，这也需要做一些相应的操作，最终像素显示到屏幕上。
+
+这个过程的每一部分都有各自的挑战，并且许多时候需要做出折中的选择。
+
+硬件参与者
+
+正如上面一个简单的图片来显示那些挑战：GPU需要将每一个frame的纹理(位图)合成在一起(一秒60次)。每一个纹理会占用VRAM(video RAM)，所以需要给GPU能够同时保持纹理的数量做一个限制。GPU在合成方面非常高效，但是某些合成任务却比其他更复杂，并且GPU在 16.7ms(1/60s)内能做的工作也是有限。
+
+下一个挑战就是将数据传输到GPU上。为了让GPU访问数据，需要将数据从RAM移动到VRAM上。这就是提及到的上传数据到GPU。这看起来貌似微不足道，但是一些大型的纹理却会非常耗时。
+
+最终，CPU开始运行你的程序。你可能会让CPU从bundle加载一张PNG的图片并且解压它。这所有的事情都在CPU上进行。然后当你需要显示解压缩后的图片时，它需要以某种方式上传到GPU。一些看似平凡的，比如显示文本，对CPU来说却是一件非常复杂的事情，这会促使Core Text和Core Graphics框架更紧密的集成来根据文本生成一个位图。一旦准备好，它将会被作为一个纹理上传到GPU并准备显示出来。当你滚动或者在屏幕上移动文本时，不管怎么样，同样的纹理是能够被复用，CPU只需简单的告诉GPU新的位置就行了,所以GPU就可以重用存在的纹理了。CPU并不需要重新渲染文本，并且位图也不需要重新上传到GPU。
+
+这说明一些包含错综复杂的影响，根据这个概述的方式，我们将深入一些技术影响。
+
+合成
+
+在图形世界中，合成是一个描述不同位图如何放到一起来创建你最终在屏幕上看到图像的过程。在许多方面显得显而易见，而让人忘了背后错综复杂的计算。
+
+让我们忽略一些难懂的事例并且假定屏幕上一切事物皆纹理。一个纹理就是一个包含RGBA值的长方形，比如，每一个像素里面都包含红、绿、蓝和透明度的值。在Core Animation世界中这就相当于一个CALayer。
+
+在这个简化的设置中，每一个layer是一个纹理，这所有的纹理都以某种方式堆叠在彼此的顶部。对于屏幕上的每一个像素，GPU需要算出怎么混合这些纹理来得到像素RGB的值。这就是合成大概的意思。
+
+如果我们所拥有的是一个和屏幕大小一样并且和屏幕像素对齐的单一纹理，那么屏幕上每一个像素相当于纹理中的一个像素，纹理的最后一个像素也就是屏幕的最后一个像素。
+
+如果我们有第二个纹理放在第一个纹理之上，然后GPU将会把第二个纹理合成到第一个纹理中。有很多种不同的合成方法，但是如果我们假定两个纹理的像素对齐，并且使用正常的混合模式，我们便可以用下面这个公式来计算每一个像素：
+
+R = S + D * ( 1 – Sa )
+
+结果的颜色是源色彩(顶端纹理)+目标颜色(低一层的纹理)*(1-源颜色的透明度)。在这个公式中所有的颜色都假定已经预先乘以了他们的透明度。
+
+显然相当多的事情在这儿发生了。让我们进行第二个假定，两个纹理都完全不透明，比如alpha=1.如果目标纹理(低一层的纹理)是蓝色(RGB=0,0,1)，并且源纹理(顶层的纹理)颜色是红色(RGB=1,0,0)，因为Sa为1，所以结果为：
+
+R = S
+
+结果是源颜色的红色。这正是我们所期待的(红色覆盖了蓝色)。
+
+如果源颜色层为50%的透明，比如alpha=0.5，既然alpha组成部分需要预先乘进RGB的值中，那么S的RGB值为(0.5, 0, 0)，公式看起来便会像这样:
+
+我们最终得到RGB值为(0.5, 0, 0.5),是一个紫色。这这是我们所期望将透明红色合成到蓝色背景上所得到的。
+
+记住我们刚刚只是合成一个纹理单一像素到另一个纹理的像素上。当两个纹理覆盖在一起的时候，GPU需要为所有像素做这种操作。正如你所知道的一样，许多程序都有很多层，因此所有的纹理都需要合成到一起。尽管GPU是一块高度优化的硬件来做这种事情，但这还是会让它非常忙碌，
+
+不透明 VS 透明
+
+当源纹理是完全不透明的时候，目标像素就等于源纹理。这可以省下GPU很大的工作量，这样只需简单的拷贝源纹理而不需要合成所有的像素值。但是没有方法能告诉GPU纹理上的像素是透明还是不透明的。只有当你作为一名开发者知道你放什么到CALayer上了。这也是为什么CALayer有一个叫做opaque(不透明)的属性了。如果这个属性为YES，GPU将不会做任何合成，而是简单从这个层拷贝，不需要考虑它下方的任何东西(因为都被它遮挡住了)。这节省了GPU相当大的工作量。这也正是Instruments中color blended layers选项中所涉及的。(这在模拟器中的Debug菜单中也可用).它允许你看到哪一个layers(纹理)被标注为透明的，比如GPU正在为哪一个layers做合成。合成不透明的layers因为需要更少的数学计算而更廉价。
+
+所以如果你知道你的layer是不透明的，最好确定设置它的opaque为YES。如果你加载一个没有alpha通道的图片，并且将它显示在UIImageView上，这将会自动发生。但是要记住如果一个图片没有alpha通道和一个图片每个地方的alpha都是100%，这将会产生很大的不同。在后一种情况下，Core Animation需要假定是否存在像素的alpha值不为100%。在Finder中，你可以使用Get Info并且检查More Info部分。它将告诉你这张图片是否拥有alpha通道。
+
+alpha通道----------？阿尔法通道（α Channel或Alpha Channel）是指一张图片的透明和半透明度。例如：一个使用每个像素16比特存储的位图，对于图形中的每一个像素而言，可能以5个比特表示红色，5个比特表示绿色，5个比特表示蓝色，最后一个比特是阿尔法。在这种情况下，它要么表示透明要么不是，因为阿尔法比特只有0或1两种不同表示的可能性。又如一个使用32个比特存储的位图，每8个比特表示红绿蓝，和阿尔法通道。在这种情况下，就不光可以表示透明还是不透明，阿尔法通道还可以表示256级的半透明度，因为阿尔法通道有8个比特可以有256种不同的数据表示可能性。
+
+像素对齐 VS 不重合在一起
+
+到现在我们都在考虑像素完美的重合在一起的layers。当所有的像素是对齐的时候我们得到相对简单的计算公式。每当GPU需要计算出屏幕上一个像素是什么颜色的时候，它只需要考虑在这个像素之上的所有layer中对应的单个像素，并把这些像素合并到一起。或者，如果最顶层的纹理是不透明的(即图层树的最底层)，这时候GPU就可以简单的拷贝它的像素到屏幕上。
+
+当一个layer上所有的像素和屏幕上的像素完美的对应整齐，那这个layer就是像素对齐的。主要有两个原因可能会造成不对齐。第一个便是滚动；当一个纹理上下滚动的时候，纹理的像素便不会和屏幕的像素排列对齐。另一个原因便是当纹理的起点不在一个像素的边界上。
+
+在这两种情况下，GPU需要再做额外的计算。它需要将源纹理上多个像素混合起来，生成一个用来合成的值。当所有的像素都是对齐的时候，GPU只剩下很少的工作要做。
+
+再次，Core Animation工具和模拟器有一个叫做color misaligned images的选项，当这些在你的CALayer实例中发生的时候，这个功能便可向你展示。
+
+Masks
+
+一个图层可以有一个和它相关联的mask(蒙板)，mask是一个拥有alpha值的位图，当像素要和它下面包含的像素合并之前都会把mask应用到图层的像素上去。当你要设置一个图层的圆角半径时，你可以有效的在图层上面设置一个mask。但是也可以指定任意一个蒙板。比如，一个字母A形状的mask。最终只有在mask中显示出来的(即图层中的部分)才会被渲染出来。
+
+离屏渲染
+
+离屏渲染可以被Core Animation自动触发，或者被应用程序强制触发。屏幕外的渲染会合并/渲染图层树的一部分到一个新的缓冲区，然后该缓冲区被渲染到屏幕上。
+
+离屏渲染合成计算是非常昂贵的, 但有时你也许希望强制这种操作。一种好的方法就是缓存合成的纹理/图层。如果你的渲染树非常复杂(所有的纹理，以及如何组合在一起)，你可以强制离屏渲染缓存那些图层，然后可以用缓存作为合成的结果放到屏幕上。
+
+如果你的程序混合了很多图层，并且想要他们一起做动画，GPU通常会为每一帧(1/60s)重复合成所有的图层。当使用离屏渲染时，GPU第一次会混合所有图层到一个基于新的纹理的位图缓存上，然后使用这个纹理来绘制到屏幕上。现在，当这些图层一起移动的时候，GPU便可以复用这个位图缓存，并且只需要做很少的工作。需要注意的是，只有当那些图层不改变时，这才可以用。如果那些图层改变了，GPU需要重新创建位图缓存。你可以通过设置shouldRasterize为YES来触发这个行为。
+
+然而，这是一个权衡。第一，这可能会使事情变得更慢。创建额外的屏幕外缓冲区是GPU需要多做的一步操作，特殊情况下这个位图可能再也不需要被复用，这便是一个无用功了。然而，可以被复用的位图，GPU也有可能将它卸载了。所以你需要计算GPU的利用率和帧的速率来判断这个位图是否有用。
+
+离屏渲染也可能产生副作用。如果你正在直接或者间接的将mask应用到一个图层上，Core Animation为了应用这个mask，会强制进行屏幕外渲染。这会对GPU产生重负。通常情况下mask只能被直接渲染到帧的缓冲区中(在屏幕内)。
+
+Instrument的Core Animation工具有一个叫做Color Offscreen-Rendered Yellow的选项，它会将已经被渲染到屏幕外缓冲区的区域标注为黄色(这个选项在模拟器中也可以用)。同时记得检查Color Hits Green and Misses Red选项。绿色代表无论何时一个屏幕外缓冲区被复用，而红色代表当缓冲区被重新创建。
+
+一般情况下，你需要避免离屏渲染，因为这是很大的消耗。直接将图层合成到帧的缓冲区中(在屏幕上)比先创建屏幕外缓冲区，然后渲染到纹理中，最后将结果渲染到帧的缓冲区中要廉价很多。因为这其中涉及两次昂贵的环境转换(转换环境到屏幕外缓冲区，然后转换环境到帧缓冲区)。
+
+所以当你打开Color Offscreen-Rendered Yellow后看到黄色，这便是一个警告，但这不一定是不好的。如果Core Animation能够复用屏幕外渲染的结果，这便能够提升性能。
+
+同时还要注意，rasterized layer的空间是有限的。苹果暗示大概有屏幕大小两倍的空间来存储rasterized layer/屏幕外缓冲区。
+
+如果你使用layer的方式会通过屏幕外渲染，你最好摆脱这种方式。为layer使用蒙板或者设置圆角半径会造成屏幕外渲染，产生阴影也会如此。
+
+至于mask，圆角半径(特殊的mask)和clipsToBounds /masksToBounds，你可以简单的为一个已经拥有mask的layer创建内容，比如，已经应用了mask的layer使用一张图片。如果你想根据layer的内容为其应用一个长方形mask，你可以使用contentsRect来代替蒙板。
+
+如果你最后设置了shouldRasterize为YES，那也要记住设置rasterizationScale为contentsScale。
+
+更多的关于合成
+
+像往常一样，维基百科上有更多关于透明合成的基础公式。当我们谈完像素后，我们将更深入一点的谈论红，绿，蓝和alpha是怎么在内存中表现的。
+
+OS X
+
+如果你是在OS X上工作，你将会发现大多数debugging选项在一个叫做”Quartz Debug”的独立程序中，而不是在Instruments中。Quartz Debug是Graphics Tools中的一部分，这可以在苹果的developer portal中下载到。
+
+Core Animation & OpenGL ES
+
+正如名字所建议的那样，Core Animation让你在屏幕上实现动画。我们将跳过动画部分，而集中在绘图上。需要注意的是，Core Animation允许你做非常高效的渲染。这也是为什么当你使用Core Animation时可以实现每秒60帧的动画。
+
+Core Animation的核心是OpenGL ES的一个抽象物，简而言之，它让你直接使用OpenGL ES的功能，却不需要处理OpenGL ES做的复杂的事情。当我们上面谈论合成的时候，我们把layer和texture(纹理)当做等价的，但是他们不是同一物体，可又是如此的类似。
+
+Core Animation的layer可以有子layer，所以最终你得到的是一个图层树。Core Animation所需要做的最繁重的任务便是判断出哪些图层需要被(重新)绘制，而OpenGL ES需要做的便是将图层合并、显示到屏幕上。
+
+举个例子，当你设置一个layer的内容为CGImageRef时，Core Animation会创建一个OpenGL纹理，并确保在这个图层中的位图被上传到对应的纹理中。以及当你重写-drawInContext方法时，Core Animation会请求分配一个纹理，同时确保Core Graphics会将你所做的(即你在drawInContext中绘制的东西)放入到纹理的位图数据中。一个图层的性质和CALayer的子类会影响到OpenGL的渲染结果，许多低等级的OpenGL ES行为被简单易懂地封装到CALayer概念中。
+
+Core Animation通过Core Graphics的一端和OpenGL ES的另一端，精心策划基于CPU的位图绘制。因为Core Animation处在渲染过程中的重要位置上，所以你如何使用Core Animation将会对性能产生极大的影响。
+
+CPU限制 VS GPU限制
+
+当你在屏幕上显示东西的时候，有许多组件参与了其中的工作。其中，CPU和GPU在硬件中扮演了重要的角色。在他们命名中P(process处理)和U(unit单元)分别代表了”处理”和”单元”，当需要在屏幕上进行绘制时，他们都需要做处理，同时他们都有资源限制(即CPU和GPU的硬件资源)。
+
+为了每秒达到60帧，你需要确定CPU和GPU不能过载。此外，即使你当前能达到60fps(frame per second),你还是要尽可能多的绘制工作交给GPU做，而让CPU尽可能的来执行应用程序。通常，GPU的渲染性能要比CPU高效很多，同时对系统的负载和消耗也更低一些。
+
+既然绘图性能是基于CPU和GPU的，那么你需要找出是哪一个限制你绘图性能的。如果你用尽了GPU所有的资源，也就是说，是GPU限制了你的性能，同样的，如果你用尽了CPU，那就是CPU限制了你的性能。
+
+要告诉你，如果是GPU限制了你的性能，你可以使用OpenGL ES Driver instrument。点击上面那个小的i按钮，配置一下，同时注意查看Device Utilization %。现在，当你运行你的app时，你可以看到你GPU的负荷。如果这个值靠近100%，那么你就需要把你工作的重心放在GPU方面了。
+
+Core Graphics /Quartz 2D
+
+通过Core Graphics这个框架，Quartz 2D被更为广泛的知道。
+
+Quartz 2D拥有比我们这里谈到更多的装饰。我们这里不会过多的讨论关于PDF的创建，渲染，解析，或者打印。只需要注意的是，PDF的打印、创建和在屏幕上绘制位图的操作是差不多的。因为他们都是基于Quartz 2D。
+
+让我们简单的了解一下Quartz 2D主要的概念。有关详细信息可以到苹果的官方文档中了解。
+
+放心，当Quartz 2D涉及到2D绘制的时候，它是非常强大的。有基于路径的绘制，反锯齿渲染，透明图层，分辨率，并且设备独立，可以说出很多特色。这可能会让人产生畏惧，主要因为这是一个低级并且基于C的API。
+
+主要的概念当对简单，UIKit和AppKit都包含了Quartz 2D的一些简单API，一旦你熟练了，一些简单C的API也是很容易理解的。最终你学会了一个能实现Photoshop和Illustrator大部分功能的绘图引擎。苹果把iOS程序里面的股票应用作为讲解Quartz 2D在代码中实现动态渲染的一个例子。
+
+当你的程序进行位图绘制时，不管使用哪种方式，都是基于Quartz 2D的。也就是说，CPU部分实现的绘制是通过Quartz 2D实现的。尽管Quartz可以做其它的事情，但是我们这里还是集中于位图绘制，在缓冲区(一块内存)绘制位图会包括RGBA数据。
+
+比方说，我们要画一个八角形，我们通过UIKit能做到这一点
+
+相对应的Core Graphics代码：
+
+需要问的问题是:这个绘制到哪儿去了？这正好引出所谓的CGContext登场。我们传过去的ctx参数正是在那个上下文中。而这个上下文定义了我们需要绘制的地方。如果我们实现了CALayer的-drawInContext:这时已经传过来一个上下文。绘制到这个上下文中的内容将会被绘制到图层的备份区(图层的缓冲区).但是我们也可以创建我们自己的上下文，叫做基于位图的上下文，比如CGBitmapContextCreate().这个方法返回一个我们可以传给CGContext方法来绘制的上下文。
+
+注意UIKit版本的代码为何不传入一个上下文参数到方法中？这是因为当使用UIKit或者AppKit时，上下文是唯一的。UIkit维护着一个上下文堆栈，UIKit方法总是绘制到最顶层的上下文中。你可以使用UIGraphicsGetCurrentContext()来得到最顶层的上下文。你可以使用UIGraphicsPushContext()和UIGraphicsPopContext()在UIKit的堆栈中推进或取出上下文。
+
+最为突出的是，UIKit使用UIGraphicsBeginImageContextWithOptions()和UIGraphicsEndImageContext()方便的创建类似于CGBitmapContextCreate()的位图上下文。混合调用UIKit和Core Graphics非常简单：
+
+我们最初指出CGLayer可以用来提升重复绘制相同元素的速度。正如Dave Hayden指出，这些小道消息不再可靠。
+
+像素
+
+屏幕上的像素是由红，绿，蓝三种颜色组件构成的。因此，位图数据有时也被叫做RGB数据。你可能会对数据如何组织在内存中感到好奇。而事实是，有很多种不同的方式在内存中展现RGB位图数据。
+
+稍后我们将会谈到压缩数据，这又是一个完全不同的概念。现在，我们先看一下RGB位图数据，我们可以从颜色组件:红，绿，蓝中得到一个值。而大多数情况下，我们有第四个组件:透明度。最终我们从每个像素中得到四个单独的值。
+
+默认的像素布局
+
+在iOS和OS X上最常见的格式就是大家所熟知的32bits-per-pixel(bpp),8bits-per-componet(bpc),透明度会首先被乘以到像素值上(就像上文中提到的那个公式一样),在内存中，像下面这样:
+
+这个格式经常被叫做ARGB。每个像素占用4字节(32bpp),每一个颜色组件是1字节(8bpc).每个像素有一个alpha值，这个值总是最先得到的(在RGB值之前)，最终红、绿、蓝的值都会被预先乘以alpha的值。预乘的意思就是alpha值被烘烤到红、绿、蓝的组件中。如果我们有一个橙色，他们各自的8bpc就像这样:240,99,24.一个完全不透明的橙色像素拥有的ARGB值为255，240，99，24，它在内存中的布局就像上面图示那样。如果我们有一个相同颜色的像素，但是alpha值为33%，那么他的像素值便是84，80，33，8.
+
+另一个常见的格式便是32bpp，8bpc，跳过第一个alpha值，看起来像下面这样：
+
+这常被叫做xRGB。像素并没有任何alpha值(他们都被假定为100%不透明)，但是内存布局是一样的。你应该想知道为什么这种格式很流行，当我们每一个像素中都有一个不用字节时，我们将会省下25%的空间。事实证明，这种格式更容易被现代的CPU和绘图算法消化，因为每一个独立的像素都对齐到32-bit的边界。现代的CPU不喜欢装载(读取)不对齐的数据，特别是当将这种数据和上面没有alpha值格式的数据混合时，算法需要做很多挪动和蒙板操作。
+
+当处理RGB数据时，Core Graphics也需要支持把alpha值放到最后(另外还要支持跳过)。有时候也分别称为RGBA和RGBx，假定是8bpc，并且预乘了alpha值。
+
+深奥的布局
+
+大多数时候，当处理位图数据时，我们也需要处理Core Graphics/Quartz 2D。有一个非常详细的列表列出了他支持的混合组合。但是让我们首先看一下剩下的RGB格式：
+
+另一个选择是16bpp，5bpc，不包含alpha值。这个格式相比之前一个仅占用50%的存储大小(每个像素2字节)，但将使你存储它的RGB数据到内存或磁盘中变得困难。既然这种格式中，每个颜色组件只有5bits(原文中写的是每个像素是5bits，但根据上下文可知应该是每个组件)，这样图形(特别是平滑渐变的)会造成重叠在一起的假象。
+
+还有一个是64bpp，16bpc，最终为128bpp，32bpc，浮点数组件(有或没有alpha值)。它们分别使用8字节和16字节，并且允许更高的精度。当然，这会造成更多的内存使用和昂贵的计算。
+
+整件事件中，Core Graphics也支持一些像灰度模式和CMYK格式，这些格式类似于仅有alpha值的格式(蒙板)。
+
+二维数据
+
+当颜色组件(红、绿、蓝、alpha)混杂在一起的时候，大多数框架(包括Core Graphics)使用像素数据。正是这种情况下我们称之为二维数据，或者二维组件。这个意思是：每一个颜色组件都在它自己的内存区域，也就是说它是二维的。比如RGB数据，我们有三个独立的内存区域，一个大的区域包含了所有像素的红颜色的值，一个包含了所有绿颜色的值，一个包含了所有蓝颜色的值。
+
+在某些情况下，一些视频框架便会使用二维数据。
+
+YCbCr
+
+当我们处理视频数据时，YCbCr是一种常见的格式。它也是包含了三种(Y,Cb和Cr)代表颜色数据的组件。但是简单的讲，它更类似于通过人眼看到的颜色。人眼对Cb和Cr这两种组件的色彩度不太能精确的辨认出来，但是能很准确的识别出Y的亮度。当数据使用YCbCr格式时，在同等的条件下，Cb和Cr组件比Y组件压缩的更紧密。
+
+出于同样的原因，JPEG图像有时会将像素数据从RGB转换到YCbCr。JPEG单独的压缩每一个二维颜色。当压缩基于YCbCr的平面时，Cb和Cr能比Y压缩得更完全。
+
+图片格式
+
+当你在iOS或者OS X上处理图片时，他们大多数为JPEG和PNG。让我们更进一步观察。
+
+JPEG
+
+每个人都知道JPEG。他是相机的产物。它代表这照片如何存储在电脑上。甚至你嘛嘛都听说过JPEG。
+
+一个很好的理由，很多人都认为JPEG文件仅是另一种像素数据的格式，就像我们刚刚谈到的RGB像素布局那样。这样理解离真像真是差十万八千里了。
+
+将JPEG数据转换成像素数据是一个非常复杂的过程，你通过一个周末的计划都不能完成，甚至是一个非常漫长的周末(原文的意思好像就是为了表达这个过程非常复杂，不过老外的比喻总让人拎不清)。对于每一个二维颜色，JPEG使用一种基于离散余弦变换(简称DCT变换)的算法，将空间信息转变到频域.这个信息然后被量子化，排好序，并且用一种哈夫曼编码的变种来压缩。很多时候，首先数据会被从RGB转换到二维YCbCr，当解码JPEG的时候，这一切都将变得可逆。
+
+这也是为什么当你通过JPEG文件创建一个UIImage并且绘制到屏幕上时，将会有一个延时，因为CPU这时候忙于解压这个JPEG。如果你需要为每一个tableviewcell解压JPEG，那么你的滚动当然不会平滑(原来tableviewcell里面最要不要用JPEG的图片)。
+
+那究竟为什么我们还要用JPEG呢？答案就是JPEG可以非常非常好的压缩图片。一个通过Iphone5拍摄的，未经压缩的图片占用接近24M。但是通过默认压缩设置，你的照片通常只会在2-3M左右。JPEG压缩这么好是因为它是失真的，它去除了人眼很难察觉的信息，并且这样做可以超出像gzip这样压缩算法的限制。但这仅仅在图片上有效的，因为JPEG依赖于图片上有很多人类不能察觉出的数据。如果你从一个基本显示文本的网页上截取一张图，JPEG将不会这么高效。压缩效率将会变得低下，你甚至能看出来图片已经压缩变形了。
+
+PNG
+
+PNG读作”ping”。和JPEG相反，它的压缩对格式是无损的。当你将一张图片保存为PNG，并且打开它(或解压)，所有的像素数据会和最初一模一样，因为这个限制，PNG不能像JPEG一样压缩图片，但是对于像程序中的原图(如buttons，icons)，它工作的非常好。更重要的是，解码PNG数据比解码JPEG简单的多。
+
+在现实世界中，事情从来没有那么简单，目前存在了大量不同的PNG格式。可以通过维基百科查看详情。但是简言之，PNG支持压缩带或不带alpha通道的颜色像素(RGB)，这也是为什么它在程序原图中表现良好的另一个原因。
+
+挑选一个格式
+
+当你在你的程序中使用图片时，你需要坚持这两种格式:JPEG或者PNG。读写这种格式文件的压缩和解压文件能表现出很高的性能，另外，还支持并行操作。同时Apple正在改进解压缩并可能出现在将来的新操作系统中，届时你将会得到持续的性能提升。如果尝试使用另一种格式，你需要注意到，这可能对你程序的性能会产生影响，同时可能会打开安全漏洞，经常，图像解压缩算法是黑客最喜欢的攻击目标。
+
+已经写了很多关于优化PNGs，如果你想要了解更多，请到互联网上查询。非常重要的一点，注意Xcode优化PNG选项和优化其他引擎有很大的不同。
+
+当Xcode优化一个PNG文件的时候，它将PNG文件变成一个从技术上讲不再是有效的PNG文件。但是iOS可以读取这种文件，并且这比解压缩正常的PNG文件更快。Xcode改变他们，让iOS通过一种对正常PNG不起作用的算法来对他们解压缩。值得注意的重点是，这改变了像素的布局。正如我们所提到的一样，在像素之下有很多种方式来描绘RGB数据，如果这不是iOS绘制系统所需要的格式，它需要将每一个像素的数据替换，而不需要加速来做这件事。
+
+让我们再强调一遍，如果你可以，你需要为原图设置resizable images。你的文件将变得更小，因此你只需要从文件系统装载更少的数据。
+
+UIKit和Pixels
+
+每一个在UIKit中的view都有它自己的CALayer。依次，这些图层都有一个叫像素位图的后备存储，有点像一个图像。这个后备存储正是被渲染到显示器上的。
+
+With –drawRect:
+
+如果你的视图类实现了-drawRect:，他们将像这样工作:
+
+当你调用-setNeedsDisplay，UIKit将会在这个视图的图层上调用-setNeedsDisplay。这为图层设置了一个标识，标记为dirty(直译是脏的意思，想不出用什么词比较贴切)，但还显示原来的内容。它实际上没做任何工作，所以在一个row中可以多次调用-setNeedsDisplay。
+
+下面，当渲染系统准备好，它会调用视图图层的-display方法.此时，图层会装配它的后备存储。然后建立一个Core Graphics上下文(CGContextRef)，将后备存储对应内存中的数据恢复出来，绘图会进入对应的内存区域，并使用CGContextRef绘制。
+
+当你使用UIKit的绘制方法，例如:UIRectFill()或者-[UIBezierPath fill]代替你的-drawRect:方法，他们将会使用这个上下文。使用方法是，UIKit将后备存储的CGContextRef推进他的graphics context stack，也就是说，它会将那个上下文设置为当前的。因此UIGraphicsGetCurrent()将会返回那个对应的上下文。既然UIKit使用UIGraphicsGetCurrent()绘制方法，绘图将会进入到图层的后备存储。如果你想直接使用Core Graphics方法，你可以自己调用UIGraphicsGetCurrent()得到相同的上下文，并且将这个上下文传给Core Graphics方法。
+
+从现在开始，图层的后备存储将会被不断的渲染到屏幕上。直到下次再次调用视图的-setNeedsDisplay，将会依次将图层的后备存储更新到视图上。
+
+不使用-drawRect:
+
+当你用一个UIImageView时，事情略有不同，这个视图仍然有一个CALayer，但是图层却没有申请一个后备存储。取而代之的是使用一个CGImageRef作为他的内容，并且渲染服务将会把图片的数据绘制到帧的缓冲区，比如，绘制到显示屏。
+
+在这种情况下，将不会继续重新绘制。我们只是简单的将位图数据以图片的形式传给了UIImageView，然后UIImageView传给了Core Animation，然后轮流传给渲染服务。
+
+实现-drawRect:还是不实现-drawRect:
+
+这听起来貌似有点低俗，但是最快的绘制就是你不要做任何绘制。
+
+大多数时间，你可以不要合成你在其他视图(图层)上定制的视图(图层)，这正是我们推荐的，因为UIKit的视图类是非常优化的 (就是让我们不要闲着没事做,自己去合并视图或图层) 。
+
+当你需要自定义绘图代码时，Apple在WWDC 2012’s session 506:Optimizing 2D Graphics and Animation Performance中展示了一个很好的例子:”finger painting”
+
+另一个地方需要自定义绘图的就是iOS的股票软件。股票是直接用Core Graphics在设备上绘制的，注意，这仅仅是你需要自定义绘图，你并不需要实现-drawRect:方法。有时，通过UIGraphicsBeginImageContextWithOptions()或者CGBitmapContextCeate()创建位图会显得更有意义，从位图上面抓取图像，并设置为CALayer的内容。下面我们将给出一个例子来测试，检验。
+
+现在我们知道这为什么不好:我们促使Core Animation来为我们创建一个后备存储，并让它使用单一颜色填充后备存储，然后上传给GPU。
+
+我们跟本不需要实现-drawRect:，并节省这些代码工作量，只需简单的设置这个视图图层的背景颜色。如果这个视图有一个CAGradientLayer作为图层，那么这个技术也同样适用于此（渐变图层）。
+
+可变尺寸的图像
+
+类似的，你可以使用可变尺寸的图像来降低绘图系统的压力。让我们假设你需要一个300×500点的按钮插图，这将是600×100=60k像素或者60kx4=240kB内存大小需要上传到GPU，并且占用VRAM。如果我们使用所谓的可变尺寸的图像，我们只需要一个54×12点的图像，这将占用低于2.6k的像素或者10kB的内存，这样就变得更快了。
+
+Core Animation可以通过CALayer的contentsCenter属性来改变图像，大多数情况下，你可能更倾向于使用，-[UIImage resizableImageWithCapInsets:resizingMode:]。
+
+//将图片拉伸，保留四个边距内的不拉伸，拉伸其它部分
+[result resizableImageWithCapInsets:<#(UIEdgeInsets)#> resizingMode:<#(UIImageResizingMode)#>]
+//模式：
+UIImageResizingModeTile； 平铺模式，通过重复显示UIEdgeInsets指定的矩形区域来填充图片
+UIImageResizingModeStretch； 拉伸模式，通过拉伸UIEdgeInsets指定的矩形区域来填充图片
+  
+同时注意，在第一次渲染这个按钮之前，我们并不需要从文件系统读取一个60k像素的PNG并解码，解码一个小的PNG将会更快。通过这种方式，你的程序在每一步的调用中都将做更少的工作，并且你的视图将会加载的更快。
+
+同时发生的绘图
+
+最后一个objc.io的问题是关于同时发生绘图的讨论。正如你所知道的一样，UIKit的线程模型是非常简单的：你仅可以从主队列(比如主线程)中调用UIKit类(比如视图),那么同时绘图又是什么呢？
+
+如果你必须实现-drawRect:，并且你必须绘制大量的东西，这将占用时间。由于你希望动画变得更平滑，除了在主队列中，你还希望在其他队列中做一些工作。同时发生的绘图是复杂的，但是除了几个警告，同时发生的绘图还是比较容易实现的。
+
+我们除了在主队列中可以向CALayer的后备存储中绘制一些东西，其他方法都将不可行。可怕的事情将会发生。我们能做的就是向一个完全断开链接的位图上下文中进行绘制。
+
+正如我们上面所提到的一样，在Core Graphics下，所有Core Graphics绘制方法都需要一个上下文参数来指定绘制到那个上下文中。UIKit有一个当前上下文的概念(也就是绘制到哪儿去)。这个当前的上下文就是per-thread.
+
+为了同时绘制，我们需要做下面的操作。我们需要在另一个队列创建一个图像，一旦我们拥有了图像，我们可以切换回主队列，并且设置这个图像为UIImageView的图像。这个技术在WWDC 2012 session 211中讨论过。(异步下载图片经常用到这个)
+
+增加一个你可以在其中绘制的新方法：
+
+- (UIImage *)renderInImageOfSize:(CGSize)size
+{
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    
+    //do drawing here
+    
+    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return result;
+}
+
+这个方法通过UIGraphicsBeginImageContextWithOptions()方法，并根据给定的大小创建一个新的CGContextRef位图。这个方法也会将这个上下文设置为当前UIKit的上下文。现在你可以在这里做你想在-drawRect:中做的事了。然后我们可以通过UIGraphicsGetImageFromCurrentImageContext(),将获得的这个上下文位图数据作为一个UIImage，最终移除这个上下文。
+
+很重要的一点就是，你在这个方法中所做的所有绘图的代码都是线程安全的，也就是说，当你访问属性等等，他们需要线程安全。因为你是在另一个队列中调用这个方法的。如果这个方法在你的视图类中，那就需要注意一点了。另一个选择就是创建一个单独的渲染类，并设置所有需要的属性，然后通过触发来渲染图片。如果这样，你可以通过使用简单的UIImageView或者UITableViewCell。
+
+要知道，所有UIKit的绘制API在使用另一个队列时，都是安全的。只需要确定是在同一个操作中调用他们的，这个操作需要以UIGraphicsBeginImageContextWithOptions()开始，以UIGraphicsEndIamgeContext()结束。
+
+你需要像下面这样触发渲染代码：
+
+	IImageView *view;
+	
+	OperationQueue *renderQueue;
+
+	GSize size = view.bounds.size;
+
+	[enderQueue addOperationWithBlock:^{
+   
+ 		Image *image = [self renderInImageOfSize:size];
+    
+		NSOperationQueue mainQueue] addOperationWithBlock:^{
+        	iew.image = image;
+    	];
+	];
+
+要注意，我们是在主队列中调用view.image = image.这是一个非常重要的细节。你不可以在任何其他队列中调用这个代码。
+
+像往常一样，同时绘制会伴随很多问题，你现在需要取消后台渲染。并且在渲染队列中设置合理的同时绘制的最大限度。
+
+为了支持这一切，最简单的就是在一个NSOperation子类内部实现-renderInImageOfSize:
+
+最终，需要指出，设置UITableViewCell内容为异步是非常困难的。单元格很有可能在完成异步渲染前已经被复用了。尽管单元格已经被其他地方复用，但你只需要设置内容就行了。
+
+CALayer
+
+到现在为止，你需要知道在GPU内，一个CALayer在某种方式上和一个纹理类似。图层有一个后备存储，这便是被用来绘制到屏幕上的位图。
+
+通常，当你使用CALayer时，你会设置它的内容为一个图片。这到底做了什么？这样做会告诉Core Animation使用图片的位图数据作为纹理。如果这个图片(JPEG或PNG)被压缩了，Core Animation将会这个图片解压缩，然后上传像素数据到GPU。
+
+尽管还有很多其他中图层，如果你是用一个简单的没有设置上下文的CALayer，并为这个CALayer设置一个背景颜色，Core Animation并不会上传任何数据到GPU，但却能够不用任何像素数据而在GPU上完成所有的工作，类似的，对于渐变的图层，GPU是能创建渐变的，而且不需要CPU做任何工作，并且不需要上传任何数据到GPU。
+
+自定义绘制的图层
+
+如果一个CALayer的子类实现了-drawInContext:或者它的代理，类似于-drawLayer:inContest:,Core Animation将会为这个图层申请一个后备存储，用来保存那些方法绘制进来的位图。那些方法内的代码将会运行在CPU上，结果将会被上传到GPU。
+
+形状和文本图层
+
+形状和文本图层还是有些不同的。开始时，Core Animation为这些图层申请一个后备存储来保存那些需要为上下文生成的位图数据。然后Core Animation会讲这些图形或文本绘制到后备存储上。这在概念上非常类似于，当你实现-drawInContext:方法，然后在方法内绘制形状或文本，他们的性能也很接近。
+
+在某种程度上，当你需要改变形状或者文本图层时，这需要更新它的后备存储，Core Animation将会重新渲染后备存储。例如，当动态改变形状图层的大小时，Core Animation需要为动画中的每一帧重新绘制形状。
+
+异步绘图
+
+CALayer有一个叫做drawsAsynchronously的属性，这似乎是一个解决所有问题的高招。注意，尽管这可能提升性能，但也可能让事情变慢。
+
+当你设置drawsAsynchronously为YES时，发生了什么？你的-drawRect:/-drawInContext:方法仍然会被在主线程上调用。但是所有调用Core Graphics的操作都不会被执行。取而代之的是，绘制命令被推迟，并且在后台线程中异步执行。
+
+这种方式就是先记录绘图命令，然后在后台线程中重现。为了这个过程的顺利进行，更多的工作需要被做，更多的内存需要被申请。但是主队列中的一些工作便被移出来了(大概意思就是让我们把一些能在后台实现的工作放到后台实现，让主线程更顺畅)。
+
+对于昂贵的绘图方法，这是最有可能提升性能的，但对于那些绘图方法来说，也不会节省太多资源。
+
+[iOS之触摸事件和手势]
+事件是当用户手指触击屏幕及在屏幕上移动时，系统不断发送给应用程序的对象。
+
+系统将事件按照特定的路径传递给可以对其进行处理的对象。
+
+在iOS中，一个UITouch对象表示一个触摸，一个UIEvent对象表示一个事件。事件对象中包含与当前多点触摸序列相对应的所有触摸对象，还可以提供与特定视图或窗口相关联的触摸对象。
+
+响应者对象
+
+响应者对象是可以响应事件并对其进行处理的对象。
+
+UIResponder是所有响应者对象的基类，它不仅为事件处理，而且也为常见的响应者行为定义编程接口。
+
+UIApplication、UIView、和所有从UIView派生出来的UIKit类（包括UIWindow）都直接或间接地继承自UIResponder类。
+
+第一响应者是应用程序中当前负责接收触摸事件的响应者对象（通常是一个UIView对象）。UIWindow对象以消息的形式将事件发送给第一响应者，使其有机会首先处理事件。如果第一响应者没有进行处理，系统就将事件（通过消息）传递给响应者链中的下一个响应者，看看它是否可以进行处理。
+
+响应者链
+
+响应链是一个响应者对象的连接序列，事件或动作消息（或菜单编辑消息）依次传递。它允许响应者对象把事件处理的职责转交给其它更高层的对象。应用程序通过向上传递一个事件来查找合适的处理对象。因为点击检测视图也是一个响应者对象，应用程序在处理触摸事件时也可以利用响应链。响应链由一系列的下一个响应者组成。
+
+响应者链处理原则
+
+1. 点击检测视图或者第一响应者传递事件或动作消息给它的视图控制器(如果它有的话)；如果没有一个视图控制器，就传递给它的父视图。
+
+2. 如果一个视图或者它的视图控制器不能处理这个事件或动作消息，它将传递给该视图的父视图。
+
+3. 在这个视图层次中的每个后续的父视图遵循上述的模式，如果它不能处理这个事件或动作消息的话。
+
+4. 最顶层的视图如果不能处理这个事件或动作消息，就传递给UIWindow对象来处理。
+
+5. 如果UIWindow 对象不能处理，就传给单件应用程序对象UIApplication。
+
+如果应用程序对象也不能处理这个事件或动作消息，将抛弃它。
+
+触摸事件
+
+触摸信息有时间和空间两方面，时间方面的信息称为阶段（phrase），表示触摸是否刚刚开始、是否正在移动或处于静止状态，以及何时结束—也就是手指何时从屏幕抬起。触摸信息还包括当前在视图或窗口中的位置信息，以及之前的位置信息（如果有的话）。当一个手指接触屏幕时，触摸就和某个窗口或视图关联在一起，这个关联在事件的整个生命周期都会得到维护。
+
+触摸事件的阶段
+
+事件处理方法
+
+在给定的触摸阶段中，如果发生新的触摸动作或已有的触摸动作发生变化，应用程序就会发送这些消息：
+
+当一个或多个手指触碰屏幕时，发送touchesBegan:withEvent:消息。
+
+当一个或多个手指在屏幕上移动时，发送touchesMoved:withEvent:消息。
+
+当一个或多个手指离开屏幕时，发送touchesEnded:withEvent:消息。
+
+当触摸序列被诸如电话呼入这样的系统事件所取消时，发送touchesCancelled:withEvent:消息。
+
+触摸事件实例 EventInfo
+--
+#import <UIKit/UIKit.h>
+
+@interface TouchView : UIView {
+}
+- (void)logTouchInfo:(UITouch *)touch;
+@end
+--
+
+@implementation TouchView
+
+- (void)logTouchInfo:(UITouch *)touch {
+    CGPoint locInSelf = [touch locationInView:self];
+    CGPoint locInWin = [touch locationInView:nil];
+    NSLog(@"    touch.locationInView = {%2.3f, %2.3f}", locInSelf.x, locInSelf.y);
+    NSLog(@"    touch.locationInWin = {%2.3f, %2.3f}", locInWin.x, locInWin.y);
+    NSLog(@"    touch.phase = %d", touch.phase);
+    NSLog(@"    touch.tapCount = %d", touch.tapCount);
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touchesBegan - touch count = %d", [touches count]);
+    for(UITouch *touch in event.allTouches) {
+        [self logTouchInfo:touch];
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touchesMoved - touch count = %d", [touches count]);
+    for(UITouch *touch in event.allTouches) {
+        [self logTouchInfo:touch];
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touchesEnded - touch count = %d", [touches count]);
+    for(UITouch *touch in event.allTouches) {
+        [self logTouchInfo:touch];
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touchesCancelled - touch count = %d", [touches count]);
+    for(UITouch *touch in event.allTouches) {
+        [self logTouchInfo:touch];
+    }
+}
+--
+touch.phase，触摸事件的阶段。
+
+touch.tapCount，触摸事件的轻碰次数，可以判断双击事件。
+
+UIEvent 的allTouches方法，可以获得触摸点的集合，可以判断多点触摸事件。
+
+[ZLTableView 实现]
+解释一下为什么要从UIScrollView继承来完成TableView。这个和TableView的功能是密切相关的。TableView是一种内容数量大小不确定的布局方式，于是其需要在有限的屏幕（640*960）内展示无限的内容，而有这个功能的类就是UIScrollView。所以DZTableView从UIScrollView继承而来。
+
+
