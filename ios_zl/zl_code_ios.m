@@ -277,9 +277,6 @@ error: 1 errors parsing expression
 (CGRect) $0 = (origin = (x = 0, y = 0), size = (width = 100, height = 50))
 
 
-GDShkl-23l
-HKL_GDS-.23l
-
 [实例变量与属性]
 It’s best practice to use a property on an object any time you need to keep track of a value or another object.
 最佳实践是，只有需要将一个value定义给外部对象使用时，才将改value定义为属性。
