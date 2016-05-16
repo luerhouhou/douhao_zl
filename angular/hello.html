@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app>
+  <head>
+    <title>Simple app</title>
+    <script 
+    src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.js">  
+    </script>
+  </head>
+  <body>
+    
+    <input ng-model="name" type="text" placeholder="Your name">
+    <h1>Hello {{ name }}</h1>
+
+    
+
+    <div ng-model="MyApp">
+      <div ng-controller="ClockController">
+        <h1>Hello {{ clock.now }}!</h1>
+      </div>
+
+      <div ng-controller="FirstController">
+        <h4>The simplest adding machine ever</h4>
+        <button ng-click="add(1)" class="button">Add</button>
+        <a ng-click="subtract(1)" class="button alert">Subtract</a>
+        <h4>Current count: {{ counter }}</h4>
+      </div>
+
+      <div ng-controller="MyController">
+        <h1>{{ person }}</h1>
+        and their name:
+        <h2>{{ person.name }}</h2>
+      </div>
+    </div>
+
+    <div ng-controller="ParentController">
+       <div ng-controller="ChildController">
+         <a ng-click="sayHello()">Say hello</a>
+       </div>
+       {{ person }}
+     </div>
+
+    <script type="text/javascript" src="js/app.js">
+    </script>
+  </body>
+</html>

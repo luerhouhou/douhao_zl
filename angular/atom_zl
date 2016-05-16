@@ -1,0 +1,50 @@
+cmd-o 打开某目录下的文件
+
+//移动
+alt-b	editor:move-to-beginning-of-word
+
+ctrl-p	core:move-up
+ctrl-n	core:move-down
+ctrl-b	core:move-left
+ctrl-f	core:move-right
+
+ctrl-alt-f/b
+
+ctrl-g	go-to-line:toggle
+
+ctrl-cmd-up/down	editor:move-line-up/down 将当前行移动到上（下）一行
+
+//删除
+alt-backspace	editor:delete-to-beginning-of-word
+ctrl-shift-K	editor:delete-line 删除一整行
+ctrl-d	core:delete 删除右边一个字符
+ctrl-k	editor:cut-to-end-of-line 剪切到行尾
+ctrl-alt-d	editor:delete-to-end-of-word
+ctrl-alt-delete	editor:delete-to-begin-of-word
+
+
+//整理
+alt-cmd-[	editor:fold-current-row
+
+alt-cmd-]	editor:unfold-current-row
+
+//选择
+ctrl-shift-W	editor:select-word
+ctrl-shift-A	editor:select-to-first-character-of-line 全选光标所在位置到行首
+ctrl-shift-E	editor:select-to-end-of-line 全选光标所在位置到行尾
+ctrl-cmd-g	find-and-replace:select-all 选择所有匹配的该单词，并进行替换说输入，多光标操作
+alt-shift-right/left 选择单词
+alt-shift-f/b
+
+
+//其他
+ctrl-shift-O	link:open
+
+ctrl-shift-U	encoding-selector:show
+
+ctrl-shift-M	markdown-preview:toggle 预览markdown
+
+ctrl-shift-C	tree-view:copy-full-path 拷贝当前文件的本地地址
+/Users/zhanglu/work/rn-test/angular/hello.html
+
+ctrl-cmd-f	window:toggle-full-screen 全屏
