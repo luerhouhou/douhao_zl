@@ -30,7 +30,7 @@ Swift 的多行注释可以嵌套在其它的多行注释之中。你可以先生成一个多行注释块，然后在
 通过运用嵌套多行注释，你可以快速方便的注释掉一大段代码，即使这段代码之中已经含有了多行注释块。
 
 Swift 提供了8，16，32和64位的有符号和无符号整数类型。UInt8,UInt16
-
+可以访问不同整数类型的min和max属性来获取对应类型的最小最大值。
 let minValue = UInt8.min  // minValue 为 0，是 UInt8 类型
 let maxValue = UInt8.max  // maxValue 为 255，是 UInt8 类型
 
@@ -41,20 +41,18 @@ let maxValue = UInt8.max  // maxValue 为 255，是 UInt8 类型
 在32位平台上，UInt和UInt32长度相同。
 在64位平台上，UInt和UInt64长度相同。
 
-
 Double表示64位浮点数。当你需要存储很大或者很高精度的浮点数时请使用此类型。
 Float表示32位浮点数。精度要求不高的话可以使用此类型。
+Double 精确度最少有15位，而float只要6位。
 
+swift是类型安全的语言，可以清楚的知道要处理的值得类型。编译时进行类型检查，
 let meaningOfLife = 42
 // meaningOfLife 会被推测为 Int 类型
 
 let pi = 3.14159
 // pi 会被推测为 Double 类型
-
 当推断浮点数的类型时，Swift 总是会选择Double而不是Float。
-
 如果表达式中同时出现了整数和浮点数，会被推断为Double类型：
-
 let anotherPi = 3 + 0.14159
 // anotherPi 会被推测为 Double 类型
 
@@ -65,12 +63,12 @@ let hexadecimalInteger = 0x11     // 十六进制的17
 
 如果一个十进制数的指数为exp，那这个数相当于基数和10^exp的乘积：
 
-1.25e2 表示 1.25 × 10^2，等于 125.0。
+1.25e2 表示 1.25 × 10^2，等于 125.0。 // 十进制浮点数通过大小或小写的e来指定指数。
 1.25e-2 表示 1.25 × 10^-2，等于 0.0125。
 
 如果一个十六进制数的指数为exp，那这个数相当于基数和2^exp的乘积：
 
-0xFp2 表示 15 × 2^2，等于 60.0。
+0xFp2 表示 15 × 2^2，等于 60.0。// 十六进制浮点数通过大小或小写的p来指定指数。
 0xFp-2 表示 15 × 2^-2，等于 3.75。
 
 数值类字面量可以包括额外的格式来增强可读性。整数和浮点数都可以添加额外的零并且包含下划线，并不会影响字面量：
@@ -79,12 +77,48 @@ let paddedDouble = 000123.456
 let oneMillion = 1_000_000
 let justOverOneMillion = 1_000_000.000_000_1
 
+常量twoThousand是UInt16类型，然而常量one是UInt8类型。它们不能直接相加，因为它们类型不同。所以要调用UInt16(one)来创建一个新的UInt16数字并用one的值来初始化，然后使用这个新数字来计算：
+
+let twoThousand: UInt16 = 2_000
+let one: UInt8 = 1
+let twoThousandAndOne = twoThousand + UInt16(one)
+
+现在两个数字的类型都是UInt16，可以进行相加。目标常量twoThousandAndOne的类型被推断为UInt16，因为它是两个UInt16值的和。
+
+SomeType(ofInitialValue)是调用 Swift 构造器并传入一个初始值的默认方法。在语言内部，UInt16有一个构造器，可以接受一个UInt8类型的值，所以这个构造器可以用现有的UInt8来创建一个新的UInt16。
+
+注意，你并不能传入任意类型的值，只能传入UInt16内部有对应构造器的值。不过你可以扩展现有的类型来让它可以接收其他类型的值（包括自定义类型），请参考扩展。
+
+整数和浮点数的转换必须显式指定类型：
+let three = 3
+let pointOneFourOneFiveNine = 0.14159
+let pi = Double(three) + pointOneFourOneFiveNine
+// pi 等于 3.14159，所以被推测为 Double 类型
+
+浮点数到整数的反向转换同样行，整数类型可以用Double或者Float类型来初始化：
+let integerPi = Int(pi)
+// integerPi 等于 3，所以被推测为 Int 类型
+当用这种方式来初始化一个新的整数值时，浮点值会被截断。也就是说4.75会变成4，-3.9会变成-3。
+
+注意：结合数字类常量和变量不同于结合数字类字面量。字面量3可以直接和字面量0.14159相加，因为数字字面量本身没有明确的类型。它们的类型只在编译器需要求值的时候被推测。
+
 typealias AudioSample = UInt16
 
 定义了一个类型别名之后，你可以在任何使用原始名的地方使用别名：
 
 var maxAmplitudeFound = AudioSample.min
 // maxAmplitudeFound 现在是 0
+
+Bool : true  false
+
+可以把任意顺序的类型组合成一个元组，这个元组可以包含所有类型。只要你想，你可以创建一个类型为(Int, Int, Int)或者(String, Bool)或者其他任何你想要的组合的元组。
+
+let http404Error = (404, "Not Found")
+let (statusCode, statusMessage) = http404Error
+print("The status code is \(statusCode)")
+// 输出 "The status code is 404"
+print("The status message is \(statusMessage)")
+// 输出 "The status message is Not Found"
 
 如果你只需要一部分元组值，分解的时候可以把要忽略的部分用下划线（_）标记：
 
@@ -99,10 +133,59 @@ print("The status code is \(http404Error.0)")
 print("The status message is \(http404Error.1)")
 // 输出 "The status message is Not Found"
 
+可以在定义元组的时候给单个元素命名：
+let http200Status = (statusCode: 200, description: "OK")
+给元组中的元素命名后，你可以通过名字来获取这些元素的值：
+print("The status code is \(http200Status.statusCode)")
+// 输出 "The status code is 200"
+
+强制解析（forced unwrapping）：
+if convertedNumber != nil {
+    print("convertedNumber has an integer value of \(convertedNumber!).")
+}
+// 输出 "convertedNumber has an integer value of 123."
+注意：使用!来获取一个不存在的可选值会导致运行时错误。使用!来强制解析值之前，一定要确定可选包含一个非nil的值。
+
+if let actualNumber = convertedNumber { // 可选绑定中可使用常量或变量。
+    print("convertedNumber has an integer value of \(actualNumber).")
+}
+// 输出 "convertedNumber has an integer value of 123."
+
 if let firstNumber = Int("4"), secondNumber = Int("42") where firstNumber < secondNumber {
     print("\(firstNumber) < \(secondNumber)")
 }
 // prints "4 < 42"
+
+隐式解析可选类型
+
+第一次被赋值之后，可以确定一个可选类型总会有值。在这种情况下，每次都要判断和解析可选值是非常低效的，因为可以确定它总会有值。
+
+这种类型的可选状态被定义为隐式解析可选类型（implicitly unwrapped optionals）。把想要用作可选的类型的后面的问号（String?）改成感叹号（String!）来声明一个隐式解析可选类型。
+
+let possibleString: String? = "An optional string." // 可选类型
+let forcedString: String = possibleString! // 需要惊叹号来获取值
+
+let assumedString: String! = "An implicitly unwrapped optional string." // 隐式解析可选类型
+let implicitString: String = assumedString  // 不需要感叹号
+
+如果你在隐式解析可选类型没有值的时候尝试取值，会触发运行时错误。和你在没有值的普通可选类型后面加一个惊叹号一样。
+
+你仍然可以把隐式解析可选类型当做普通可选类型来判断它是否包含值：
+
+if assumedString != nil {
+    print(assumedString)
+}
+// 输出 "An implicitly unwrapped optional string."
+
+你也可以在可选绑定中使用隐式解析可选类型来检查并解析它的值：
+
+if let definiteString = assumedString {
+    print(definiteString)
+}
+// 输出 "An implicitly unwrapped optional string."
+
+注意：如果一个变量之后可能变成nil的话请不要使用隐式解析可选类型。如果你需要在变量的生命周期中判断是否是nil的话，请使用普通可选类型。
+
 
 在 Swift 中你可以对浮点数进行取余运算（%），Swift 还提供了 C 语言没有的表达两数之间的值的区间运算符（a..<b和a...b），这方便我们表达一个区间内的数值。
 
@@ -162,12 +245,18 @@ let sparklingHeart = "\u{1F496}"      // 💖, Unicode 标量 U+1F496
 注意:通过characters属性返回的字符数量并不总是与包含相同字符的NSString的length属性相同。NSString的length属性是利用 UTF-16 表示的十六位代码单元数字，而不是 Unicode 可扩展的字符群集。作为佐证，当一个NSString的length属性被一个Swift的String值访问时，实际上是调用了utf16Count。
 
 
-[assert]
+断言 [assert]
 assert(celsius > absoluteZeroInCelsius, "输入的摄氏温度不能低于绝对零度")
 当遇到错误时，会产生错误，保留堆栈，并抛出预设的信息。默认情况下，只在Debug编译时有效，运行时不被编译执行。
 改变默认运行可以添加编译标记，但不建议改动
 target-Build Setting中 Swift Compiler - Custom Flags 中的Other Swift Flags中添加-assert-config Debug来强制启用断言，或者-assert-config Release来强制禁用断言.
 注意：如果我们需要在Release发布时在无法继续时将程序强行终止的话，应该考虑使用致命错误fatalError的方式来终止程序。
+
+Debugging Aid
+Intentionally crash your program if some condition is not true (and give a message)
+assert(() -> Bool, "message")   //They basically take a closure as the first argument.(接收一个闭包作为第一个参数)
+如果第一个参数的值不为真，第二个参数的字符串将会在控制台输出。条件应该是成立的，不成立将会导致程序崩溃
+e.g. assert(validation() != nil, "the validation function returned nil") //Will crash if validation() returns nil
 
 [ErrorType do catch]
 enum LoginError: ErrorType {
@@ -188,7 +277,7 @@ func login(user: String, password: String) throws {
     print("Login successfully.")
 }
 
-do {
+do { // 函数调用被包裹在try表达式中。将函数包裹在一个do语句中,任何被抛出的错误会被传播到提供的catch从句中。
     try login("onevcat", password: "123")
 } catch LoginError.UserNotFound {
     print("UserNotFound")
@@ -2112,13 +2201,6 @@ public class func pathWithComponents(components: [String]) -> String
     public var fileSystemRepresentation: UnsafePointer<Int8> { get }
     public func getFileSystemRepresentation(cname: UnsafeMutablePointer<Int8>, maxLength max: Int) -> Bool
 //-----------
-
-断言
-Debugging Aid
-Intentionally crash your program if some condition is not true (and give a message)
-assert(() -> Bool, "message")   //They basically take a closure as the first argument.(接收一个闭包作为第一个参数)
-如果第一个参数的值不为真，第二个参数的字符串将会在控制台输出。条件应该是成立的，不成立将会导致程序崩溃
-e.g. assert(validation() != nil, "the validation function returned nil") //Will crash if validation() returns nil
 
 Function that work on Array, Dictionary, String
 Collections include Array, Dictionary, String
