@@ -255,7 +255,6 @@ target-Build Setting中 Swift Compiler - Custom Flags 中的Other Swift Flags中添加
 Debugging Aid
 Intentionally crash your program if some condition is not true (and give a message)
 assert(() -> Bool, "message")   //They basically take a closure as the first argument.(接收一个闭包作为第一个参数)
-如果第一个参数的值不为真，第二个参数的字符串将会在控制台输出。条件应该是成立的，不成立将会导致程序崩溃
 e.g. assert(validation() != nil, "the validation function returned nil") //Will crash if validation() returns nil
 
 [ErrorType do catch]
