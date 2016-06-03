@@ -1,49 +1,4 @@
-登录注册 根据token获取用户信息，这三个接口：
 
-
-大象：
-1. 登录 login http://test.yg.device.baidao.com/jry-device/login
-2. 注册 register http://test.yg.device.baidao.com/jry-device/ajax/register
-3. 更改用户信息 updateUserDetail http://test.yg.device.baidao.com/jry-device/ajax/user/updateUserDetail.do
-4. 更改头像 uploadUserImage http://test.yg.device.baidao.com/jry-device/ajax/user/uploadUserImage
-5. 重置密码 resetPassword http://test.yg.device.baidao.com/jry-device/ajax/user/resetPassword
-6. 获取(注册)验证码 getVerificationCode http://test.yg.device.baidao.com/jry-device/ajax/verificationCode
-7. 获取(更改密码)验证码 getVerificationCodeToResetPassword http://test.yg.device.baidao.com/jry-device/ajax/user/verificationCode
-p4:
-1. 根据token获取用户信息 getUserInfon  http://tt.device.baidao.com/jry-device/ajax/user/getUserByToken.do
-2. 绑定手机 bindUserMobileAndPassword  http://tt.device.baidao.com/jry-device/ajax/user/bindPhonePassword?
-
-3. 已登录用户开户成功，需要重新登录 needLogout http://www.baidao.com/sso/ajax/needLogout
-这个是因为，CRM里面有个开户审核，审核通过以后，就有交易账号，然后需要更新用户信息，提示用户重新登录。
-4. 游客使用第三方登录接口注册 authentications http://www.baidao.com/sso/authentications/open
-请求参数:
-@{
-@"userInfo" : @{
-    @"nickname" : @"访客_苹果",
-    @"sex" : @(0),
-    @"marketId" : [AppInfo marketId],
-    @"serverId" : @(YG)
-},
-@"authentication" : @{  @"accessToken" : [ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString,
-    @"expiresIn" : @(7199),
-    @"openId" : [ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString,
-    @"platform" : @"YTXGuestChat"
-}
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-接口测试，去掉todo
 rac 
 RACSignal 冷信号。当存在接收者时，会将所有的消息一次传送给接受者。（subscribeNext:）信号会被多次触发。存在多个订阅者时，会分别完整的发送所有消息。
 RACMulticastConnection 广播，不会缓存消息。
