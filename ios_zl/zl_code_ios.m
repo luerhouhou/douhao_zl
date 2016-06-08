@@ -1,3 +1,5 @@
+模拟器截取750*1334的图：模拟器放大到100%，cmd+s
+
 注意事项：
 1. 不要fix issue
 2. 证书改变后不要轻易的git push
@@ -978,6 +980,19 @@ __weak NSString *myString;
 @property (weak) NSString *myString;
 使用ARC时，有两种命名规则需要注意：属性名称不能以new开头，比如@property NSString *newString;是不被允许的。 属性不能只有一个readonly而没有内存管理特性。
 强引用也有自己的__strong关键字和strong特性。内存管理的关键字和特性不能同时使用。两者互斥。
+
+[volatile]
+例如：
+int packetsReceived = 0;
+while (packetsRecieved < 10){
+    //Wait for more packets
+}
+processPackets();
+// 上面的代码，编译器会认为 条件永远成立，经过优化后的代码会线性执行，而不会每次都判断条件是否成立。
+当我们使用 volatile 关键字时，volatile int packetsRecieved;
+就是告诉编译器，这个变量在任何时候都有可能改变，所以每次都会进行判断，安装我们预期的工作方式运行。
+
+编译器优化策略：会将简单的计算直接替换为数字，而避免运行时计算的发生。会将恒成立的条件替换为true，从而不会进行判断。
 
 [关键字]
 01. atomic             //default

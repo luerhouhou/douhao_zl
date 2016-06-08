@@ -5,6 +5,60 @@
 
 Applicative 是增强型的 Functor ，一种数据类型要成为 Applicative 的前提条件是它必须是 Functor ；同样的，Monad 是增强型的 Applicative ，一种数据类型要成为 Monad 的前提条件是它必须是 Applicative 。
 
+Functor typeclass 的定义：
+
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+
+Maybe Functor
+
+class Functor Maybe where
+    fmap :: (a -> b) -> Maybe a -> Maybe b
+
+具体实现
+
+instance Functor Maybe where
+    fmap func (Just x) = Just (func x)
+    fmap func Nothing  = Nothing
+
+--
+
+Applicative typeclass 的定义：
+
+class Functor f => Applicative f where
+    pure :: a -> f a
+    (<*>) :: f (a -> b) -> f a -> f b
+
+与 Functor typeclass 的定义不同的是，在 Applicative typeclass 的定义中多了一个类约束 Functor f ，表示的意思是数据类型 f 要实现 Applicative typeclass 的前提条件是它必须要实现 Functor typeclass ，也就是说它必须是一个 Functor 。
+
+在 Applicative typeclass 中定义了两个函数：
+
+    pure ：将一个值 a 放入上下文中；
+    (<*>) ：将一个在上下文中的函数 f (a -> b) 应用到一个在上下文中的值 f a ，并返回另一个在上下文中的值 f b 。
+
+Maybe Applicative
+
+class Functor Maybe => Applicative Maybe where
+    pure :: a -> Maybe a
+    (<*>) :: Maybe (a -> b) -> Maybe a -> Maybe b
+
+因此，对于 Maybe 类型来说，它要实现的 pure 函数的功能就是将一个值 a 放入 Maybe 上下文中。而 (<*>) 函数的功能则是将一个在 Maybe 上下文中的函数 Maybe (a -> b) 应用到一个在 Maybe 上下文中的值 Maybe a ，并返回另一个在 Maybe 上下文中的值 Maybe b 。接下来，我们一起来看一下 Maybe 类型实现 Applicative typeclass 的具体细节：
+
+instance Applicative Maybe where
+    pure = Just
+    Nothing <*> _ = Nothing
+    (Just func) <*> something = fmap func something
+
+pure 函数的实现非常简单，直接等于 Just 即可。而对于 (<*>) 函数的实现，我们同样需要针对 Maybe 上下文的两种情况分别进行处理：当装函数的盒子为空时，直接返回一个新的空盒子；当装函数的盒子不为空时，即 Just func ，则取出 func ，使用 fmap 函数直接将 func 应用到那个在上下文中的值，这个正是我们前面说的 Functor 的功能。
+
+Functor 的作用就是应用一个函数到一个上下文中的值
+
+Applicative 的作用则是应用一个上下文中的函数到一个上下文中的值
+
+Monad 的作用跟 Functor 类似，也是应用一个函数到一个上下文中的值。不同之处在于，Functor 应用的是一个接收一个普通值并且返回一个普通值的函数，而 Monad 应用的是一个接收一个普通值但是返回一个在上下文中的值的函数
+
+
+
 RAC(self, objectProperty) = objectSignal;
 RAC(self, stringProperty, @"foobar") = stringSignal;
 RAC(self, integerProperty, @42) = integerSignal;
