@@ -1,3 +1,77 @@
+[锁的类型]
+
+[__attribute__]
+ __attribute__((cleanup(...)))，用于修饰一个变量，在它的作用域结束时可以自动执行一个指定的方法，如：
+
+// 指定一个cleanup方法，注意入参是所修饰变量的地址，类型要一样
+// 对于指向objc对象的指针(id *)，如果不强制声明__strong默认是__autoreleasing，造成类型不匹配
+static void stringCleanUp(__strong NSString **string) {
+    NSLog(@"%@", *string);
+}
+// 在某个方法中：
+{
+    __strong NSString *string __attribute__((cleanup(stringCleanUp))) = @"sunnyxx";
+} // 当运行到这个作用域结束时，自动调用stringCleanUp
+
+所谓作用域结束，包括大括号结束、return、goto、break、exception等各种情况。
+当然，可以修饰的变量不止NSString，自定义Class或基本类型都是可以的：
+
+// 自定义的Class
+static void sarkCleanUp(__strong Sark **sark) {
+    NSLog(@"%@", *sark);
+}
+__strong Sark *sark __attribute__((cleanup(sarkCleanUp))) = [Sark new];
+// 基本类型
+static void intCleanUp(NSInteger *integer) {
+    NSLog(@"%d", *integer);
+}
+NSInteger integer __attribute__((cleanup(intCleanUp))) = 1;
+
+假如一个作用域内有若干个cleanup的变量，他们的调用顺序是先入后出的栈式顺序；
+而且，cleanup是先于这个对象的dealloc调用的。
+进阶用法
+
+既然__attribute__((cleanup(...)))可以用来修饰变量，block当然也是其中之一，写一个block的cleanup函数非常有趣：
+
+// void(^block)(void)的指针是void(^*block)(void)
+static void blockCleanUp(__strong void(^*block)(void)) {
+    (*block)();
+}
+
+于是在一个作用域里声明一个block：
+{
+   // 加了个`unused`的attribute用来消除`unused variable`的warning
+    __strong void(^block)(void) __attribute__((cleanup(blockCleanUp), unused)) = ^{
+        NSLog(@"I'm dying...");
+    };
+} // 这里输出"I'm dying..."
+
+这里不得不提万能的Reactive Cocoa中神奇的@onExit方法，其实正是上面的写法，简单定义个宏：
+
+#define onExit\
+    __strong void(^block)(void) __attribute__((cleanup(blockCleanUp), unused)) = ^
+用这个宏就能将一段写在前面的代码最后执行：
+{
+    onExit {
+        NSLog(@"yo");
+    };
+} // Log "yo"
+
+这样的写法可以将成对出现的代码写在一起，比如说一个lock：
+
+NSRecursiveLock *aLock = [[NSRecursiveLock alloc] init];
+[aLock lock];
+//...
+[aLock unlock]; // 看到这儿的时候早忘了和哪个lock对应着了
+
+用了onExit之后，代码更集中了：
+
+NSRecursiveLock *aLock = [[NSRecursiveLock alloc] init];
+[aLock lock];
+onExit {
+    [aLock unlock]; // 妈妈再也不用担心我忘写后半段了
+};
+
 模拟器截取750*1334的图：模拟器放大到100%，cmd+s
 
 注意事项：
@@ -938,7 +1012,7 @@ Mac OS X常用快捷键：
 
 KVC(键值编码)是一种间接访问对象实例变量的机制，该机制可以不通过存取方法就可以访问对象的实例变量。
 KVO(键值观察)是一种能使得对象获取到其他对象属性变化的通知机制。
-关系：实现KVO键值观察模式，被观察的对象必须使用KVC键值编码来修改它的实例变量，这样才能被观察者观察到，因此，KVC是KVO得基础或者说KVO得实现是建立在KVC的基础之上的。
+关系：实现KVO键值观察模式，被观察的对象必须使用KVC键值编码来修改它的实例变量，这样才能被观察者观察到，因此，KVC是KVO的基础或者说KVO得实现是建立在KVC的基础之上的。
 
 1. 建议在读取实例变量的时候采用直接访问的形式，而在设置实例变量的时候通过属性来做。
 直接访问和存取方法的区别：
@@ -961,7 +1035,7 @@ KVO(键值观察)是一种能使得对象获取到其他对象属性变化的通
 使用属性来初始化（点语法）: 1. 会触发set方法，而set方法有可能被子类重写，而导致不能对原来的值进行有效地初始化。 2. 会触发KVO，从而引起其他未知的连锁反应。
 
 OC中的所有对象都存放在堆中，使用指针指向它们。对象没有分配在栈上这一说法。堆就是分配闲置内存的地方。
-指针属性可以使强的和弱的。
+指针属性可以是强的和弱的。
 
 [ARC automatic reference counting，自动引用计数]启动了ARC之后，只管像平常那样按>需分配并使用对象，编译器会帮你插入retain和release语句，无需自己动手。 
 注：ARC只对可保留对象指针(ROPs)有效：代码块指针、OC对象指针、通过__attribute__((NSObject))类型定义的指针。所有其他的指针类型，包括char*等C类型和CF对象都不支持ARC特性。
@@ -5468,6 +5542,7 @@ SettingView
 2,启动Xcode，将项目中的 OSChina/Products/oschina.app 按住command键然后用鼠标拖放到iTunes的应用程序栏目
 3,然后在iTunes程序中右键点击"开源中国"图标，在弹出的的菜单中选择"在Finder中显示"，这样你就看到ipa文件的路径了。
 
+KVC
 //kvc:key-value-coding(键值编码)
 User *user1 = [[User alloc] init];
 user1.name = @"王力宏";
@@ -5533,7 +5608,7 @@ NSLog(@"%d",user2.house.price);
     NSLog(@"没有对应key值:%@",key);
 }
 //在这里根据model的颜色来修改自己的背景颜色
-[kvo]，降低耦合度
+[KVO]，降低耦合度
 //kvo：key value observing
 //实现了观察者的设计模式
 //设计模式是经过很长时间开发人员总结出来的一些开发的模板
