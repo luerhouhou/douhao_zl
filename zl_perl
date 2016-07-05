@@ -1,0 +1,493 @@
+#数字---所有数字的内部格式都相同
+perl内部，总是按双精度浮点数的要求来保存数字并进行运算的，也就是说，perl内部并不存在整数值，程序中用到的整型常量会被转换成等效的浮点数值。
+
+61_989_909_232 等效于 61989909232，在整数直接量中插入下划线是合法的，容易辨认。如：
+0x13_43_34_7c
+
+2+3 # 5
+5.1-2.4 # 2.7
+3*12 # 36
+14/2 # 7
+10/3 # 总是按浮点类型进行除法运算。3.33333333...
+10%3 # 1
+10.5%3 # 1 取模运算先取整再求余。所以10.5%3 和 10%3 结果是一样的
+
+单引号与双引号中的字符串直接量
+单引号中的\n并不是换行符，而是表示字面上的两个字符；只有反斜线后紧跟单引号或反斜线时，才表示转义。
+'\'\\' # '\
+'Don\'t' # Don't
+'hello\n' # hello\n
+双引号中的反斜线可以转义很多控制字符，或用八进制或十六进制写法来表示任何字符。
+"hello\n" # hello后面接换行符
+"coke\tspace" # coke制表符space
+"\x{2668}" # Unicode中名为HOT SPRINGS的字符代码
+
+\b # 退格
+\cC # 控制符，Control键的代码，此例表示Ctrl-C的返回码
+\l # 将下个字符转成小写
+\L # 将后面的所有字母都转成小写，直到\E
+\u # 将下个字母转成大写
+\U # 将后面的所有字母都转成大写，直到\E
+\Q # 相当于把它到\E之间的非单词字符加上反斜线转义
+\E # 结束\L、\U、\Q开始的作用范围。
+
+字符串连接符
+"hello" . "world" # 字符串连接 "helloworld"
+字符串重复操作符
+"fred" x 3 # "fredfredfred"
+5 x 4.8 # "5555" ，本质就是 "5" x 4
+注意：重复操作符的做操作符必然是字符串类型，右操作符是整数，不满足时会先进行转换，非整数取整（截断）
+
+$str = $str. " "; # 在$str末尾追加一个空格字符，相当于 $str .= " ";
+
+perl会自动处理数字和字符串之间的转换，根据操作符进行转换。
+当数字运算符遇到字符串类型时，perl会将字符串转换成等效的十进制浮点数进行运算，字符串中的非数字部分会被略过。所以"12fred34"*"3"也会得到36 。不含数字的字符串会被转换成零。自动转换总是按十进制数字来处理。
+
+ == # eq
+ != # ne
+ <  # lt
+ >  # gt
+ <= # le
+ >= # ge
+
+布尔值
+数字：0为假，其他为真
+字符串：空字符串''为假，其他为真
+既不是数字也不是字符：先转成数字或字符串后再进行判断。
+
+字符串'0'和数字0是同一个标量。
+
+$perl -w my_program
+#!/usr/bin/perl -w
+
+#!/usr/bin/perl;
+use 5.010;
+use strict;
+
+use warnings; # 开启警告功能，能够指定代码的作用范围，-w 则对整个程序中涉及的所有代码都开启警告功能
+use diagnostics;    # 得到更详细的debug 信息
+use utf8; # 自动将源程序作为Unicode编码的文本文件读入，通常情况下都加上。
+say "What is your name? ";
+my $name = <STDIN>;
+chomp $name;    # 去除结尾的\n
+say "Hello $name, how are you?";
+
+my $str = 'HeLlo';
+ 
+say lc $str;      # hello
+say uc $str;      # HELLO
+say length $str;  # 5
+
+my $str = "The black cat jumped from the green tree";
+ 
+say index $str, 'cat';             # 10  返回第二个字符串在第一个字符串中的位置。
+say index $str, 'dog';             # -1  表示没有找到
+say index $str, "The";             # 0
+say index $str, "the";             # 26  index 大小写敏感
+say index $str, "e ";              # 2
+say index $str, "e ", 3;           # 28  第三个参数表示从哪个位置开始搜索
+say index $str, "e", 3;            # 18
+
+say rindex $str, "e";              # 39  与index相反，rindex会从字符串右侧开始搜索
+say rindex $str, "e", 38;          # 38
+say rindex $str, "e", 37;          # 33
+
+say substr $str, 4, 5;             # black 获取字符串中第4个索引开始，长度为5的内容
+say substr $str, 4, -11;           # black cat climbed the  返回从左边数4，右边数11，其中间的字符。第三个参数为负数时，指定了从原始字符串右边开始有多少个字符不包括在子串中。
+say substr $str, 14;               # 第4个位置开始，一直到字符串结尾的所有字符。 
+say substr $str, -4;                        # tree 从右边数4个，并从第四个（包含）开始到结尾。等同于length($str)-4。 
+say substr $str, -4, 2;                     # tr
+
+my $z = substr $str, 14, 7, "jumped from";  # 第4个参数用来替换从原字符串选出的子串。 
+say $z;  #jumped 选出的子串
+say $str;  # The black cat jumped fromfrom the green tree 改变原始字符串。 
+
+my $x = int 3.14;   # int 打印小数的整数部分
+say $x;         # 3.14
+say $x;          # 3
+say int -3.14;   # -3
+
+my $z = int rand 6;  # 返回[0,6)区间的随机数。
+say $z;   # 5
+say rand;  # 0.897612457486929 不加参数返回[0,1)区间的随机数。
+
+for (my $i=0; $i <= 9; $i++) {
+   print "$i\n";
+}
+foreach my $i (0..9) {
+  print "$i\n";
+}
+for my $i (0..9) {
+  print "$i\n";
+}
+
+my $x = "4T";
+my $y = 3;
+say $x . $y;    # 4T3 字符串连接
+say $x + $y;  # 7 数字相加 Argument "4T" isn't numeric in addition (+)
+
+use Scalar::Util qw(looks_like_number);
+if (looks_like_number($y)) {    # looks_like_number函数判断变量是否是数字。
+    print "I am on it...\n";
+} else {
+    print "Sorry, I don't get it\n";
+}
+
+$name # $的意思是取单个东西，或取标量
+
+
+# undef 表示缺失一个值, 它仍是不可用的。
+my $x;  # 当你声明一个标量，却没有赋值时，它会被定义成undef。
+undef $y;  # 可以使用 undef() 函数把一个变量重置为 undef
+$y = undef;
+if (defined $x) {   # 判断$x是否是undef，是则返回true，否则false
+    say '$x is defined';
+} else {
+    say '$x is undef';
+}
+# 如果你在数值操作中使用 undef , 它效果上看起来和0一样。
+#
+# 如果它是用在字符串操作中, 则基本等同于空字符串。 
+my $x;
+say $x + 4, ;  # 4
+say $x . 4, ;  # 4
+say $x . "4," ;  # 4,
+say 'Foo' . $x . 'Bar';  # FooBar
+$x++;
+say $x; # 1
+# 变量 $x (默认是 undef )，在加法运算中起的作用是0, 在字符串连接过程中表现为空串，而在自增操作中又表现为0。
+
+# Perl没有具体的布尔类型, 但是每个标量 -- 如果使用if来检查，都会返回true 或 false之一。
+
+if ($x eq "foo") { }  # 判断字符串是否相等
+if ($x) { }  # 判断 $x 本身是 true 还是 false。
+# 数字0, 字符串'0' 及 '', 空列表"()", 以及 "undef"在布尔上下文中都是false, 其它值为true.
+# 使用 "!" 或 "not" 否定一个真值，会返回一个特定的假值. 当作为字符串计算时，把它看成'', 但是作为数字时, 它是0.
+
+#   以下标量被认定为false:
+#
+# undef - 未定义值
+# 0 数字0, 即便你写的是000或0.0
+# '' 空字符串.
+# '0' 包含单个0数字的字符串.
+#
+#   其它所有的标量(包括下面的)是true:
+#
+# 1 任何非0数字
+# ' ' 有一个空格的字符串
+# '00' 两个及以上'0'字符的字符串
+# "0\n" 0及后面跟有一个换行符
+# 'true'
+# 'false' 没错, 即便是字符串'false'也被认定为是true.
+#
+
+use Data::Dumper qw(Dumper);  # Data::Dumper 是一个Perl 模块，通常用在调试的过过程中，用来查看Perl 变量的信息。 
+my @names;  # 声明数组
+my @names = ("Foo", "Bar", "Baz");
+say Dumper \@names;
+
+my @names = ("Foo", "Bar", "Baz");
+foreach my $n (@names) {
+    say $n;
+}
+
+my @names = ("Foo", "Bar", "Baz");
+say $names[0];  # 注意：是 $names[0] ，而不是 @names[0]
+# @标志符用来标志数组，很容易想到，数组是个复数的概念。而标志符$ 对应的是单数的概念。 你读取数组的某个元素，是个单数，所以标志符$才是正确的。
+say $#names;  # 2
+say scalar @names;  # scalar 返回数组长度。scalar 其实是给 @names 提供一个上下文，告诉 Perl，想得到一个标量。
+say @names + 0;  # 3 如果已经有了上下文，就不再需要使用scalar函数了。
+
+foreach my $i (0 .. $#names) {  # 遍历数组索引。
+  say "$i - $names[$i]";
+}
+
+push @names, 'Moo';  # 增加一个元素到数组的末尾
+my $last_value = pop @names;  # 取出数组的最后一个元素
+say "Last: $last_value";
+my $first_value = shift @names;  # 取出数组的第一个元素
+say "First: $first_value";
+say Dumper \@names;
+unshift @names, 'Moo';  # 这是shift的反函数。unshift 会传入一个或多个值(或者0个) 并把它放在数组的开头，将其他元素右移动。
+say Dumper \@names;
+unshift @names, ('Moo','WW');  # 传入一个数组，放在names前面
+say Dumper \@names;
+
+my @dwarfs = qw(Doc Grumpy Happy Sleepy Sneezy Dopey Bashful);
+splice @dwarfs, 3, 2;  # 从数组中删除元素
+print "@dwarfs";    # Doc Grumpy Happy Dopey Bashful
+
+splice @dwarfs, 3, 0, 'SnowWhite';  # 插入元素
+print "@dwarfs";  # Doc Grumpy Happy SnowWhite Sleepy Sneezy Dopey Bashful
+
+splice @dwarfs, 3, 0, 'SnowWhite', 'Humbert';  # 插入两个元素
+print "@dwarfs";  # Doc Grumpy Happy SnowWhite Humbert Sleepy Sneezy Dopey Bashful
+
+my @others = qw(SnowWhite Humbert);
+splice @dwarfs, 3, 0, @others;  # 将一个数组中的元素添加到另一个数组中
+print "@dwarfs";
+
+my @others = qw(SnowWhite Humbert);
+splice @dwarfs, 2, 4, @others;  # 将指定区间内的元素替换为新元素
+print "@dwarfs\n";  # Doc Grumpy SnowWhite Humbert Bashful
+# splice ARRAY, OFFSET, LENGTH, LIST
+# OFFSET 和 LENGTH 定义了 ARRAY 中将要删除的部分， LIST 表示在删除的位置上要添加的元素。 如果LIST 省略，表示只删除，不增加。偏移值(OFFSET)和长度(LENGTH)值都可以为负数，表示从数组的末尾算起。
+
+my @who = splice @dwarfs, 2, 4, @others;  # @ 标识出复数上下文，返回删除的所有元素
+my $who = splice @dwarfs, 2, 4, @others;  # @ 标识出单数（标量）上下文，返回删除的最后一个元素
+print "@who\n";  # splice 返回删除的元素
+print "$who\n";  # splice 返回删除的元素
+
+my @who = splice @dwarfs, 3, -1;  # 偏移为3，即从第四个算起，-1 表示直到整个数组的倒数第一个。
+print "@who";  # Sleepy Sneezy Dopey
+
+my @who = splice @dwarfs, -3, 1;  # 从倒数第三个开始，向右移除的第一个元素。
+
+my %color_of;  # 声明一个映射
+$color_of{'apple'} = 'red';
+$color_of{apple} = 'red';  # 如果键是一个简单的字符串，也可以省略引号。 
+# 一个键值对，标志符 $。因为表达的是单数概念。 
+
+print $color_of{apple};  # 读取key 对应的 value
+
+my %color_of = (
+    "apple"  => "red",
+    "orange" => "orange",
+    "grape"  => "purple",
+);  #  => 叫做 胖箭头 或者 长逗号, 用来隔开键值对的键和值。 Perl 中还有个->，叫做瘦箭头。=> 称作长逗号的原因是，它在这里的功能，其实是和逗号类似。
+my %color_of = (
+    "apple",  "red",
+    "orange", "orange",
+    "grape",  "purple",
+);  # 方便的是 => 中的key可以省略引号
+my %color_of = (
+    apple  => "red",
+    orange => "orange",
+    grape  => "purple",
+);
+
+for my $fruit (keys %color_of) {  # keys 函数取出所有的键
+    print "The color of '$fruit' is $color_of{$fruit}\n";
+}
+
+say scalar keys %color_of;  # 3 返回键的数目
+
+my @keyarr = keys %color_of;
+say scalar @keyarr;  # 3
+say @keyarr + 0;  # 3
+
+# join函数的第一个参数是“连接符”，它用来连接其他的参数。
+# join的其他参数将会“平坦化”成一个列表，并且把这些元素通过给定的“连接符”粘合起来。
+# “连接符”可以是包括空串在内的任何字符串。 
+my @names = ('Foo', 'Bar', 'Moo');
+my $str = join ':', @names;
+say $str;                       # Foo:Bar:Moo
+my $data = join "-", $str, "names";
+say $data;                      # Foo:Bar:Moo-names
+$str = join '', @names, 'Baz';
+say $str;                       # FooBarMooBaz
+
+# 打开文件，写入，关闭
+# open() 的函数调用本身会返回 TRUE(成功)， FALSE(失败) 
+# die 是一个函数调用，它会抛出一个异常并停止执行脚本。
+# 使用Perl的内置变量$!来打印出操作系统的错误提示
+my $filename = 'report.txt';
+# 写入，删除原文件内容
+open(my $fh, '>', $filename) or die "Could not open file '$filename' $!";
+print $fh "My first report generated by perl\n";
+close $fh;
+print "done\n";
+
+# 追加
+open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
+
+## 使用UTF-8编码打开文件
+#open(my $fh, '>:encoding(UTF-8)', $filename)
+#or die "Could not open file '$filename'";
+#
+#unlink $file;  # unlink 可以移除一个或者多个文件。
+#unlink @files;
+#rename $old_name, $new_name;
+#use File::Copy qw(move);
+#move $old_name, $new_name;  # File::Copy 模块中的move 函数比 rename 支持更多文件系统
+#use File::Copy qw(copy);
+#copy $old_file, $new_file;
+
+say time();  # 1447081887 函数time() 返回一个10位数，代表1970年1月1日起，到现在的秒数。
+my $now = localtime();  # localtime() 可以把函数time() 的返回值转换成容易识别的格式。localtime() 可以把函数time() 的返回值转换成容易识别的格式。
+say $now;  # Mon Nov  9 23:13:26 2015
+
+my @then = localtime();
+say @then;  # 22222391011513120
+say join '-',@then;  # 22-22-23-9-10-115-1-312-0
+my ($sec ,$min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime();
+
+# $sec   - seconds (0-59)
+# $min   - minutes (0-59)
+# $hour  - hours  (0-23)
+# $mday  - 'month day' or day of the month (1-31)
+# $mon   - month (0-11) - 0 is January, 11 is December.
+# $year  - YEAR-1900
+# $wday  - 'weak day' or day of the week (0-6), 0 is Sunday, 1 is Monday
+# $yday  - 'year day' or day of the year (0-364 or 0-365 in leap years)
+# $isdst - 'is Daylight saving time' true if Daylight Saving Time is on in your computer. Otherwise false.
+say 1900 + $year;  # 2015 ; $year的值为代表1900 年后的年数。
+
+# 函数 gmtime() 与 localtime() 类似，只不过返回的时间是格林威致时间。
+say gmtime();
+say join '-',gmtime();
+# time()的最小单位是秒，如果你想得到更精确的时间，请参考 Time::HiRes 模块。 
+
+# # Any ~~ Array   ~~ 的作用是，检测Any是否属于Array。
+# my @b = qw(Foo Bar Baz);
+# "Moose" ~~ @b;  #  false
+# my @c = qw(Foo Bar Moose Baz);
+# "Moose" ~~ @c; #   true
+# 
+# "Moose" ~~ [qw(Foo Bar Baz)]  ;     #  is false
+# "Moose" ~~ [qw(Foo Bar Moose Baz)] ;#  is true
+# 42 ~~ [23, 17, 70] ;         # false
+# 42 ~~ [23, 17, 42, 70] ;     # true
+# 
+# # Any ~~ Hash  / $a ~~ $b， 查看$a是否属于Hash的Keys的集合。
+# 'a' ~~ {a => 19, b => 23}      #  true
+# 19 ~~ {a => 19, b => 23}      #  false
+# 
+# # Any ~~ CODE 相当于 CODE->(Any)
+# 3 ~~  { $_[0] % 2 == 0 };  # false
+# 2 ~~  { $_[0] % 3 == 0 };  # false
+
+# 7 ~~ [ { $_[0] % 2 == 0 },  { $_[0] % 3 == 0 }];  # false
+# 4 ~~ [ { $_[0] % 2 == 0 },  { $_[0] % 3 == 0 }];  # true
+# # 7 既不能被 2 也不能被3 整除，所以结果是 false； 4 能被 2 整除，所以结果为 true。
+
+my $str = "    包含有前后空格    ";
+say '|'.$str.'|';
+$str =~ s/^\s+//;  # 去掉头部空格
+say '|'.$str.'|';
+$str =~ s/\s+$//;  # 去掉尾部空格
+say '|'.$str.'|';
+my $str = "    包含有前后空格    ";
+$str =~ s/^\s+|\s+$//g;  # 去掉前后空格, /g 全局执行替换操作。 
+say '|'.$str.'|';
+
+# 自定义删除前后空格的函数。
+sub ltrim { my $s = shift; $s =~ s/^\s+//;       return $s };  # 参数作为数组传入，取第一个元素。
+sub rtrim { my $s = shift; $s =~ s/\s+$//;       return $s };
+sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
+my $z = " abc ";
+printf "<%s>\n", trim($z);   # <abc>
+printf "<%s>\n", ltrim($z);  # <abc >
+printf "<%s>\n", rtrim($z);  # < abc>
+my $y = shift [$z];
+say '左边第一个元素'.$y;
+
+# String::Util 模块提供了函数trim，默认整理两侧，不需要添加参数。
+# use String::Util qw(trim);
+# my $z = " abc ";
+# printf "<%s>\n", trim( $z );              # <abc>
+# printf "<%s>\n", trim( $z, right => 0 );  # <abc >
+# printf "<%s>\n", trim( $z, left  => 0 );   # < abc>
+
+# Text::Trim 模块也提供了三个trim函数；
+# 如果你调用它并将返回值用在print语句或者赋给一个变量，它会返回整理过的字符串，并保持原始字符串不变。
+# 另一方面，如果你在空白上下文调用它，亦即不使用返回值，trim函数就会修改参数，产生类似chomp的行为。即原始字符串会发生改变。
+use Text::Trim qw(trim);
+my $z = " abc ";
+printf "<%s>\n", trim($z);  # <abc> 不会修改原始字符串
+printf "<%s>\n", $z;       # < abc >
+
+use Text::Trim qw(trim);
+my $z = " abc ";
+trim $z;
+printf "<%s>\n", $z;       # <abc>  # 修改原始字符串
+
+# 在代码中插入注释 可用perldoc 命令输出注释
+=head1 DESCRIPTION
+
+This script can have 2 parameters. The name or address of a machine
+and a command. It will execute the command on the given machine and
+print the output to the screen.
+
+=cut
+
+my @files = glob "*.xml";  # 创建文件列表。
+my @sorted_files = sort @files;  # 根据文件名以字母顺序排序。
+
+my @sorted_length = sort { length($a) <=> length($b) } @files;  # 根据文件名长度排序
+my @sort_size = sort { -s $a <=> -s $b } @files;  # 根据文件大小排序
+
+# 预先读取文件大小  
+# 第一步：首先遍历文件列表，对每个文件创建一个数组引用。数组引用包含两个元素：第一个是文件名，第二个是文件大小。这样，处理每个文件只访问一次磁盘。 
+my @unsorted_pairs = map  { [$_, -s $_] } @files;
+# 第二部：对二维数组（每个文件是一个一维数组）排序。在比较小数组时，我们取元素[1]，比较它们的值。得到的结果是另一个二维数组。
+my @sorted_pairs   = sort { $a->[1] <=> $b->[1] } @unsorted_pairs;
+# 第三步：丢掉文件大小元素，创建一个只含文件名的列表。完成目标结果。 
+my @quickly_sorted_files = map  { $_->[0] } @sorted_pairs;
+
+# 上面的临时数组不是必需的，根据数据从右流向左的原理来反转子句顺序，map-sort-map结构。
+my @quickly_sorted_files =
+    map  { $_->[0] }
+    sort { $a->[1] <=> $b->[1] }
+    map  { [$_, -s $_] }
+    @files;
+
+
+my $filename = 'README.txt';
+my $data = read_file($filename);
+$data =~ s/Copyright Start-Up/Copyright Large Corporation/g;
+write_file($filename, $data);
+exit;
+ 
+sub read_file {
+    my ($filename) = @_;
+    open my $in, '<:encoding(UTF-8)', $filename or die "Could not open '$filename' for reading $!";
+    local $/ = undef;  # 我们把$/（也被称作输入记录分隔符）变量设置为undef。 这常被称作slurp模式。它告诉perl的"行读取"操作符把文件的所有内容读入到一个标量变量里，并赋给左值：my $all = <$in>;。 我们也可以用local关键字来设置$/，以便其一旦退出所包含的的代码块后能被还原——在这里是一旦离开read_file函数。 
+    my $all = <$in>;
+    close $in;
+    return $all;
+}
+ 
+sub write_file {
+    my ($filename, $content) = @_;
+    open my $out, '>:encoding(UTF-8)', $filename or die "Could not open '$filename' for writing $!";;
+    print $out $content;
+    close $out;
+    return;
+}
+
+if (open(my $fh, '<:encoding(UTF-8)', $filename)) {
+  while (my $row = <$fh>) {
+    chomp $row;
+    print "$row\n";
+  }
+} else {
+  warn "Could not open file '$filename' $!";  # 如果是假，我们使用内置函数warn提示一个警告，而不是抛出异常。
+}
+
+# sort 默认按ASCII顺序排序
+use Data::Dumper qw(Dumper);
+my @words = qw(foo bar zorg moo);
+say Dumper \@words;
+my @sorted_words = sort @words;
+say Dumper \@sorted_words;
+
+# 一次取两个元素，左元素是$a，右是$b，如果结果中$a确实在$b左侧(前面)，返回1，否则返回-1，一样，则0.
+sort { $a cmp $b } @words;
+# 我们调用lc函数返回参数的小写版本。然后cmp比较这些小写版本并决定原始字符串谁先谁后。
+my @sorted_words = sort { lc($a) cmp lc($b) } @words;
+# 按数字大小比较，由小到大。
+my @sorted_numbers = sort { $a <=> $b } @numbers;
+
+$x //= $DEFAULT;  # 如果$x是undef，则返回$DEFAULT。 相当于：
+$x = defined $x ? $x : $DEFAULT;
+
+# state 关键字类似C中的static，设置一个静态变量
+sub next_counter {
+   state $counter = 0;
+   $counter++;
+   return $counter;
+}
+
+# 在while循环里使用last声明。 这会跳出剩下的代码块而且不去重新检查条件。 
+
