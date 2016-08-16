@@ -1,8 +1,10 @@
 
 rac 
-RACSignal 冷信号。当存在接收者时，会将所有的消息一次传送给接受者。（subscribeNext:）信号会被多次触发。存在多个订阅者时，会分别完整的发送所有消息。
+RACSignal 
+1. 冷信号是被动的，当存在订阅者时，才会发布消息。
+2. 冷信号。当存在接收者时，会将所有的消息一次传送给接受者。（subscribeNext:）信号会被多次触发。存在多个订阅者时，会分别完整的发送所有消息。
 RACMulticastConnection 广播，不会缓存消息。
-[RACSignal publish]、- [RACMulticastConnection connect]、- [RACMulticastConnection signal]这几个操作生成了一个热信号。
+[RACSignal publish]、- [RACMulticastConnection connect]、- [RACMulticastConnection signal]这几个操作生成了一个热信号。RACSubject
 
 
 1.    热信号是主动的，即使你没有订阅事件，它仍然会时刻推送。如第二个例子，信号在50秒被创建，51秒的时候1这个值就推送出来了，但是当时还没有订阅者。而冷信号是被动的，只有当你订阅的时候，它才会发送消息。如第一个例子。
@@ -12,7 +14,7 @@ RACMulticastConnection 广播，不会缓存消息。
 
 
 RACSubject *subject = [RACSubject subject];
-    RACSubject *replaySubject = [RACReplaySubject subject];
+RACSubject *replaySubject = [RACReplaySubject subject];
 
     [[RACScheduler mainThreadScheduler] afterDelay:0.1 schedule:^{
         // Subscriber 1
@@ -60,6 +62,7 @@ RACSubject *subject = [RACSubject subject];
         [replaySubject sendNext:@"send package 2"];
     }];
 
+//没有订阅者时也会发送消息
 RACSubject : 发送即时消息，已经订阅的接收者可以收到消息。如果接收者在消息发出后才订阅了消息，则收不到之前发送的消息。
 RACReplaySubject : 发送即时消息，同时保留所有消息副本，当有新的订阅者加入时，将先前发送的消息和当前发送的消息一起发送给该接收者。
 
